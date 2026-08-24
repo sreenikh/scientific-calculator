@@ -1,45 +1,34 @@
-# Model FX-∞G — graphing scientific calculator
+# Model FX-∞G
 
-Phase 1 scaffold: Vite + React, math.js as the evaluation engine, MathLive
-for textbook-style editable input.
+A browser-based graphing scientific calculator with textbook-style math input.
 
-## What's working in this phase
+**Live:** https://sreenikh.github.io/scientific-calculator/
 
-- Calc mode: textbook math input via MathLive, evaluated through math.js
-- Degree/radian-aware trig, including sec/csc/cot
-- `logb(x, b)` for log to any base, `nPr`/`nCr`, factorial (`!` is native to math.js)
-- SHIFT / ALPHA key layers (inverse trig, x³, xth root, 10ˣ/eˣ, csc/sec/cot, logₐ)
-- CONST panel — full CODATA-style constants library (5 categories)
-- CONV panel — 16 unit categories, ~90 units, live From/To conversion
-- SOLVE panel — Newton-Raphson / Secant / Bisection on any user-typed f(x)
-- Calculus panel — numeric derivative (central difference) and definite
-  integral (Simpson's rule) on any user-typed f(x)
+---
 
-## Not yet built (later phases)
+## Features
 
-- Graph mode (canvas plotting, pan/zoom/trace, shaded integral regions)
-- Table mode for arbitrary expressions
-- Statistics mode (regression, 1-var/2-var stats)
-- Distribution mode (normal/binomial pdf/cdf/inverse)
-- Equation mode (poly-solv, sys-solv) — the underlying math (`polyRoots`,
-  `solveLinearSystem`) already exists in `src/engine/numeric.js`, just not
-  wired to a UI panel yet
-- Matrix / Vector modes
-- Base-N mode
-- STO→ / RCL / variable memory workflow
-- FORMAT key (Math/Line toggle, DMS entry, fraction⇄decimal, recurring decimal)
+- Textbook-style math input via MathLive (fractions stack, roots draw a vinculum, exponents sit above baseline)
+- Degree/radian-aware trig: sin/cos/tan, inverses, and reciprocals (sec/csc/cot)
+- Logarithms: log base 10, natural log, log to any base
+- Roots and powers: sqrt, nth root, x², x³, x^y
+- Combinatorics: nCr, nPr, factorial
+- SHIFT and ALPHA key layers for a three-function keypad
+- CONST panel: CODATA-style constants library (Math, Universal, Electromagnetic, Atomic, Thermodynamic)
+- CONV panel: 16 unit categories, ~90 units, live from/to conversion
+- SOLVE panel: Newton-Raphson, Secant, and Bisection root finders with iteration table
+- Calculus panel: numeric derivative (central difference) and definite integral (Simpson's rule)
+- Responsive layout: scales to any window size using dvh/vw units
 
-## Known risk area to verify once running in a real browser
+## Planned
 
-Evaluation currently uses MathLive's `getValue('ascii-math')` export as the
-bridge into math.js (`src/components/Screen.jsx` → `src/App.jsx`). This
-conversion is usually close to math.js syntax (fractions, `sqrt()`, `^`),
-but hasn't been checked against every notation math.js needs — this is worth
-testing thoroughly with real fraction/root/exponent input before relying on
-it. If specific LaTeX constructs don't survive the round-trip cleanly, the
-fix is a small normalization pass in `mathEngine.normalizeExpression`, or
-switching the bridge to walk MathLive's `getValue('math-json')` output
-instead, which is more structured than the ascii-math string.
+- Phase 2: Graphing (canvas plotter, pan/zoom, trace, shaded integral regions)
+- Phase 3: Equation mode, Statistics, Distributions, Matrix/Vector
+- Phase 4: Base-N, Memory (STO/RCL), Format options, Table mode
+
+See [docs/phases.md](docs/phases.md) for the full roadmap.
+
+---
 
 ## Local development
 
@@ -48,29 +37,49 @@ npm install
 npm run dev
 ```
 
-## Deploying to GitHub Pages
+Tests:
 
-1. Push this project to a GitHub repo.
-2. **Important**: in `vite.config.js`, set `base: '/your-repo-name/'` to
-   match your actual repo name (currently set to `/sci-calc/`).
-3. In your repo settings → Pages, set the source to **GitHub Actions**.
-4. Push to `main` — `.github/workflows/deploy.yml` builds and deploys
-   automatically. Your app will be live at
-   `https://<username>.github.io/<repo-name>/`.
+```
+npm test
+```
+
+---
+
+## Deployment
+
+The app deploys automatically to GitHub Pages on every push to `main` via `.github/workflows/deploy.yml`.
+
+To check a deployment:
+1. Go to the **Actions** tab on GitHub
+2. Click the latest **Deploy to GitHub Pages** run
+3. The **deploy** job shows build output and the live URL once complete
+4. Visit https://sreenikh.github.io/scientific-calculator/ to confirm
+
+---
+
+## Docs
+
+- [Architecture](docs/architecture.md)
+- [Phases and roadmap](docs/phases.md)
+- [User manual](docs/user-manual.md)
+
+---
 
 ## Project structure
 
 ```
 src/
   engine/
-    mathEngine.js   — math.js wrapper, angle-mode-aware trig, error handling
-    numeric.js      — root-finding (Newton/secant/bisection), poly-solv,
-                       sys-solv, numeric derivative/integral
-    units.js        — 16-category unit conversion data
-    constants.js     — scientific constants library
+    mathEngine.js     - math.js wrapper, angle-mode-aware trig, error handling
+    numeric.js        - root finding, numeric derivative/integral, poly solver
+    units.js          - unit conversion data (16 categories)
+    constants.js      - scientific constants library
   components/
-    Screen.jsx      — MathLive math-field + result line
-    Keypad.jsx       — primary/shift/alpha key layout
-    ConstPanel.jsx / ConvPanel.jsx / SolvePanel.jsx / CalculusPanel.jsx
-  App.jsx            — top-level state and wiring
+    Screen.jsx        - MathLive math-field and result line
+    Keypad.jsx        - primary/shift/alpha key layout
+    ConstPanel.jsx    - constants overlay
+    ConvPanel.jsx     - unit converter overlay
+    SolvePanel.jsx    - equation solver overlay
+    CalculusPanel.jsx - calculus overlay
+  App.jsx             - top-level state and wiring
 ```
