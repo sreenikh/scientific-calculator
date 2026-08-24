@@ -154,6 +154,8 @@ function humanizeError(err) {
   if (/Parenthesis/i.test(msg)) return 'Incomplete expression'
   if (/Value expected/i.test(msg)) return 'Syntax error'
   if (/dimension mismatch/i.test(msg)) return 'Dimension mismatch'
+  if (/Vectors with length 3 expected/i.test(msg)) return 'cross() requires 3-component vectors (store as 1x3 in matrix panel)'
+  if (/Expected a column vector/i.test(msg)) return 'Vector operation requires a 1-row stored variable'
   if (/division by zero/i.test(msg) || /Infinity/i.test(msg)) return 'Math error: division by zero'
   return msg
 }

@@ -117,15 +117,21 @@ body {
 .display-line.has-error { color: #A32D2D; font-size: 1.6dvh; white-space: nowrap; }
 .display-line.is-matrix { font-size: 1.5dvh; text-align: right; }
 
-.history-wrap { position: relative; flex-shrink: 0; margin: 0.4dvh 0; }
+.history-wrap { flex-shrink: 0; margin: 0.4dvh 0; }
+
+.history-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 0.3vw; margin-bottom: 0.2dvh;
+}
+.history-label { font-size: 0.9dvh; color: var(--steel); letter-spacing: 1px; text-transform: uppercase; }
 
 .history-clear {
-  position: absolute; top: 0.2dvh; right: 0; z-index: 1;
-  background: none; border: none; color: var(--steel);
-  font-family: inherit; font-size: 0.9dvh; padding: 0.1dvh 0.3vw;
-  cursor: pointer; opacity: 0.45; letter-spacing: 0.5px;
+  background: none; border: 1px solid var(--steel);
+  border-radius: 3px; color: var(--steel);
+  font-family: inherit; font-size: 0.9dvh; padding: 0.15dvh 0.5vw;
+  cursor: pointer; letter-spacing: 0.5px;
 }
-.history-clear:hover { opacity: 1; color: var(--amber); }
+.history-clear:hover { border-color: var(--amber); color: var(--amber); }
 
 .history-strip {
   max-height: 7dvh;

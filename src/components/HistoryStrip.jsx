@@ -3,7 +3,10 @@ export default function HistoryStrip({ entries, onRestore, onClear }) {
   const reversed = [...entries].reverse()
   return (
     <div className="history-wrap">
-      <button className="history-clear" onClick={onClear} title="Clear history">clr</button>
+      <div className="history-header">
+        <span className="history-label">History</span>
+        <button className="history-clear" onClick={onClear}>clear</button>
+      </div>
       <div className="history-strip">
         {reversed.map((e, i) => {
           const idx = entries.length - i

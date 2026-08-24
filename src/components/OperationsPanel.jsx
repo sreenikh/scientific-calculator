@@ -9,9 +9,9 @@ const OPERATIONS = {
     { label: 'size',      desc: 'Dimensions [rows, cols]',             insert: '\\operatorname{size}('      },
   ],
   Vector: [
-    { label: 'dot',   desc: 'Dot product of two vectors',  insert: '\\operatorname{dot}('   },
-    { label: 'cross', desc: 'Cross product (3D vectors)',   insert: '\\operatorname{cross}(' },
-    { label: 'norm',  desc: 'Magnitude / length',          insert: '\\operatorname{norm}('  },
+    { label: 'dot',   desc: 'Dot product - any length, both same size',      insert: '\\operatorname{dot}('   },
+    { label: 'cross', desc: 'Cross product - requires exactly 3 components', insert: '\\operatorname{cross}(' },
+    { label: 'norm',  desc: 'Magnitude / length - any size vector',         insert: '\\operatorname{norm}('  },
   ],
 }
 
