@@ -4,8 +4,6 @@
 
 Model FX-∞G is a browser-based scientific calculator with textbook-style math input. You type expressions the way they look on paper - fractions stack vertically, roots draw a vinculum, exponents sit above the baseline - and press **=** to evaluate.
 
-The layout scales to fit any window size. Resize the browser freely; font sizes and button heights adjust automatically.
-
 ---
 
 ## The display
