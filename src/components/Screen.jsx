@@ -10,7 +10,7 @@ MathfieldElement.soundsDirectory = null
 // Uncontrolled field: MathLive owns cursor state. React reads via input events;
 // keypad writes via MathLive's insert/deleteBackward commands exposed through ref.
 const Screen = forwardRef(function Screen(
-  { onChange, resultDisplay, error, angleMode, shiftActive, alphaActive },
+  { onChange, resultDisplay, error, angleMode, shiftActive, alphaActive, isComplex, complexMode, onToggleComplex },
   ref
 ) {
   const fieldRef = useRef(null)
@@ -48,6 +48,12 @@ const Screen = forwardRef(function Screen(
       field.setValue('', { silenceNotifications: true })
       onChange('', '')
     },
+    setContent(latex) {
+      const field = fieldRef.current
+      if (!field) return
+      field.focus()
+      field.setValue(latex)
+    },
   }))
 
   return (
@@ -65,8 +71,15 @@ const Screen = forwardRef(function Screen(
         virtual-keyboard-mode="off"
       ></math-field>
 
-      <div className={'display-line' + (error ? ' has-error' : '')}>
-        {error ? error : resultDisplay}
+      <div className="display-row">
+        {isComplex && !error && (
+          <button className="complex-toggle" onClick={onToggleComplex}>
+            {complexMode === 'rect' ? 'RECT' : 'POLAR'}
+          </button>
+        )}
+        <div className={'display-line' + (error ? ' has-error' : '')}>
+          {error ? error : resultDisplay}
+        </div>
       </div>
     </div>
   )

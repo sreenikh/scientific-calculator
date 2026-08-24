@@ -6,7 +6,7 @@ export const ROWS = [
   [
     { id: 'shift', label: 'SHIFT', action: 'toggleShift', mod: true },
     { id: 'alpha', label: 'ALPHA', action: 'toggleAlpha', mod: true },
-    { id: 'mode',  label: 'MODE',  action: 'openModeMenu', mod: true },
+    { id: 'mode',  label: 'MODE',  action: 'openModeMenu', mod: true, shift: { label: 'MATRIX', action: 'openMatrix' } },
     { id: 'angle', label: 'DRG',   action: 'toggleAngle',  mod: true },
   ],
   [

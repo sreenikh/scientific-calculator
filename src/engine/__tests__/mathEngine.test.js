@@ -327,3 +327,28 @@ describe('evaluateExpression: full MathLive pipeline per button', () => {
   // Fraction - MathLive emits '(1)/(2)'
   it('÷   : (1)/(2) = 0.5',   () => expect(ok('(1)/(2)')).toBeCloseTo(0.5, 10))
 })
+
+describe('evaluateExpression: complex numbers', () => {
+  it('sqrt(-1) returns a complex result', () => {
+    const r = evaluateExpression('sqrt(-1)')
+    expect(r.ok).toBe(true)
+    expect(r.isComplex).toBe(true)
+  })
+  it('sqrt(-1) display in rect mode is i', () => {
+    const r = evaluateExpression('sqrt(-1)', { complexMode: 'rect' })
+    expect(r.display).toBe('i')
+  })
+  it('sqrt(-4) display in rect mode is 2i', () => {
+    const r = evaluateExpression('sqrt(-4)', { complexMode: 'rect' })
+    expect(r.display).toContain('2')
+    expect(r.display).toContain('i')
+  })
+  it('sqrt(-1) display in polar mode contains angle symbol', () => {
+    const r = evaluateExpression('sqrt(-1)', { complexMode: 'polar' })
+    expect(r.display).toContain('∠')
+  })
+  it('real result is not flagged as complex', () => {
+    const r = evaluateExpression('sqrt(4)')
+    expect(r.isComplex).toBe(false)
+  })
+})

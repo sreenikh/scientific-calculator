@@ -2,18 +2,20 @@ import { ROWS } from './keypadConfig.js'
 
 export default function Keypad({ shiftActive, alphaActive, onInsert, onAction }) {
   function press(key) {
-    if (key.action) {
-      onAction(key.action)
-      return
-    }
     if (shiftActive && key.shift) {
-      onInsert(key.shift.insert)
+      if (key.shift.action) onAction(key.shift.action)
+      else onInsert(key.shift.insert)
       onAction('consumeShift')
       return
     }
     if (alphaActive && key.alpha) {
-      onInsert(key.alpha.insert)
+      if (key.alpha.action) onAction(key.alpha.action)
+      else onInsert(key.alpha.insert)
       onAction('consumeAlpha')
+      return
+    }
+    if (key.action) {
+      onAction(key.action)
       return
     }
     onInsert(key.insert)

@@ -55,7 +55,7 @@ export function normalizeExpression(raw) {
     .trim()
 }
 
-export function evaluateExpression(rawExpr, { angleMode = 'deg', vars = {} } = {}) {
+export function evaluateExpression(rawExpr, { angleMode = 'deg', vars = {}, complexMode = 'rect' } = {}) {
   const expr = normalizeExpression(rawExpr)
   if (!expr) return { ok: false, error: 'Empty expression' }
   // After normalization, any remaining root(...) means an unfilled placeholder.
@@ -69,16 +69,42 @@ export function evaluateExpression(rawExpr, { angleMode = 'deg', vars = {} } = {
     if (value === undefined) {
       return { ok: false, error: 'Nothing to evaluate' }
     }
-    return { ok: true, value, display: formatValue(value) }
+    const isComplex = math.typeOf(value) === 'Complex'
+    return { ok: true, value, display: formatValue(value, angleMode, complexMode), isComplex }
   } catch (err) {
     return { ok: false, error: humanizeError(err) }
   }
 }
 
-export function formatValue(value) {
+function formatNum(n) {
+  if (Number.isNaN(n)) return 'undefined'
+  if (!isFinite(n)) return n > 0 ? '∞' : '-∞'
+  return math.format(n, { precision: 10 })
+}
+
+export function formatValue(value, angleMode = 'deg', complexMode = 'rect') {
   try {
     if (math.typeOf(value) === 'Complex') {
-      return math.format(value, { precision: 10 })
+      const re = value.re
+      const im = value.im
+      if (complexMode === 'polar') {
+        const r = Math.sqrt(re * re + im * im)
+        let theta = Math.atan2(im, re)
+        if (angleMode === 'deg') theta = (theta * 180) / Math.PI
+        const unit = angleMode === 'deg' ? '°' : ' rad'
+        return `${formatNum(r)}∠${formatNum(theta)}${unit}`
+      }
+      // rectangular: a + bi
+      if (Math.abs(im) < 1e-10) return formatNum(re)
+      if (Math.abs(re) < 1e-10) {
+        if (im === 1) return 'i'
+        if (im === -1) return '-i'
+        return `${formatNum(im)}i`
+      }
+      const sign = im < 0 ? ' - ' : ' + '
+      const absIm = Math.abs(im)
+      const imStr = absIm === 1 ? 'i' : `${formatNum(absIm)}i`
+      return `${formatNum(re)}${sign}${imStr}`
     }
     if (typeof value === 'number') {
       if (Number.isNaN(value)) return 'undefined'

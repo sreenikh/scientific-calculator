@@ -1,10 +1,12 @@
 import { useState, useCallback, useRef } from 'react'
 import Screen from './components/Screen'
 import Keypad from './components/Keypad'
+import HistoryStrip from './components/HistoryStrip'
 import ConstPanel from './components/ConstPanel'
 import ConvPanel from './components/ConvPanel'
 import SolvePanel from './components/SolvePanel'
 import CalculusPanel from './components/CalculusPanel'
+import MatrixPanel from './components/MatrixPanel'
 import { evaluateExpression } from './engine/mathEngine'
 import './App.css'
 
@@ -18,6 +20,9 @@ export default function App() {
   const [alphaActive, setAlphaActive] = useState(false)
   const [ans, setAns] = useState(0)
   const [panel, setPanel] = useState(null)
+  const [history, setHistory] = useState([])
+  const [complexMode, setComplexMode] = useState('rect')
+  const [isLastComplex, setIsLastComplex] = useState(false)
   const screenRef = useRef(null)
 
   const handleChange = useCallback((newLatex, newAscii) => {
@@ -32,13 +37,20 @@ export default function App() {
 
   function evaluate() {
     const exprToUse = asciiMath || latex
-    const result = evaluateExpression(exprToUse, { angleMode, vars: { Ans: ans } })
+    const result = evaluateExpression(exprToUse, { angleMode, vars: { Ans: ans }, complexMode })
     if (result.ok) {
       setResultDisplay(result.display)
       setError(null)
-      if (typeof result.value === 'number') setAns(result.value)
+      setIsLastComplex(result.isComplex)
+      if (result.value !== undefined) setAns(result.value)
+      setHistory(h => {
+        const entry = { expr: exprToUse, latex, display: result.display }
+        const next = [...h, entry]
+        return next.length > 20 ? next.slice(-20) : next
+      })
     } else {
       setError(result.error)
+      setIsLastComplex(false)
     }
   }
 
@@ -65,6 +77,7 @@ export default function App() {
         screenRef.current?.clear()
         setResultDisplay('0')
         setError(null)
+        setIsLastComplex(false)
         break
       case 'del':
         screenRef.current?.deleteBackward()
@@ -90,8 +103,11 @@ export default function App() {
       case 'openBaseN':
         setPanel('basen')
         break
+      case 'openMatrix':
+        setPanel('matrix')
+        break
       case 'openModeMenu':
-        // Phase 3 placeholder
+        // Phase 3: will open equation mode
         break
       default:
         break
@@ -101,6 +117,10 @@ export default function App() {
   function insertConstant(constant) {
     insert(String(constant.value))
     setPanel(null)
+  }
+
+  function restoreHistory(entryLatex) {
+    screenRef.current?.setContent(entryLatex)
   }
 
   return (
@@ -120,8 +140,13 @@ export default function App() {
             angleMode={angleMode}
             shiftActive={shiftActive}
             alphaActive={alphaActive}
+            isComplex={isLastComplex}
+            complexMode={complexMode}
+            onToggleComplex={() => setComplexMode(m => m === 'rect' ? 'polar' : 'rect')}
           />
         </div>
+
+        <HistoryStrip entries={history} onRestore={restoreHistory} />
 
         <Keypad shiftActive={shiftActive} alphaActive={alphaActive} onInsert={insert} onAction={handleAction} />
 
@@ -131,6 +156,7 @@ export default function App() {
         {(panel === 'deriv' || panel === 'integ') && (
           <CalculusPanel mode={panel} onClose={() => setPanel(null)} />
         )}
+        {panel === 'matrix' && <MatrixPanel onClose={() => setPanel(null)} />}
       </div>
     </div>
   )
