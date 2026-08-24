@@ -13,18 +13,24 @@ A browser-based graphing scientific calculator with textbook-style math input.
 - Logarithms: log base 10, natural log, log to any base
 - Roots and powers: sqrt, nth root, x², x³, x^y
 - Combinatorics: nCr, nPr, factorial
-- SHIFT and ALPHA key layers for a three-function keypad
-- CONST panel: CODATA-style constants library (Math, Universal, Electromagnetic, Atomic, Thermodynamic)
+- SHIFT and ALPHA key layers (three-function keypad)
+  - ALPHA+1..6 inserts matrix variables A..F; ALPHA+7..9 inserts G..I; ALPHA+0 inserts J
+- CONST panel: CODATA-style constants (Math, Universal, Electromagnetic, Atomic, Thermodynamic)
 - CONV panel: 16 unit categories, ~90 units, live from/to conversion
 - SOLVE panel: Newton-Raphson, Secant, and Bisection root finders with iteration table
 - Calculus panel: numeric derivative (central difference) and definite integral (Simpson's rule)
-- Responsive layout: scales to any window size using dvh/vw units
+- Complex number display: rectangular (a+bi) or polar (r∠θ) with toggle on the result line
+- History strip: last 100 expressions with indexed entries; click any to restore; clear button
+- MODE menu: routes to Matrix/Vector panel or Equation placeholder
+- Matrix/Vector panel: named slots A-J, size picker 1-4 rows/cols; 1-row slots act as vectors
+- OPS panel: Matrix tab (inv, det, trace, transpose, size) and Vector tab (dot, cross, norm)
+- Responsive layout: scales to any window size using dvh/vw units, no breakpoints
 
 ## Planned
 
 - Phase 2: Graphing (canvas plotter, pan/zoom, trace, shaded integral regions)
-- Phase 3: Equation mode, Statistics, Distributions, Matrix/Vector
-- Phase 4: Base-N, Memory (STO/RCL), Format options, Table mode
+- Phase 3 remaining: Equation mode UI, Statistics, Distributions
+- Phase 4: Base-N, STO/RCL memory, Format options, Table mode
 
 See [docs/phases.md](docs/phases.md) for the full roadmap.
 
@@ -42,6 +48,8 @@ Tests:
 ```
 npm test
 ```
+
+258 Vitest tests covering the expression engine and keypad contracts.
 
 ---
 
@@ -70,16 +78,21 @@ To check a deployment:
 ```
 src/
   engine/
-    mathEngine.js     - math.js wrapper, angle-mode-aware trig, error handling
-    numeric.js        - root finding, numeric derivative/integral, poly solver
-    units.js          - unit conversion data (16 categories)
-    constants.js      - scientific constants library
+    mathEngine.js       - math.js wrapper, angle-mode trig, normalizeExpression, formatValue
+    numeric.js          - root finding, numeric derivative/integral, poly solver
+    units.js            - unit conversion data (16 categories)
+    constants.js        - scientific constants library
   components/
-    Screen.jsx        - MathLive math-field and result line
-    Keypad.jsx        - primary/shift/alpha key layout
-    ConstPanel.jsx    - constants overlay
-    ConvPanel.jsx     - unit converter overlay
-    SolvePanel.jsx    - equation solver overlay
-    CalculusPanel.jsx - calculus overlay
-  App.jsx             - top-level state and wiring
+    Screen.jsx          - MathLive math-field and result/error line
+    Keypad.jsx          - renders ROWS from keypadConfig; handles SHIFT/ALPHA layers
+    keypadConfig.js     - ROWS key layout data (shared with tests)
+    HistoryStrip.jsx    - scrollable history log above the keypad
+    ConstPanel.jsx      - constants overlay
+    ConvPanel.jsx       - unit converter overlay
+    SolvePanel.jsx      - equation solver overlay
+    CalculusPanel.jsx   - calculus overlay
+    ModePanel.jsx       - mode selection menu
+    MatrixPanel.jsx     - matrix/vector storage, slots A-J
+    OperationsPanel.jsx - matrix and vector operations menu
+  App.jsx               - top-level state and wiring
 ```

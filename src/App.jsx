@@ -1,12 +1,18 @@
 import { useState, useCallback, useRef } from 'react'
 import Screen from './components/Screen'
 import Keypad from './components/Keypad'
+import HistoryStrip from './components/HistoryStrip'
 import ConstPanel from './components/ConstPanel'
 import ConvPanel from './components/ConvPanel'
 import SolvePanel from './components/SolvePanel'
 import CalculusPanel from './components/CalculusPanel'
-import { evaluateExpression } from './engine/mathEngine'
+import ModePanel from './components/ModePanel'
+import MatrixPanel from './components/MatrixPanel'
+import OperationsPanel from './components/OperationsPanel'
+import { evaluateExpression, formatValue } from './engine/mathEngine'
 import './App.css'
+
+const EMPTY_MATRIX_VARS = { A: null, B: null, C: null, D: null, E: null, F: null, G: null, H: null, I: null, J: null }
 
 export default function App() {
   const [latex, setLatex] = useState('')
@@ -18,6 +24,12 @@ export default function App() {
   const [alphaActive, setAlphaActive] = useState(false)
   const [ans, setAns] = useState(0)
   const [panel, setPanel] = useState(null)
+  const [history, setHistory] = useState([])
+  const [complexMode, setComplexMode] = useState('rect')
+  const [isLastComplex, setIsLastComplex] = useState(false)
+  const [isLastMatrix, setIsLastMatrix] = useState(false)
+  const [lastComplexValue, setLastComplexValue] = useState(null)
+  const [matrixVars, setMatrixVars] = useState(EMPTY_MATRIX_VARS)
   const screenRef = useRef(null)
 
   const handleChange = useCallback((newLatex, newAscii) => {
@@ -32,24 +44,41 @@ export default function App() {
 
   function evaluate() {
     const exprToUse = asciiMath || latex
-    const result = evaluateExpression(exprToUse, { angleMode, vars: { Ans: ans } })
+    // Inject stored matrices (plain 2D arrays) alongside Ans into scope.
+    // buildScope converts them to math.js matrices automatically.
+    const vars = { Ans: ans }
+    for (const [k, v] of Object.entries(matrixVars)) {
+      if (v !== null) vars[k] = v
+    }
+    const result = evaluateExpression(exprToUse, { angleMode, vars, complexMode })
     if (result.ok) {
       setResultDisplay(result.display)
       setError(null)
-      if (typeof result.value === 'number') setAns(result.value)
+      setIsLastComplex(result.isComplex)
+      setIsLastMatrix(result.isMatrix)
+      setLastComplexValue(result.isComplex ? result.value : null)
+      setAns(result.value)
+      setHistory(h => {
+        const entry = { expr: exprToUse, latex, display: result.isMatrix ? `[matrix]` : result.display }
+        const next = [...h, entry]
+        return next.length > 100 ? next.slice(-100) : next
+      })
     } else {
       setError(result.error)
+      setIsLastComplex(false)
+      setIsLastMatrix(false)
+      setLastComplexValue(null)
     }
   }
 
   function handleAction(action) {
     switch (action) {
       case 'toggleShift':
-        setShiftActive((s) => !s)
+        setShiftActive(s => !s)
         setAlphaActive(false)
         break
       case 'toggleAlpha':
-        setAlphaActive((a) => !a)
+        setAlphaActive(a => !a)
         setShiftActive(false)
         break
       case 'consumeShift':
@@ -59,12 +88,14 @@ export default function App() {
         setAlphaActive(false)
         break
       case 'toggleAngle':
-        setAngleMode((m) => (m === 'deg' ? 'rad' : 'deg'))
+        setAngleMode(m => m === 'deg' ? 'rad' : 'deg')
         break
       case 'clear':
         screenRef.current?.clear()
         setResultDisplay('0')
         setError(null)
+        setIsLastComplex(false)
+        setIsLastMatrix(false)
         break
       case 'del':
         screenRef.current?.deleteBackward()
@@ -72,35 +103,36 @@ export default function App() {
       case 'evaluate':
         evaluate()
         break
-      case 'openConst':
-        setPanel('const')
-        break
-      case 'openConv':
-        setPanel('conv')
-        break
-      case 'openSolve':
-        setPanel('solve')
-        break
-      case 'openDeriv':
-        setPanel('deriv')
-        break
-      case 'openInteg':
-        setPanel('integ')
-        break
-      case 'openBaseN':
-        setPanel('basen')
-        break
-      case 'openModeMenu':
-        // Phase 3 placeholder
-        break
-      default:
-        break
+      case 'openConst':   setPanel('const');    break
+      case 'openConv':    setPanel('conv');     break
+      case 'openSolve':   setPanel('solve');    break
+      case 'openDeriv':   setPanel('deriv');    break
+      case 'openInteg':   setPanel('integ');    break
+      case 'openBaseN':   setPanel('basen');    break
+      case 'openModeMenu': setPanel('mode');   break
+      case 'openMatrix':  setPanel('matrix');   break
+      case 'openOps':     setPanel('ops');      break
+      case 'openEquation': setPanel('basen');   break  // placeholder until Phase 3 equation
+      default: break
     }
   }
 
   function insertConstant(constant) {
     insert(String(constant.value))
     setPanel(null)
+  }
+
+  function restoreHistory(entry) {
+    screenRef.current?.setContent(entry.latex)
+  }
+
+  function storeMatrix(slot, data) {
+    setMatrixVars(mv => ({ ...mv, [slot]: data }))
+  }
+
+  function handleModeSelect(action) {
+    setPanel(null)
+    handleAction(action)
   }
 
   return (
@@ -120,16 +152,44 @@ export default function App() {
             angleMode={angleMode}
             shiftActive={shiftActive}
             alphaActive={alphaActive}
+            isComplex={isLastComplex}
+            isMatrix={isLastMatrix}
+            complexMode={complexMode}
+            onToggleComplex={() => {
+              const newMode = complexMode === 'rect' ? 'polar' : 'rect'
+              setComplexMode(newMode)
+              if (lastComplexValue !== null) {
+                setResultDisplay(formatValue(lastComplexValue, angleMode, newMode))
+              }
+            }}
           />
         </div>
 
-        <Keypad shiftActive={shiftActive} alphaActive={alphaActive} onInsert={insert} onAction={handleAction} />
+        <HistoryStrip entries={history} onRestore={restoreHistory} onClear={() => setHistory([])} />
 
-        {panel === 'const' && <ConstPanel onClose={() => setPanel(null)} onSelect={insertConstant} />}
-        {panel === 'conv' && <ConvPanel onClose={() => setPanel(null)} />}
-        {panel === 'solve' && <SolvePanel onClose={() => setPanel(null)} />}
+        <Keypad
+          shiftActive={shiftActive}
+          alphaActive={alphaActive}
+          onInsert={insert}
+          onAction={handleAction}
+        />
+
+        {panel === 'const'  && <ConstPanel onClose={() => setPanel(null)} onSelect={insertConstant} />}
+        {panel === 'conv'   && <ConvPanel  onClose={() => setPanel(null)} />}
+        {panel === 'solve'  && <SolvePanel onClose={() => setPanel(null)} />}
         {(panel === 'deriv' || panel === 'integ') && (
           <CalculusPanel mode={panel} onClose={() => setPanel(null)} />
+        )}
+        {panel === 'mode'   && <ModePanel  onClose={() => setPanel(null)} onMode={handleModeSelect} />}
+        {panel === 'ops' && (
+          <OperationsPanel onClose={() => setPanel(null)} onInsert={insert} />
+        )}
+        {panel === 'matrix' && (
+          <MatrixPanel
+            onClose={() => setPanel(null)}
+            matrixVars={matrixVars}
+            onStore={storeMatrix}
+          />
         )}
       </div>
     </div>

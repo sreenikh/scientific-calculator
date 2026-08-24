@@ -2,7 +2,7 @@
 
 ## Overview
 
-Model FX-∞G is a browser-based scientific calculator with textbook-style math input. You type expressions the way they look on paper - fractions stack vertically, roots draw a vinculum, exponents sit above the baseline - and press **=** to evaluate.
+Model FX-∞G is a browser-based scientific calculator with textbook-style math input. Expressions look the way they do on paper - fractions stack vertically, roots draw a vinculum, exponents sit above the baseline - and pressing **=** evaluates them.
 
 The layout scales to fit any window size. Resize the browser freely; font sizes and button heights adjust automatically.
 
@@ -12,16 +12,19 @@ The layout scales to fit any window size. Resize the browser freely; font sizes 
 
 ```
 DEG  RAD  SHIFT  ALPHA        <- status bar
-┌─────────────────────────┐
-│  sin(30)                │   <- math input field (editable)
-│                      0.5│   <- result line
-└─────────────────────────┘
++-----------------------------+
+|  sin(30)                    |  <- math input field (editable)
+|                          0.5|  <- result line
++-----------------------------+
+#2  inv(A)*transpose(B)  [matrix]
+#1  dot(C,D)                11  <- history strip (click to restore)
 ```
 
-- **DEG / RAD** - current angle mode. Active one is bright, inactive is dimmed.
-- **SHIFT** - lights up when SHIFT is active (next key uses its orange label).
-- **ALPHA** - lights up when ALPHA is active (next key uses its teal label).
+- **DEG / RAD** - current angle mode; active one is bright, inactive is dimmed.
+- **SHIFT** - lights up amber when SHIFT is active (next key uses its orange label).
+- **ALPHA** - lights up teal when ALPHA is active (next key uses its teal label).
 - The result line shows the last evaluated answer, or an error message in red.
+- When the last result is a complex number, a **RECT / POLAR** toggle button appears to the left of the result.
 
 ---
 
@@ -36,10 +39,10 @@ Click anywhere in the math field to place the cursor. The keypad inserts math at
 | 0-9 | digit | `42` |
 | + | + | `2+3` |
 | - | - | `10-4` |
-| × | multiplication | `3×4` |
-| ÷ | fraction bar (cursor goes to numerator) | `1/2` |
+| x | multiplication | `3x4` |
+| / | fraction bar | `1/2` |
 | . | decimal point | `3.14` |
-| ( ) | parentheses | `(2+3)×4` |
+| ( ) | parentheses | `(2+3)x4` |
 
 Press **=** to evaluate. The result appears on the right side of the result line.
 
@@ -55,14 +58,34 @@ Press **=** to evaluate. The result appears on the right side of the result line
 Each key has up to three functions:
 
 ```
- sin⁻¹  csc       <- SHIFT label (orange, top-left)
-                      ALPHA label (teal, top-right)
+ sin^-1  csc       <- SHIFT label (orange, top-left) / ALPHA label (teal, top-right)
   sin              <- primary label
 ```
 
-- Press **SHIFT** once - the SHIFT key lights up amber. The next key you press uses its orange function. SHIFT cancels automatically after one key.
-- Press **ALPHA** once - the ALPHA key lights up teal. The next key uses its teal function. ALPHA cancels automatically after one key.
+- Press **SHIFT** once - SHIFT lights up amber. The next key pressed uses its orange function. SHIFT cancels automatically after one key.
+- Press **ALPHA** once - ALPHA lights up teal. The next key pressed uses its teal function. ALPHA cancels automatically after one key.
 - Press SHIFT or ALPHA again to cancel without pressing another key.
+
+---
+
+## Variable keys (ALPHA layer)
+
+ALPHA+number inserts a matrix/vector variable name into the expression:
+
+| ALPHA + | Variable |
+|---------|----------|
+| 1 | A |
+| 2 | B |
+| 3 | C |
+| 4 | D |
+| 5 | E |
+| 6 | F |
+| 7 | G |
+| 8 | H |
+| 9 | I |
+| 0 | J |
+
+Variables A-J are evaluated from stored values in the Matrix/Vector panel. Typing `inv(A)` evaluates to the inverse of whatever matrix is stored in slot A. If a slot has no stored value, the variable is undefined.
 
 ---
 
@@ -72,9 +95,9 @@ Each key has up to three functions:
 
 | Press | Inserts | SHIFT (orange) | ALPHA (teal) |
 |-------|---------|----------------|--------------|
-| sin | sin( | sin⁻¹ | csc( |
-| cos | cos( | cos⁻¹ | sec( |
-| tan | tan( | tan⁻¹ | cot( |
+| sin | sin( | sin^-1( | csc( |
+| cos | cos( | cos^-1( | sec( |
+| tan | tan( | tan^-1( | cot( |
 
 Close the parenthesis after entering the argument, or use the **)** key.
 
@@ -84,30 +107,30 @@ Close the parenthesis after entering the argument, or use the **)** key.
 
 | Press | Inserts | SHIFT | ALPHA |
 |-------|---------|-------|-------|
-| log | log( | 10^■ | log_■( |
-| ln | ln( | e^■ | - |
+| log | log( | 10^box | logbase( |
+| ln | ln( | e^box | - |
 
-- **log** computes log base 10 (calculator convention).
+- **log** computes log base 10.
 - **ln** computes the natural log.
-- **SHIFT log** (10^x): type the exponent into the box that appears.
-- **ALPHA log** (log base): type the base into the subscript box, then the argument.
+- **SHIFT log** (10^x): type the exponent into the box.
+- **ALPHA log** (logbase): type the base into the subscript box, then the argument.
 
 ### Roots and powers
 
 | Press | Inserts | SHIFT |
 |-------|---------|-------|
-| √ | square root (cursor inside radicand) | nth root (fill index first, then radicand) |
-| x² | ^2 | ^3 (SHIFT gives cube) |
-| x^y | exponent box (cursor inside) | - |
+| sqrt | square root | nth root (fill index first, then radicand) |
+| x^2 | ^2 | ^3 |
+| x^y | exponent box | - |
 
-**Nth root:** press **SHIFT √**, type the root degree (e.g. 3 for cube root), then press the right arrow or Tab to move into the radicand and type the number.
+**Nth root:** press **SHIFT sqrt**, type the root degree (e.g. 3 for cube root), then press the right arrow or Tab to move into the radicand.
 
 ### Combinatorics
 
 | Press | Inserts | Note |
 |-------|---------|------|
-| nPr | nPr(■,■) | Fill n, Tab to r |
-| nCr | nCr(■,■) | Fill n, Tab to r |
+| nPr | nPr(box,box) | Fill n, Tab to r |
+| nCr | nCr(box,box) | Fill n, Tab to r |
 | x! | ! | Type number first, then x! |
 
 Factorial: type `5` then press **x!** to get `5!`.
@@ -118,15 +141,97 @@ Factorial: type `5` then press **x!** to get `5!`.
 |-------|---------|-------|
 | Ans | last result | i (imaginary unit) |
 
-**Ans** automatically holds the result of the last successful evaluation. Use it to chain calculations: evaluate `25`, then type `√Ans` to get 5.
+**Ans** holds the result of the last successful evaluation. Use it to chain calculations: evaluate `25`, then type `sqrt(Ans)` to get 5.
 
 ---
 
 ## Angle mode (DRG)
 
-Press **DRG** to toggle between **DEG** and **RAD**. The status bar updates immediately.
+Press **DRG** to toggle between **DEG** and **RAD**. The status bar updates immediately. All trig functions and their inverses use the active mode.
 
-All trig functions and their inverses use the active mode. Switching modes does not re-evaluate the current expression.
+---
+
+## Complex numbers
+
+When a result is complex, it appears in rectangular form by default: `a + bi`. A small **RECT** button appears to the left of the result. Click it to switch to polar form `r∠θ`, where the angle follows the current DEG/RAD mode. Click again to switch back.
+
+The toggle only appears when the last result is complex. Evaluating a real result hides it.
+
+---
+
+## History strip
+
+The strip between the screen and keypad shows the last 100 evaluated expressions, newest first, indexed from #1 (oldest) to #n (newest).
+
+- **Click any entry** to restore that expression into the math field. Pressing **=** then re-evaluates it with the current stored variables and angle mode.
+- The **clear** button at the top right of the strip wipes the history.
+
+---
+
+## MODE menu
+
+Press **MODE** to open the mode menu.
+
+| # | Mode | Description |
+|---|------|-------------|
+| 1 | EQUATION | Polynomial roots, linear systems (placeholder) |
+| 2 | MATRIX / VECTOR | Opens the matrix/vector storage panel |
+| 3 | STATISTICS | Planned |
+| 4 | DISTRIBUTION | Planned |
+
+---
+
+## Matrix / Vector panel
+
+Open via **MODE -> 2 MATRIX / VECTOR**.
+
+### Storing a matrix
+
+1. Click a slot button (A through J) to select it.
+2. Set the number of rows and columns using the dropdowns (1-4 each).
+3. Fill in the cells. Empty cells are treated as 0.
+4. Press **Store to X** to save.
+
+### Storing a vector
+
+Set rows to **1** and columns to the number of components. A 1-row slot is automatically treated as a vector for OPS functions (dot, norm, cross). Store `[1, 2, 3]` as a 1x3 slot, for example.
+
+### Slot buttons
+
+- **Amber border** - slot has stored data.
+- **Active (teal background)** - currently selected slot.
+- **Recall** - appears when the slot has data; loads the stored values into the grid editor.
+- **Clear** - removes the stored data from the slot.
+
+### Using stored variables in expressions
+
+Type `inv(A)`, `A*B`, `det(A)`, `transpose(B)`, `A-B`, `2*C` directly in the main math field, or use the ALPHA keys to insert variable names. Press **=** to evaluate.
+
+---
+
+## OPS panel
+
+Press **OPS** to open the operations menu. Click an operation to insert it into the math field, then fill in the arguments and press **=**.
+
+### Matrix tab
+
+| Operation | Description | Requires |
+|-----------|-------------|----------|
+| inv | Matrix inverse | Square matrix (2x2, 3x3, ...) |
+| det | Determinant | Square matrix |
+| trace | Sum of diagonal elements | Square matrix |
+| transpose | Transpose rows and columns | Any matrix |
+| size | Dimensions [rows, cols] | Any matrix |
+
+### Vector tab
+
+| Operation | Description | Requires |
+|-----------|-------------|----------|
+| dot | Dot product | Two vectors of the same length |
+| cross | Cross product | Two vectors of exactly 3 components |
+| norm | Magnitude / length | Any vector |
+
+Vectors can be stored as 1-row slots (e.g. slot C at 1x3) or entered inline as `[1, 2, 3]`. Cross product requires 3-component vectors specifically.
 
 ---
 
@@ -146,10 +251,10 @@ Press **CONV** to open the converter.
 
 1. Select a category (Length, Mass, Temperature, etc.).
 2. Type a value in the number field.
-3. Pick the **from** unit and the **to** unit from the dropdowns.
-4. The converted result appears below the row as you type.
+3. Pick the **from** unit and the **to** unit.
+4. The converted result appears as you type.
 
-The result is not inserted into the math field - it's a standalone reference tool.
+The result is not inserted into the math field.
 
 ---
 
@@ -157,12 +262,12 @@ The result is not inserted into the math field - it's a standalone reference too
 
 Press **SOLVE** to find roots of f(x) = 0.
 
-1. Type your function in the **f(x)** field using standard math notation (e.g. `x^2 - 2`).
-2. Choose a method: **Newton-Raphson**, **Secant**, or **Bisection**.
+1. Type your function in the **f(x)** field (e.g. `x^2 - 2`).
+2. Choose a method: Newton-Raphson, Secant, or Bisection.
 3. Enter a starting point (x0) or interval (a, b for bisection).
 4. Press **solve**.
 
-The root is shown to 8 decimal places. The iteration table shows how the method converged.
+The iteration table shows how the method converged.
 
 **Tips:**
 - Newton-Raphson needs a good starting guess near the root.
@@ -173,11 +278,11 @@ The root is shown to 8 decimal places. The iteration table shows how the method 
 
 ## Calculus panel
 
-Press **d/dx** for derivatives or **∫dx** for integrals.
+Press **d/dx** for derivatives or **integral dx** for integrals.
 
 ### Derivative
 
-1. Enter f(x) in the expression field.
+1. Enter f(x).
 2. Enter the x value.
 3. Press **compute**.
 
@@ -185,26 +290,25 @@ Returns a numeric approximation using the central difference method.
 
 ### Integral
 
-1. Enter f(x) in the expression field.
-2. Enter the lower and upper bounds.
+1. Enter f(x).
+2. Enter lower and upper bounds.
 3. Press **compute**.
 
 Returns a numeric approximation using Simpson's rule with 200 subintervals.
 
 ---
 
-## Common issues
+## Common errors
 
-**"Undefined variable or function"** - You used a name the engine doesn't know. Check spelling. Variable names other than `Ans` are not supported in Phase 1.
+| Error | Cause | Fix |
+|-------|-------|-----|
+| Undefined variable or function | Name not recognized | Check spelling; matrix variables need a stored value |
+| Incomplete expression | Missing closing parenthesis or trailing operator | Complete the expression |
+| Enter the root degree | Pressed = with the nth root index unfilled | Click the index box and type a number |
+| Enter the radicand | nth root index is filled but radicand is empty | Tab into the radicand and type a value |
+| Dimension mismatch | Matrix sizes incompatible for the operation | Check that matrix dimensions are compatible |
+| cross() requires 3-component vectors | cross called on 2D or other non-3D vectors | Store or enter vectors as 1x3 |
+| Matrix must be square | det or inv called on a non-square matrix | Use a 2x2, 3x3, etc. slot |
+| Math error: division by zero | Expression divides by zero | Check the denominator |
 
-**"Incomplete expression"** - The expression is missing something (unclosed parenthesis, trailing operator).
-
-**"Enter the root degree"** - You pressed = before filling in the index of an nth root. Click the index box and type a number first.
-
-**"Enter the radicand"** - The nth root's index is filled but the radicand box is empty. Tab into it and type a value.
-
-**"Enter the log base"** - Same idea for log base n.
-
-**Result shows `-∞`** - Usually means the input is outside the function's domain (e.g. `log(0)`). Division by zero evaluates to `∞` (positive infinity), not an error.
-
-**Cursor jumps outside a root or exponent** - After filling the last placeholder in a structure, MathLive moves the cursor past the structure. This is expected. Continue typing to build the rest of the expression.
+**Result shows `-inf`** - the input is outside the function's domain (e.g. `log(0)`). This is a math domain issue, not a calculator bug.

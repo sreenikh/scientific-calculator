@@ -59,6 +59,18 @@ describe('normalizeExpression: nPr / nCr bridge', () => {
   it('no-space form: n C r(4,2)',   () => expect(normalizeExpression('n C r(4,2)')).toBe('nCr(4,2)'))
 })
 
+describe('normalizeExpression: matrix operatorname bridge', () => {
+  it('i n v (  → inv(',       () => expect(normalizeExpression('i n v (')).toBe('inv('))
+  it('d e t (  → det(',       () => expect(normalizeExpression('d e t (')).toBe('det('))
+  it('t r a c e (  → trace(', () => expect(normalizeExpression('t r a c e (')).toBe('trace('))
+  it('t r a n s p o s e (  → transpose(', () => expect(normalizeExpression('t r a n s p o s e (')).toBe('transpose('))
+  it('inv(A) passes through unchanged', () => expect(normalizeExpression('inv(A)')).toBe('inv(A)'))
+  it('s i z e (   → size(',      () => expect(normalizeExpression('s i z e (')).toBe('size('))
+  it('d o t (     → dot(',       () => expect(normalizeExpression('d o t (')).toBe('dot('))
+  it('c r o s s ( → cross(',     () => expect(normalizeExpression('c r o s s (')).toBe('cross('))
+  it('n o r m (   → norm(',      () => expect(normalizeExpression('n o r m (')).toBe('norm('))
+})
+
 describe('normalizeExpression: Ans bridge', () => {
   // \mathrm{Ans} -> 'A n s'
   it('A n s          → Ans',     () => expect(normalizeExpression('A n s')).toBe('Ans'))
@@ -326,4 +338,203 @@ describe('evaluateExpression: full MathLive pipeline per button', () => {
 
   // Fraction - MathLive emits '(1)/(2)'
   it('÷   : (1)/(2) = 0.5',   () => expect(ok('(1)/(2)')).toBeCloseTo(0.5, 10))
+})
+
+describe('evaluateExpression: complex numbers', () => {
+  it('sqrt(-1) is flagged as complex', () => {
+    const r = evaluateExpression('sqrt(-1)')
+    expect(r.ok).toBe(true)
+    expect(r.isComplex).toBe(true)
+  })
+  it('sqrt(-1) rect display is i', () => {
+    expect(evaluateExpression('sqrt(-1)', { complexMode: 'rect' }).display).toBe('i')
+  })
+  it('sqrt(-4) rect display contains 2 and i', () => {
+    const d = evaluateExpression('sqrt(-4)', { complexMode: 'rect' }).display
+    expect(d).toContain('2')
+    expect(d).toContain('i')
+  })
+  it('sqrt(-1) polar display contains angle symbol', () => {
+    expect(evaluateExpression('sqrt(-1)', { complexMode: 'polar' }).display).toContain('∠')
+  })
+  it('real result is not flagged as complex', () => {
+    expect(evaluateExpression('sqrt(4)').isComplex).toBe(false)
+  })
+})
+
+describe('evaluateExpression: matrix variables in scope', () => {
+  it('det of identity 2x2 is 1', () => {
+    const vars = { A: [[1,0],[0,1]] }
+    const r = evaluateExpression('det(A)', { vars })
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(1, 10)
+  })
+  it('matrix multiply result is flagged as matrix', () => {
+    const vars = { A: [[1,0],[0,1]], B: [[2,0],[0,2]] }
+    const r = evaluateExpression('A*B', { vars })
+    expect(r.ok).toBe(true)
+    expect(r.isMatrix).toBe(true)
+  })
+  it('scalar multiply on matrix works', () => {
+    const vars = { A: [[1,2],[3,4]] }
+    const r = evaluateExpression('2*A', { vars })
+    expect(r.ok).toBe(true)
+    expect(r.isMatrix).toBe(true)
+  })
+})
+
+describe('evaluateExpression: OPS panel - matrix operations', () => {
+  const identity = [[1,0],[0,1]]
+  const mat = [[1,2],[3,4]]
+
+  it('det of identity is 1', () => {
+    const r = evaluateExpression('det(A)', { vars: { A: identity } })
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(1, 10)
+  })
+  it('det of [[1,2],[3,4]] is -2', () => {
+    const r = evaluateExpression('det(A)', { vars: { A: mat } })
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(-2, 10)
+  })
+  it('trace of [[1,2],[3,4]] is 5', () => {
+    const r = evaluateExpression('trace(A)', { vars: { A: mat } })
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(5, 10)
+  })
+  it('inv of identity returns a matrix', () => {
+    const r = evaluateExpression('inv(A)', { vars: { A: identity } })
+    expect(r.ok).toBe(true)
+    expect(r.isMatrix).toBe(true)
+  })
+  it('transpose returns a matrix', () => {
+    const r = evaluateExpression('transpose(A)', { vars: { A: mat } })
+    expect(r.ok).toBe(true)
+    expect(r.isMatrix).toBe(true)
+  })
+  it('size of 2x3 matrix returns ok (plain array result)', () => {
+    // size() returns a plain JS array [rows, cols], not a DenseMatrix
+    const r = evaluateExpression('size(A)', { vars: { A: [[1,2,3],[4,5,6]] } })
+    expect(r.ok).toBe(true)
+  })
+  it('det of non-square matrix errors', () => {
+    const r = evaluateExpression('det(A)', { vars: { A: [[1,2,3],[4,5,6]] } })
+    expect(r.ok).toBe(false)
+  })
+})
+
+describe('evaluateExpression: OPS panel - vector operations (inline)', () => {
+  it('norm([3,4]) is 5', () => {
+    const r = evaluateExpression('norm([3,4])', {})
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(5, 10)
+  })
+  it('dot([1,0,0],[0,1,0]) orthogonal = 0', () => {
+    const r = evaluateExpression('dot([1,0,0],[0,1,0])', {})
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(0, 10)
+  })
+  it('dot([1,2],[3,4]) = 11', () => {
+    const r = evaluateExpression('dot([1,2],[3,4])', {})
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(11, 10)
+  })
+  it('cross([1,0,0],[0,1,0]) returns matrix', () => {
+    const r = evaluateExpression('cross([1,0,0],[0,1,0])', {})
+    expect(r.ok).toBe(true)
+    expect(r.isMatrix).toBe(true)
+  })
+})
+
+describe('evaluateExpression: OPS panel - vector operations (stored 1-row variables)', () => {
+  // 1xN matrices are flattened to 1D in buildScope, enabling dot/norm/cross
+  it('norm of stored 1x2 vector [[3,4]] is 5', () => {
+    const r = evaluateExpression('norm(A)', { vars: { A: [[3, 4]] } })
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(5, 10)
+  })
+  it('norm of stored 1x3 zero vector is 0', () => {
+    const r = evaluateExpression('norm(A)', { vars: { A: [[0, 0, 0]] } })
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(0, 10)
+  })
+  it('dot of stored orthogonal 1x3 vectors is 0', () => {
+    const r = evaluateExpression('dot(A,B)', { vars: { A: [[1,0,0]], B: [[0,1,0]] } })
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(0, 10)
+  })
+  it('dot of stored 1x2 vectors [[1,2]] . [[3,4]] = 11', () => {
+    const r = evaluateExpression('dot(A,B)', { vars: { A: [[1,2]], B: [[3,4]] } })
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(11, 10)
+  })
+  it('Nx1 column vector is also flattened: norm([[3],[4]]) = 5', () => {
+    const r = evaluateExpression('norm(A)', { vars: { A: [[3],[4]] } })
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(5, 10)
+  })
+})
+
+describe('normalizeExpression: complex operatorname bridge', () => {
+  it('p o l a r ( -> polar(', () => expect(normalizeExpression('p o l a r (')).toBe('polar('))
+  it('a b s (    -> abs(',   () => expect(normalizeExpression('a b s (')).toBe('abs('))
+  it('a r g (    -> arg(',   () => expect(normalizeExpression('a r g (')).toBe('arg('))
+  it('c o n j (  -> conj(',  () => expect(normalizeExpression('c o n j (')).toBe('conj('))
+  it('r e (      -> re(',    () => expect(normalizeExpression('r e (')).toBe('re('))
+  it('i m (      -> im(',    () => expect(normalizeExpression('i m (')).toBe('im('))
+})
+
+describe('evaluateExpression: OPS panel - complex operations', () => {
+  it('polar(5, 53.13) in DEG is approximately 3+4i', () => {
+    const r = evaluateExpression('polar(5, 53.13)', { angleMode: 'deg' })
+    expect(r.ok).toBe(true)
+    expect(r.isComplex).toBe(true)
+    expect(r.value.re).toBeCloseTo(3, 2)
+    expect(r.value.im).toBeCloseTo(4, 2)
+  })
+  it('polar(1, 90) in DEG is i', () => {
+    const r = evaluateExpression('polar(1, 90)', { angleMode: 'deg' })
+    expect(r.ok).toBe(true)
+    expect(r.value.re).toBeCloseTo(0, 10)
+    expect(r.value.im).toBeCloseTo(1, 10)
+  })
+  it('abs(3+4i) = 5', () => {
+    const r = evaluateExpression('abs(3+4i)', { angleMode: 'deg' })
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(5, 10)
+  })
+  it('arg(1+i) in DEG = 45', () => {
+    const r = evaluateExpression('arg(1+i)', { angleMode: 'deg' })
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(45, 8)
+  })
+  it('conj(2+3i) = 2-3i', () => {
+    const r = evaluateExpression('conj(2+3i)', { angleMode: 'deg' })
+    expect(r.ok).toBe(true)
+    expect(r.isComplex).toBe(true)
+    expect(r.value.re).toBeCloseTo(2, 10)
+    expect(r.value.im).toBeCloseTo(-3, 10)
+  })
+  it('re(2+3i) = 2', () => {
+    const r = evaluateExpression('re(2+3i)', { angleMode: 'deg' })
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(2, 10)
+  })
+  it('im(2+3i) = 3', () => {
+    const r = evaluateExpression('im(2+3i)', { angleMode: 'deg' })
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(3, 10)
+  })
+  it('formatValue rect: 2+3i displayed as rect', () => {
+    const r = evaluateExpression('2+3i', { angleMode: 'deg', complexMode: 'rect' })
+    expect(r.ok).toBe(true)
+    expect(r.display).toContain('2')
+    expect(r.display).toContain('3')
+    expect(r.display).toContain('i')
+  })
+  it('formatValue polar: 2+3i displayed as polar with angle symbol', () => {
+    const r = evaluateExpression('2+3i', { angleMode: 'deg', complexMode: 'polar' })
+    expect(r.ok).toBe(true)
+    expect(r.display).toContain('∠')
+  })
 })

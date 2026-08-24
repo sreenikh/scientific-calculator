@@ -1,4 +1,4 @@
-# Architecture - Phase 1
+# Architecture
 
 ## Stack
 
@@ -18,11 +18,15 @@ graph TD
     App["App.jsx\n(state, wiring)"]
 
     App --> Screen["Screen.jsx\n(MathLive field + result line)"]
+    App --> HS["HistoryStrip.jsx\n(indexed log, click to restore)"]
     App --> Keypad["Keypad.jsx\n(renders ROWS from keypadConfig)"]
     App --> CP["ConstPanel.jsx"]
     App --> CV["ConvPanel.jsx"]
     App --> SP["SolvePanel.jsx"]
     App --> CA["CalculusPanel.jsx"]
+    App --> MP["ModePanel.jsx"]
+    App --> MAT["MatrixPanel.jsx\n(slots A-J, 1-row = vector)"]
+    App --> OP["OperationsPanel.jsx\n(Matrix / Vector tabs)"]
 
     Screen --> MF["&lt;math-field&gt;\n(MathLive web component)"]
 
@@ -34,7 +38,7 @@ graph TD
     CA --> N
 ```
 
-The four panels (`ConstPanel`, `ConvPanel`, `SolvePanel`, `CalculusPanel`) are rendered inside `.device` and positioned with `position: absolute; inset: 0` so they cover the full calculator body. Only one panel is open at a time via `panel` state in App.
+The overlay panels (ConstPanel, ConvPanel, SolvePanel, CalculusPanel, ModePanel, MatrixPanel, OperationsPanel) are rendered inside `.device` and cover the full calculator body with `position: absolute; inset: 0`. Only one is open at a time via `panel` state in App.
 
 ---
 
@@ -55,7 +59,7 @@ flowchart LR
     FV --> RD["result display\n(Screen)"]
 ```
 
-Key design choice: the MathLive field is **uncontrolled**. React never pushes a value back into it, so the cursor stays where it is. The keypad writes via `field.insert()` and `field.executeCommand('deleteBackward')`, exposed through a ref.
+The MathLive field is uncontrolled - React never pushes a value back into it, so the cursor stays where it is. The keypad writes via `field.insert()` and `field.executeCommand('deleteBackward')`, exposed through a ref. History restore calls `field.setValue(latex)` and then manually syncs `asciiMath` state by calling `onChange` with the new values, since `setValue` does not fire `input` events.
 
 ---
 
@@ -66,24 +70,30 @@ MathLive's `getValue('ascii-math')` is the bridge into math.js. The output is cl
 ```mermaid
 flowchart TD
     Raw["Raw ascii-math from MathLive"]
-    Raw --> S1["× ÷ − · π\n→ * / - * pi"]
-    S1 --> S2["root(n)(x)\n→ nthRoot(x, n)"]
-    S2 --> S3["log _n(x)  /  log _(n)(x)\n→ logb(x, n)"]
-    S3 --> S4["n C r (n,r)  /  n P r (n,r)\n→ nCr(n,r) / nPr(n,r)"]
-    S4 --> S5["A n s\n→ Ans"]
-    S5 --> G{"Placeholder\nguards"}
+    Raw --> S1["× ÷ − · π  ->  * / - * pi"]
+    S1 --> S2["root(n)(x)  ->  nthRoot(x, n)"]
+    S2 --> S3["log _n(x) / log _(n)(x)  ->  logb(x, n)"]
+    S3 --> S4["n C r (n,r) / n P r (n,r)  ->  nCr(n,r) / nPr(n,r)"]
+    S4 --> S5["i n v ( / d e t ( / t r a c e ( / ...  ->  inv( / det( / ..."]
+    S5 --> S6["d o t ( / c r o s s ( / n o r m ( / s i z e (  ->  dot( / ..."]
+    S6 --> S7["A n s  ->  Ans"]
+    S7 --> G{"Placeholder\nguards"}
     G -->|"root(())(...)  root(3)()..."| Err["user-facing\nerror message"]
     G -->|"log _((()))..."| Err
     G -->|clean| Eval["math.evaluate(expr, scope)"]
 ```
 
-The guards catch expressions where the user left a MathLive placeholder (`#0`) unfilled - these serialize to `()` in ascii-math and would produce a cryptic math.js parse error.
+The spaced-letter normalizations (steps S5 and S6) are needed because MathLive serializes `\operatorname{inv}` as `i n v` in ascii-math. The keypad inserts these functions via the MathLive API as `\operatorname{fn}(` to avoid MathLive intercepting sequential letter keypresses as LaTeX commands (e.g. typing `i`, `n` produces `\in` which is the set membership symbol).
+
+The guards catch expressions where the user left a MathLive placeholder (`#0`) unfilled. These serialize to `()` in ascii-math and would produce a cryptic math.js parse error.
 
 ---
 
 ## Evaluation scope
 
-`buildScope(angleMode, vars)` passes a plain object to `math.evaluate`. Scope keys shadow math.js built-ins:
+`buildScope(angleMode, vars)` passes a plain object to `math.evaluate`.
+
+**Built-in overrides:**
 
 ```
 sin / cos / tan / sec / csc / cot   - angle-mode-aware (deg <-> rad conversion)
@@ -98,23 +108,45 @@ nPr(n, r)                            - wraps math.permutations
 Ans                                  - last result, injected from App state
 ```
 
+**Matrix/vector variables (A-J):**
+
+Stored as plain 2D JS arrays in React state and injected into scope by `buildScope`. Shape determines how they are passed to math.js:
+
+- 2+ rows, any columns: wrapped with `math.matrix()` - a DenseMatrix for `inv`, `det`, `trace`, `transpose`
+- 1 row (1xN): flattened to a 1D JS array - a vector for `dot`, `norm`, `cross`
+- N rows, 1 column (Nx1): also flattened to a 1D JS array
+
+This means a slot set to 1x3 in the matrix panel becomes a 3-element vector in scope, while a 2x2 or 3x3 slot becomes a DenseMatrix.
+
+---
+
+## Complex number output
+
+`evaluateExpression` checks `math.typeOf(value)`:
+
+- `'Complex'` - result is a complex number; `formatValue` renders it as `a + bi` (rect) or `r∠θ` (polar)
+- `'DenseMatrix'` or `'SparseMatrix'` - result is a matrix; rows formatted as `[a  b]\n[c  d]`
+- anything else - number, formatted with `math.format(n, { precision: 10 })`
+
+`isComplex` and `isMatrix` flags are returned alongside the display string so the UI can show the RECT/POLAR toggle or apply the `.is-matrix` CSS class.
+
 ---
 
 ## Layout and sizing
 
 All sizing uses `dvh` (dynamic viewport height) and `vw` (viewport width) - no pixel values and no `@media` breakpoints. `dvh` differs from `vh` in that it accounts for mobile browser chrome collapsing.
 
-The layout chain: `.wrap` is a flex column at `50vw` wide and `96dvh` tall. `.device` takes the remaining vertical space via `flex: 1`. `.keys` is also `flex: 1` with a flex-column of `.krow` rows, each `flex: 1`, so button rows divide the available height equally.
+The layout chain: `.wrap` is a flex column at `50vw` wide and `96dvh` tall. `.device` takes the remaining vertical space via `flex: 1`. `.keys` is also `flex: 1` with a flex-column of `.krow` rows, each `flex: 1`, so button rows divide the available height equally. The bottom mod row has 5 columns (CONST, CONV, SOLVE, BASE-N, OPS); all other rows have 5 or 4 columns per the grid rules in keypadConfig.
 
-`.screen` has a fixed `26dvh` height so that the screen area never shifts when the math content changes size.
+`.screen` has a fixed `26dvh` height so the screen area never shifts when math content changes size.
 
 ---
 
 ## Typography
 
-The UI uses **JetBrains Mono** (Google Fonts) throughout: keypad labels, result line, status bar, and overlay panels. JetBrains Mono has a slashed zero, distinctive `1`/`l`/`I` glyphs, and covers Greek and common math symbols.
+The UI uses **JetBrains Mono** (Google Fonts) throughout: keypad labels, result line, status bar, and overlay panels.
 
-The math input field is an exception. MathLive renders its content using its own KaTeX-style math fonts loaded internally. These cannot be overridden via CSS without breaking the math rendering (fractions, roots, superscripts rely on specific glyph metrics in those fonts). This split is intentional - the math field uses fonts suited to mathematical typesetting, everything else uses JetBrains Mono.
+The math input field is an exception. MathLive renders its content using its own KaTeX-style math fonts loaded internally. These cannot be overridden via CSS without breaking the math rendering (fractions, roots, and superscripts rely on specific glyph metrics in those fonts). The math field uses fonts suited to mathematical typesetting; everything else uses JetBrains Mono.
 
 ---
 
@@ -141,13 +173,13 @@ The math input field is an exception. MathLive renders its content using its own
 | `polyRoots(coeffs)` | Closed-form quadratic; companion-matrix eigenvalues for higher degrees |
 | `solveLinearSystem(A, b)` | Gaussian elimination with partial pivoting |
 
-`polyRoots` and `solveLinearSystem` are implemented but not yet wired to a UI panel (Phase 3).
+`polyRoots` and `solveLinearSystem` are implemented but not yet wired to a UI panel (Phase 3 Equation mode is UI work only when the time comes).
 
 ---
 
 ## Testing
 
-225 Vitest tests across two files, running in node environment.
+258 Vitest tests across two files, running in node environment.
 
 ```
 src/
@@ -155,8 +187,9 @@ src/
   engine/__tests__/mathEngine.test.js    - normalizeExpression + evaluateExpression
 ```
 
-`keypadConfig.js` is extracted from `Keypad.jsx` specifically so tests can import ROWS without needing JSX/React transforms.
+`keypadConfig.js` is extracted from `Keypad.jsx` so tests can import ROWS without JSX/React transforms.
 
 Test categories in `mathEngine.test.js`:
-- normalizeExpression: character subs, nth-root bridge, log-base bridge, nPr/nCr bridge, Ans bridge
-- evaluateExpression: arithmetic, powers/roots, trig (deg + rad), inverse trig, reciprocal trig, logs, combinatorics, Ans, constants, expected failures, full MathLive pipeline per button
+
+- normalizeExpression: character subs, nth-root bridge, log-base bridge, nPr/nCr bridge, matrix operatorname bridge (inv/det/trace/transpose/size/dot/cross/norm), Ans bridge
+- evaluateExpression: arithmetic, powers/roots, trig (deg + rad), inverse trig, reciprocal trig, logs, combinatorics, Ans, constants, expected failures, full MathLive pipeline per button, complex numbers, matrix variables in scope, OPS matrix operations, OPS vector operations (inline and stored 1-row variables)

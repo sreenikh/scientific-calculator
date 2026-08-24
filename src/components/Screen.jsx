@@ -1,16 +1,14 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 import { MathfieldElement } from 'mathlive'
 
-// MathLive computes its own font URL relative to the module by default,
-// which doesn't always resolve correctly once bundled. Pointing it at
-// the CDN keeps rendering correct regardless of the host's asset setup.
 MathfieldElement.fontsDirectory = 'https://unpkg.com/mathlive/dist/fonts'
 MathfieldElement.soundsDirectory = null
 
 // Uncontrolled field: MathLive owns cursor state. React reads via input events;
 // keypad writes via MathLive's insert/deleteBackward commands exposed through ref.
 const Screen = forwardRef(function Screen(
-  { onChange, resultDisplay, error, angleMode, shiftActive, alphaActive },
+  { onChange, resultDisplay, error, angleMode, shiftActive, alphaActive,
+    isComplex, isMatrix, complexMode, onToggleComplex },
   ref
 ) {
   const fieldRef = useRef(null)
@@ -48,7 +46,17 @@ const Screen = forwardRef(function Screen(
       field.setValue('', { silenceNotifications: true })
       onChange('', '')
     },
+    setContent(latex) {
+      const field = fieldRef.current
+      if (!field) return
+      field.focus()
+      field.setValue(latex, { silenceNotifications: true })
+      onChange(field.getValue('latex'), field.getValue('ascii-math'))
+    },
   }))
+
+  const showToggle = isComplex && !error
+  const multiLine = isMatrix && !error
 
   return (
     <div className="screen">
@@ -65,8 +73,19 @@ const Screen = forwardRef(function Screen(
         virtual-keyboard-mode="off"
       ></math-field>
 
-      <div className={'display-line' + (error ? ' has-error' : '')}>
-        {error ? error : resultDisplay}
+      <div className="display-row">
+        {showToggle && (
+          <button className="complex-toggle" onClick={onToggleComplex}>
+            {complexMode === 'rect' ? 'RECT' : 'POLAR'}
+          </button>
+        )}
+        <div className={
+          'display-line' +
+          (error ? ' has-error' : '') +
+          (multiLine ? ' is-matrix' : '')
+        }>
+          {error ? error : resultDisplay}
+        </div>
       </div>
     </div>
   )
