@@ -327,3 +327,46 @@ describe('evaluateExpression: full MathLive pipeline per button', () => {
   // Fraction - MathLive emits '(1)/(2)'
   it('÷   : (1)/(2) = 0.5',   () => expect(ok('(1)/(2)')).toBeCloseTo(0.5, 10))
 })
+
+describe('evaluateExpression: complex numbers', () => {
+  it('sqrt(-1) is flagged as complex', () => {
+    const r = evaluateExpression('sqrt(-1)')
+    expect(r.ok).toBe(true)
+    expect(r.isComplex).toBe(true)
+  })
+  it('sqrt(-1) rect display is i', () => {
+    expect(evaluateExpression('sqrt(-1)', { complexMode: 'rect' }).display).toBe('i')
+  })
+  it('sqrt(-4) rect display contains 2 and i', () => {
+    const d = evaluateExpression('sqrt(-4)', { complexMode: 'rect' }).display
+    expect(d).toContain('2')
+    expect(d).toContain('i')
+  })
+  it('sqrt(-1) polar display contains angle symbol', () => {
+    expect(evaluateExpression('sqrt(-1)', { complexMode: 'polar' }).display).toContain('∠')
+  })
+  it('real result is not flagged as complex', () => {
+    expect(evaluateExpression('sqrt(4)').isComplex).toBe(false)
+  })
+})
+
+describe('evaluateExpression: matrix variables in scope', () => {
+  it('det of identity 2x2 is 1', () => {
+    const vars = { A: [[1,0],[0,1]] }
+    const r = evaluateExpression('det(A)', { vars })
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(1, 10)
+  })
+  it('matrix multiply result is flagged as matrix', () => {
+    const vars = { A: [[1,0],[0,1]], B: [[2,0],[0,2]] }
+    const r = evaluateExpression('A*B', { vars })
+    expect(r.ok).toBe(true)
+    expect(r.isMatrix).toBe(true)
+  })
+  it('scalar multiply on matrix works', () => {
+    const vars = { A: [[1,2],[3,4]] }
+    const r = evaluateExpression('2*A', { vars })
+    expect(r.ok).toBe(true)
+    expect(r.isMatrix).toBe(true)
+  })
+})
