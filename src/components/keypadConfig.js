@@ -24,10 +24,10 @@ export const ROWS = [
     { id: 'rparen', label: ')',  insert: ')' },
   ],
   [
-    { id: 'fact',  label: 'x!',   insert: '!',                              shift: { label: 'det',   insert: '\\operatorname{det}('       } },
-    { id: 'deriv', label: 'd/dx', action: 'openDeriv',                      shift: { label: 'inv',   insert: '\\operatorname{inv}('       } },
-    { id: 'integ', label: '∫dx',  action: 'openInteg',                      shift: { label: 'trace', insert: '\\operatorname{trace}('     } },
-    { id: 'npr',   label: 'nPr',  insert: '\\operatorname{nPr}(#0,#0)',     shift: { label: 'trans', insert: '\\operatorname{transpose}(' } },
+    { id: 'fact',  label: 'x!',   insert: '!' },
+    { id: 'deriv', label: 'd/dx', action: 'openDeriv' },
+    { id: 'integ', label: '∫dx',  action: 'openInteg' },
+    { id: 'npr',   label: 'nPr',  insert: '\\operatorname{nPr}(#0,#0)' },
     { id: 'ncr',   label: 'nCr',  insert: '\\operatorname{nCr}(#0,#0)' },
   ],
   [
@@ -62,5 +62,6 @@ export const ROWS = [
     { id: 'conv',  label: 'CONV',   action: 'openConv',  mod: true },
     { id: 'solve', label: 'SOLVE',  action: 'openSolve', mod: true },
     { id: 'basen', label: 'BASE-N', action: 'openBaseN', mod: true },
+    { id: 'ops',   label: 'OPS',    action: 'openOps',   mod: true },
   ],
 ]

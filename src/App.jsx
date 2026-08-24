@@ -8,6 +8,7 @@ import SolvePanel from './components/SolvePanel'
 import CalculusPanel from './components/CalculusPanel'
 import ModePanel from './components/ModePanel'
 import MatrixPanel from './components/MatrixPanel'
+import OperationsPanel from './components/OperationsPanel'
 import { evaluateExpression } from './engine/mathEngine'
 import './App.css'
 
@@ -58,7 +59,7 @@ export default function App() {
       setHistory(h => {
         const entry = { expr: exprToUse, latex, display: result.isMatrix ? `[matrix]` : result.display }
         const next = [...h, entry]
-        return next.length > 20 ? next.slice(-20) : next
+        return next.length > 100 ? next.slice(-100) : next
       })
     } else {
       setError(result.error)
@@ -107,6 +108,7 @@ export default function App() {
       case 'openBaseN':   setPanel('basen');    break
       case 'openModeMenu': setPanel('mode');   break
       case 'openMatrix':  setPanel('matrix');   break
+      case 'openOps':     setPanel('ops');      break
       case 'openEquation': setPanel('basen');   break  // placeholder until Phase 3 equation
       default: break
     }
@@ -170,6 +172,9 @@ export default function App() {
           <CalculusPanel mode={panel} onClose={() => setPanel(null)} />
         )}
         {panel === 'mode'   && <ModePanel  onClose={() => setPanel(null)} onMode={handleModeSelect} />}
+        {panel === 'ops' && (
+          <OperationsPanel onClose={() => setPanel(null)} onInsert={insert} />
+        )}
         {panel === 'matrix' && (
           <MatrixPanel
             onClose={() => setPanel(null)}

@@ -65,6 +65,10 @@ describe('normalizeExpression: matrix operatorname bridge', () => {
   it('t r a c e (  → trace(', () => expect(normalizeExpression('t r a c e (')).toBe('trace('))
   it('t r a n s p o s e (  → transpose(', () => expect(normalizeExpression('t r a n s p o s e (')).toBe('transpose('))
   it('inv(A) passes through unchanged', () => expect(normalizeExpression('inv(A)')).toBe('inv(A)'))
+  it('s i z e (   → size(',      () => expect(normalizeExpression('s i z e (')).toBe('size('))
+  it('d o t (     → dot(',       () => expect(normalizeExpression('d o t (')).toBe('dot('))
+  it('c r o s s ( → cross(',     () => expect(normalizeExpression('c r o s s (')).toBe('cross('))
+  it('n o r m (   → norm(',      () => expect(normalizeExpression('n o r m (')).toBe('norm('))
 })
 
 describe('normalizeExpression: Ans bridge', () => {

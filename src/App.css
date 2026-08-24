@@ -157,7 +157,8 @@ body {
   grid-template-columns: repeat(5, 1fr);
   gap: 0.5vw;
 }
-.krow:first-child, .krow:last-child { grid-template-columns: repeat(4, 1fr); }
+.krow:first-child { grid-template-columns: repeat(4, 1fr); }
+.krow:last-child  { grid-template-columns: repeat(5, 1fr); }
 
 button.key {
   position: relative;

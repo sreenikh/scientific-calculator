@@ -55,6 +55,10 @@ export function normalizeExpression(raw) {
     .replace(/\bd e t \(/g, 'det(')
     .replace(/\bt r a c e \(/g, 'trace(')
     .replace(/\bt r a n s p o s e \(/g, 'transpose(')
+    .replace(/\bs i z e \(/g, 'size(')
+    .replace(/\bd o t \(/g, 'dot(')
+    .replace(/\bc r o s s \(/g, 'cross(')
+    .replace(/\bn o r m \(/g, 'norm(')
     .replace(/\bA n s\b/g, 'Ans')
     .trim()
 }

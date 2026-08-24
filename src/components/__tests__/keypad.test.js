@@ -5,7 +5,7 @@ const ALL_KEYS  = ROWS.flat()
 const ALL_VALID_ACTIONS = new Set([
   'toggleShift', 'toggleAlpha', 'openModeMenu', 'toggleAngle',
   'clear', 'del', 'evaluate',
-  'openConst', 'openConv', 'openSolve', 'openDeriv', 'openInteg', 'openBaseN',
+  'openConst', 'openConv', 'openSolve', 'openDeriv', 'openInteg', 'openBaseN', 'openOps',
 ])
 
 describe('keypad structure', () => {
