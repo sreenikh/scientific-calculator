@@ -51,6 +51,10 @@ export function normalizeExpression(raw) {
     .replace(/log _(\w+)\(([^()]+)\)/g, 'logb($2, $1)')
     .replace(/n P r ?\(([^)]+)\)/g, 'nPr($1)')
     .replace(/n C r ?\(([^)]+)\)/g, 'nCr($1)')
+    .replace(/\bi n v \(/g, 'inv(')
+    .replace(/\bd e t \(/g, 'det(')
+    .replace(/\bt r a c e \(/g, 'trace(')
+    .replace(/\bt r a n s p o s e \(/g, 'transpose(')
     .replace(/\bA n s\b/g, 'Ans')
     .trim()
 }

@@ -59,6 +59,14 @@ describe('normalizeExpression: nPr / nCr bridge', () => {
   it('no-space form: n C r(4,2)',   () => expect(normalizeExpression('n C r(4,2)')).toBe('nCr(4,2)'))
 })
 
+describe('normalizeExpression: matrix operatorname bridge', () => {
+  it('i n v (  → inv(',       () => expect(normalizeExpression('i n v (')).toBe('inv('))
+  it('d e t (  → det(',       () => expect(normalizeExpression('d e t (')).toBe('det('))
+  it('t r a c e (  → trace(', () => expect(normalizeExpression('t r a c e (')).toBe('trace('))
+  it('t r a n s p o s e (  → transpose(', () => expect(normalizeExpression('t r a n s p o s e (')).toBe('transpose('))
+  it('inv(A) passes through unchanged', () => expect(normalizeExpression('inv(A)')).toBe('inv(A)'))
+})
+
 describe('normalizeExpression: Ans bridge', () => {
   // \mathrm{Ans} -> 'A n s'
   it('A n s          → Ans',     () => expect(normalizeExpression('A n s')).toBe('Ans'))
