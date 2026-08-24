@@ -382,3 +382,72 @@ describe('evaluateExpression: matrix variables in scope', () => {
     expect(r.isMatrix).toBe(true)
   })
 })
+
+describe('evaluateExpression: OPS panel - matrix operations', () => {
+  const identity = [[1,0],[0,1]]
+  const mat = [[1,2],[3,4]]
+
+  it('det of identity is 1', () => {
+    const r = evaluateExpression('det(A)', { vars: { A: identity } })
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(1, 10)
+  })
+  it('det of [[1,2],[3,4]] is -2', () => {
+    const r = evaluateExpression('det(A)', { vars: { A: mat } })
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(-2, 10)
+  })
+  it('trace of [[1,2],[3,4]] is 5', () => {
+    const r = evaluateExpression('trace(A)', { vars: { A: mat } })
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(5, 10)
+  })
+  it('inv of identity returns a matrix', () => {
+    const r = evaluateExpression('inv(A)', { vars: { A: identity } })
+    expect(r.ok).toBe(true)
+    expect(r.isMatrix).toBe(true)
+  })
+  it('transpose returns a matrix', () => {
+    const r = evaluateExpression('transpose(A)', { vars: { A: mat } })
+    expect(r.ok).toBe(true)
+    expect(r.isMatrix).toBe(true)
+  })
+  it('size of 2x3 matrix returns ok (plain array result)', () => {
+    // size() returns a plain JS array [rows, cols], not a DenseMatrix
+    const r = evaluateExpression('size(A)', { vars: { A: [[1,2,3],[4,5,6]] } })
+    expect(r.ok).toBe(true)
+  })
+  it('det of non-square matrix errors', () => {
+    const r = evaluateExpression('det(A)', { vars: { A: [[1,2,3],[4,5,6]] } })
+    expect(r.ok).toBe(false)
+  })
+})
+
+describe('evaluateExpression: OPS panel - vector operations (inline syntax)', () => {
+  // norm/dot/cross require 1D arrays; users enter inline like norm([3,4])
+  it('norm([3,4]) is 5', () => {
+    const r = evaluateExpression('norm([3,4])', {})
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(5, 10)
+  })
+  it('norm([0,0,0]) is 0', () => {
+    const r = evaluateExpression('norm([0,0,0])', {})
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(0, 10)
+  })
+  it('dot([1,0,0],[0,1,0]) orthogonal vectors = 0', () => {
+    const r = evaluateExpression('dot([1,0,0],[0,1,0])', {})
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(0, 10)
+  })
+  it('dot([1,2],[3,4]) = 11', () => {
+    const r = evaluateExpression('dot([1,2],[3,4])', {})
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(11, 10)
+  })
+  it('cross([1,0,0],[0,1,0]) = [0,0,1] (returns matrix)', () => {
+    const r = evaluateExpression('cross([1,0,0],[0,1,0])', {})
+    expect(r.ok).toBe(true)
+    expect(r.isMatrix).toBe(true)
+  })
+})

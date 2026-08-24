@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const SLOTS = ['A', 'B', 'C', 'D', 'E']
+const SLOTS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
 
 function makeGrid(r, c) {
   return Array.from({ length: r }, () => Array(c).fill(''))

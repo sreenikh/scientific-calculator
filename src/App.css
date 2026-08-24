@@ -138,6 +138,7 @@ body {
   color: var(--steel);
 }
 .history-entry:hover { background: rgba(255,255,255,0.04); }
+.he-idx  { flex-shrink: 0; color: var(--screen-line); font-size: 0.9dvh; min-width: 2.5vw; }
 .he-expr { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 .he-result { color: var(--amber); flex-shrink: 0; font-weight: 500; }
 

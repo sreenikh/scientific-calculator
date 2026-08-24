@@ -12,7 +12,7 @@ import OperationsPanel from './components/OperationsPanel'
 import { evaluateExpression } from './engine/mathEngine'
 import './App.css'
 
-const EMPTY_MATRIX_VARS = { A: null, B: null, C: null, D: null, E: null }
+const EMPTY_MATRIX_VARS = { A: null, B: null, C: null, D: null, E: null, F: null, G: null, H: null, I: null, J: null }
 
 export default function App() {
   const [latex, setLatex] = useState('')
@@ -119,8 +119,8 @@ export default function App() {
     setPanel(null)
   }
 
-  function restoreHistory(entryLatex) {
-    screenRef.current?.setContent(entryLatex)
+  function restoreHistory(entry) {
+    screenRef.current?.setContent(entry.latex)
   }
 
   function storeMatrix(slot, data) {

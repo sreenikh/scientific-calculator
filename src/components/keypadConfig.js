@@ -31,9 +31,9 @@ export const ROWS = [
     { id: 'ncr',   label: 'nCr',  insert: '\\operatorname{nCr}(#0,#0)' },
   ],
   [
-    { id: '7',   label: '7',   insert: '7' },
-    { id: '8',   label: '8',   insert: '8' },
-    { id: '9',   label: '9',   insert: '9' },
+    { id: '7',   label: '7',   insert: '7', alpha: { label: 'G', insert: 'G' } },
+    { id: '8',   label: '8',   insert: '8', alpha: { label: 'H', insert: 'H' } },
+    { id: '9',   label: '9',   insert: '9', alpha: { label: 'I', insert: 'I' } },
     { id: 'del', label: 'DEL', action: 'del' },
     { id: 'ac',  label: 'AC',  action: 'clear' },
   ],
@@ -52,7 +52,7 @@ export const ROWS = [
     { id: 'sub', label: '−', insert: '-' },
   ],
   [
-    { id: '0',   label: '0',   insert: '0' },
+    { id: '0',   label: '0',   insert: '0', alpha: { label: 'J', insert: 'J' } },
     { id: 'dot', label: '.',   insert: '.' },
     { id: 'ans', label: 'Ans', insert: '\\mathrm{Ans}', shift: { label: 'i', insert: 'i' } },
     { id: 'exe', label: '=',   action: 'evaluate', wide: true },

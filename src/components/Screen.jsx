@@ -50,7 +50,8 @@ const Screen = forwardRef(function Screen(
       const field = fieldRef.current
       if (!field) return
       field.focus()
-      field.setValue(latex)
+      field.setValue(latex, { silenceNotifications: true })
+      onChange(field.getValue('latex'), field.getValue('ascii-math'))
     },
   }))
 
