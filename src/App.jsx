@@ -9,7 +9,7 @@ import CalculusPanel from './components/CalculusPanel'
 import ModePanel from './components/ModePanel'
 import MatrixPanel from './components/MatrixPanel'
 import OperationsPanel from './components/OperationsPanel'
-import { evaluateExpression } from './engine/mathEngine'
+import { evaluateExpression, formatValue } from './engine/mathEngine'
 import './App.css'
 
 const EMPTY_MATRIX_VARS = { A: null, B: null, C: null, D: null, E: null, F: null, G: null, H: null, I: null, J: null }
@@ -28,6 +28,7 @@ export default function App() {
   const [complexMode, setComplexMode] = useState('rect')
   const [isLastComplex, setIsLastComplex] = useState(false)
   const [isLastMatrix, setIsLastMatrix] = useState(false)
+  const [lastComplexValue, setLastComplexValue] = useState(null)
   const [matrixVars, setMatrixVars] = useState(EMPTY_MATRIX_VARS)
   const screenRef = useRef(null)
 
@@ -55,6 +56,7 @@ export default function App() {
       setError(null)
       setIsLastComplex(result.isComplex)
       setIsLastMatrix(result.isMatrix)
+      setLastComplexValue(result.isComplex ? result.value : null)
       setAns(result.value)
       setHistory(h => {
         const entry = { expr: exprToUse, latex, display: result.isMatrix ? `[matrix]` : result.display }
@@ -65,6 +67,7 @@ export default function App() {
       setError(result.error)
       setIsLastComplex(false)
       setIsLastMatrix(false)
+      setLastComplexValue(null)
     }
   }
 
@@ -152,7 +155,13 @@ export default function App() {
             isComplex={isLastComplex}
             isMatrix={isLastMatrix}
             complexMode={complexMode}
-            onToggleComplex={() => setComplexMode(m => m === 'rect' ? 'polar' : 'rect')}
+            onToggleComplex={() => {
+              const newMode = complexMode === 'rect' ? 'polar' : 'rect'
+              setComplexMode(newMode)
+              if (lastComplexValue !== null) {
+                setResultDisplay(formatValue(lastComplexValue, angleMode, newMode))
+              }
+            }}
           />
         </div>
 

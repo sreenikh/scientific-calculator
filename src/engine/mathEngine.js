@@ -43,6 +43,8 @@ function buildScope(angleMode, vars) {
     logb: (x, b) => Math.log(x) / Math.log(b),
     nPr: (n, r) => math.permutations(n, r),
     nCr: (n, r) => math.combinations(n, r),
+    polar: (r, theta) => math.complex(r * Math.cos(toRad(theta)), r * Math.sin(toRad(theta))),
+    arg:   (z) => toOut(math.arg(z)),
     ...processedVars,
   }
 }
@@ -67,6 +69,12 @@ export function normalizeExpression(raw) {
     .replace(/\bd o t \(/g, 'dot(')
     .replace(/\bc r o s s \(/g, 'cross(')
     .replace(/\bn o r m \(/g, 'norm(')
+    .replace(/\bp o l a r \(/g, 'polar(')
+    .replace(/\ba b s \(/g, 'abs(')
+    .replace(/\ba r g \(/g, 'arg(')
+    .replace(/\bc o n j \(/g, 'conj(')
+    .replace(/\br e \(/g, 're(')
+    .replace(/\bi m \(/g, 'im(')
     .replace(/\bA n s\b/g, 'Ans')
     .trim()
 }

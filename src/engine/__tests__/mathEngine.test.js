@@ -474,3 +474,67 @@ describe('evaluateExpression: OPS panel - vector operations (stored 1-row variab
     expect(r.value).toBeCloseTo(5, 10)
   })
 })
+
+describe('normalizeExpression: complex operatorname bridge', () => {
+  it('p o l a r ( -> polar(', () => expect(normalizeExpression('p o l a r (')).toBe('polar('))
+  it('a b s (    -> abs(',   () => expect(normalizeExpression('a b s (')).toBe('abs('))
+  it('a r g (    -> arg(',   () => expect(normalizeExpression('a r g (')).toBe('arg('))
+  it('c o n j (  -> conj(',  () => expect(normalizeExpression('c o n j (')).toBe('conj('))
+  it('r e (      -> re(',    () => expect(normalizeExpression('r e (')).toBe('re('))
+  it('i m (      -> im(',    () => expect(normalizeExpression('i m (')).toBe('im('))
+})
+
+describe('evaluateExpression: OPS panel - complex operations', () => {
+  it('polar(5, 53.13) in DEG is approximately 3+4i', () => {
+    const r = evaluateExpression('polar(5, 53.13)', { angleMode: 'deg' })
+    expect(r.ok).toBe(true)
+    expect(r.isComplex).toBe(true)
+    expect(r.value.re).toBeCloseTo(3, 2)
+    expect(r.value.im).toBeCloseTo(4, 2)
+  })
+  it('polar(1, 90) in DEG is i', () => {
+    const r = evaluateExpression('polar(1, 90)', { angleMode: 'deg' })
+    expect(r.ok).toBe(true)
+    expect(r.value.re).toBeCloseTo(0, 10)
+    expect(r.value.im).toBeCloseTo(1, 10)
+  })
+  it('abs(3+4i) = 5', () => {
+    const r = evaluateExpression('abs(3+4i)', { angleMode: 'deg' })
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(5, 10)
+  })
+  it('arg(1+i) in DEG = 45', () => {
+    const r = evaluateExpression('arg(1+i)', { angleMode: 'deg' })
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(45, 8)
+  })
+  it('conj(2+3i) = 2-3i', () => {
+    const r = evaluateExpression('conj(2+3i)', { angleMode: 'deg' })
+    expect(r.ok).toBe(true)
+    expect(r.isComplex).toBe(true)
+    expect(r.value.re).toBeCloseTo(2, 10)
+    expect(r.value.im).toBeCloseTo(-3, 10)
+  })
+  it('re(2+3i) = 2', () => {
+    const r = evaluateExpression('re(2+3i)', { angleMode: 'deg' })
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(2, 10)
+  })
+  it('im(2+3i) = 3', () => {
+    const r = evaluateExpression('im(2+3i)', { angleMode: 'deg' })
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(3, 10)
+  })
+  it('formatValue rect: 2+3i displayed as rect', () => {
+    const r = evaluateExpression('2+3i', { angleMode: 'deg', complexMode: 'rect' })
+    expect(r.ok).toBe(true)
+    expect(r.display).toContain('2')
+    expect(r.display).toContain('3')
+    expect(r.display).toContain('i')
+  })
+  it('formatValue polar: 2+3i displayed as polar with angle symbol', () => {
+    const r = evaluateExpression('2+3i', { angleMode: 'deg', complexMode: 'polar' })
+    expect(r.ok).toBe(true)
+    expect(r.display).toContain('∠')
+  })
+})

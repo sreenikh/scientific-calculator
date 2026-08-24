@@ -13,6 +13,14 @@ const OPERATIONS = {
     { label: 'cross', desc: 'Cross product - requires exactly 3 components', insert: '\\operatorname{cross}(' },
     { label: 'norm',  desc: 'Magnitude / length - any size vector',         insert: '\\operatorname{norm}('  },
   ],
+  Complex: [
+    { label: 'polar',  desc: 'From polar: polar(r, θ) - angle follows DEG/RAD mode', insert: '\\operatorname{polar}(' },
+    { label: 'abs',    desc: 'Magnitude of a complex number',                             insert: '\\operatorname{abs}('  },
+    { label: 'arg',    desc: 'Argument (angle) - follows DEG/RAD mode',                insert: '\\operatorname{arg}('  },
+    { label: 'conj',   desc: 'Complex conjugate: a+bi -> a-bi',                        insert: '\\operatorname{conj}(' },
+    { label: 're',     desc: 'Real part of a complex number',                          insert: '\\operatorname{re}('   },
+    { label: 'im',     desc: 'Imaginary part of a complex number',                     insert: '\\operatorname{im}('   },
+  ],
 }
 
 const TABS = Object.keys(OPERATIONS)
