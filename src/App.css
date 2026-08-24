@@ -24,7 +24,7 @@ body {
   align-items: center;
   justify-content: center;
   background: var(--ink);
-  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
   color: #EDEAE0;
 }
 
@@ -74,6 +74,7 @@ body {
   width: 100%;
   background: transparent;
   --contains-highlight-background-color: transparent;
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
   font-size: 2.8dvh;
   border: none;
   overflow: hidden;
