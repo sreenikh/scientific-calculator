@@ -100,6 +100,24 @@ Ans                                  - last result, injected from App state
 
 ---
 
+## Layout and sizing
+
+All sizing uses `dvh` (dynamic viewport height) and `vw` (viewport width) - no pixel values and no `@media` breakpoints. `dvh` differs from `vh` in that it accounts for mobile browser chrome collapsing.
+
+The layout chain: `.wrap` is a flex column at `50vw` wide and `96dvh` tall. `.device` takes the remaining vertical space via `flex: 1`. `.keys` is also `flex: 1` with a flex-column of `.krow` rows, each `flex: 1`, so button rows divide the available height equally.
+
+`.screen` has a fixed `26dvh` height so that the screen area never shifts when the math content changes size.
+
+---
+
+## Typography
+
+The UI uses **JetBrains Mono** (Google Fonts) throughout: keypad labels, result line, status bar, and overlay panels. JetBrains Mono has a slashed zero, distinctive `1`/`l`/`I` glyphs, and covers Greek and common math symbols.
+
+The math input field is an exception. MathLive renders its content using its own KaTeX-style math fonts loaded internally. These cannot be overridden via CSS without breaking the math rendering (fractions, roots, superscripts rely on specific glyph metrics in those fonts). This split is intentional - the math field uses fonts suited to mathematical typesetting, everything else uses JetBrains Mono.
+
+---
+
 ## Unit conversion
 
 `engine/units.js` stores conversion factors as "how many base units per 1 of this unit". Conversion is `value * fromFactor / toFactor`. Temperature is a special case (affine, not a ratio) handled with explicit C/F/K formulas.
