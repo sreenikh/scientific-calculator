@@ -9,7 +9,7 @@
 - MathLive uncontrolled math field with cursor-aware LaTeX insertion
 - Keypad with three layers: primary / SHIFT / ALPHA
   - Trig: sin/cos/tan + inverses + reciprocals (sec/csc/cot)
-  - Log/exp: log (log10), ln, logₐ, 10^x, e^x
+  - Log/exp: log (log10), ln, logbase, 10^x, e^x
   - Roots and powers: sqrt, nth root, x², x³, x^y
   - Combinatorics: nCr, nPr, x!
   - Imaginary unit i, Ans recall
@@ -19,8 +19,8 @@
 - SOLVE panel: Newton-Raphson / Secant / Bisection on any f(x), shows iteration table
 - Calculus panel: numeric derivative (central difference) and definite integral (Simpson's rule)
 - normalizeExpression bridge: handles MathLive ascii-math quirks for nth-root, log base, nCr/nPr, Ans
-- Responsive layout: `dvh`/`vw` units throughout, no pixel values, no breakpoints, scales smoothly at any window size
-- JetBrains Mono font (keypad, result line, overlays) with slashed zero and unambiguous 1/l/I glyphs
+- Responsive layout: `dvh`/`vw` units throughout, no pixel values, no breakpoints
+- JetBrains Mono font (keypad, result line, overlays)
 - 225 Vitest tests (keypad contracts + engine coverage)
 - GitHub Actions deploy to GitHub Pages
 
@@ -40,54 +40,58 @@
 
 ---
 
-## Phase 3 - Advanced calculator modes `[planned]`
+## Phase 3 - Advanced calculator modes `[in progress]`
 
-Build order: Matrix/Vector, Equation, Statistics, Distributions. History log and complex number display are cross-cutting additions delivered alongside Matrix/Vector.
+### History log `[done]`
 
-### History log
+- Scrollable strip between screen and keypad
+- Up to 100 entries, indexed chronologically (#1 oldest, #n newest)
+- Click any entry to restore the expression into the math field (state synced, = evaluates correctly)
+- Clear button in the header row
 
-- Scrollable strip between screen and keypad showing past expression/result pairs
-- Click any entry to restore the expression into the math field
-- Capped at 20 entries, auto-scrolls to most recent
-
-### Complex number display
+### Complex number display `[done]`
 
 - Results that are complex numbers display as `a + bi` (rectangular) or `r∠θ` (polar)
 - Toggle button on the result line switches between the two forms
 - Polar angle follows the current DEG/RAD mode
-- Only shown when the last result is complex
+- Toggle only appears when the last result is complex
 
-### Matrix / Vector mode `[first]`
+### Matrix / Vector mode `[done]`
 
-Triggered by SHIFT + MODE.
+Accessed via MODE menu.
 
-- Size picker: choose m rows and n columns independently (1-4 each); non-square matrices supported
-- Grid of numeric inputs; Tab moves between cells
-- Single-matrix operations: determinant, inverse, transpose, eigenvalues
-- Two-matrix operations: add, multiply (shows a second grid)
-- Vector operations: dot product, cross product (treats 1-column or 1-row matrices as vectors)
-- Result displayed inside the panel
+- Named slots A-J (10 variables); slots shown in the matrix panel with dimension labels
+- Size picker: 1-4 rows, 1-4 cols independently; non-square matrices supported
+- 1-row slots are automatically treated as vectors in scope (flattened to 1D arrays)
+  - Enables `dot(C,D)`, `norm(C)`, `cross(C,D)` when C/D are stored as 1xN
+- 2+ row slots are math.js DenseMatrix; enables `inv(A)`, `det(A)`, `trace(A)`, `transpose(A)`
+- Recall / Clear buttons per slot; stored matrix list at bottom of panel with dimension and preview
+- ALPHA key layer for variable insertion: ALPHA+1=A, +2=B, ..., +6=F, +7=G, +8=H, +9=I, +0=J
 
-### Equation mode
+### OPS panel `[done]`
 
-Triggered by MODE (primary).
+Dedicated OPS button in the bottom row opens an operations menu with two tabs:
 
-- Polynomial root solver: enter coefficients, get all roots (real and complex)
-- Linear system solver: 2x2 or 3x3, enter augmented matrix, get solution vector
-- Math already implemented in `engine/numeric.js` (`polyRoots`, `solveLinearSystem`) - this is UI only
+- Matrix: inv, det, trace, transpose, size
+- Vector: dot (any length, both same size), cross (requires 3-component vectors), norm
 
-### Statistics mode
+Operations insert `\operatorname{fn}(` via the MathLive API, which normalizeExpression converts to valid math.js syntax before evaluation.
+
+### Equation mode `[placeholder]`
+
+Accessible via MODE menu (item 1). Equation mode button is present but opens the BASE-N panel as a placeholder. The math is already implemented in `engine/numeric.js` (`polyRoots`, `solveLinearSystem`); this is UI work only.
+
+### Statistics mode `[planned]`
 
 - 1-variable: mean, median, std dev, variance, min/max, quartiles
 - 2-variable: linear/quadratic/exponential/power regression, r and r²
 - Data entry via a scrollable list editor
 
-### Distribution mode
+### Distribution mode `[planned]`
 
 - Normal distribution: pdf, cdf, inverse cdf
 - Binomial distribution: pdf, cdf
 - Input: distribution parameters + x value or probability
-- Visual bell curve or bar chart overlay
 
 ---
 
@@ -101,7 +105,7 @@ Triggered by MODE (primary).
 
 ### Memory
 
-- STO and RCL for variables A-F
+- STO and RCL for variables
 - Variable display in screen status bar when set
 
 ### Format and display options
@@ -122,5 +126,5 @@ Triggered by MODE (primary).
 ## Notes
 
 - `engine/numeric.js` already contains `polyRoots` and `solveLinearSystem` - Phase 3 Equation mode is UI work only.
-- The test suite (`npm test`) is intended as a merge gate on every PR. New phases should add tests before wiring UI.
+- The test suite (`npm test`) is the merge gate on every PR. New phases add tests before wiring UI.
 - GitHub Pages is live at https://sreenikh.github.io/scientific-calculator/ via `.github/workflows/deploy.yml` on push to `main`.
