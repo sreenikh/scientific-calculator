@@ -110,6 +110,14 @@ The layout chain: `.wrap` is a flex column at `50vw` wide and `96dvh` tall. `.de
 
 ---
 
+## Typography
+
+The UI uses **JetBrains Mono** (Google Fonts) throughout: keypad labels, result line, status bar, and overlay panels. JetBrains Mono has a slashed zero, distinctive `1`/`l`/`I` glyphs, and covers Greek and common math symbols.
+
+The math input field is an exception. MathLive renders its content using its own KaTeX-style math fonts loaded internally. These cannot be overridden via CSS without breaking the math rendering (fractions, roots, superscripts rely on specific glyph metrics in those fonts). This split is intentional - the math field uses fonts suited to mathematical typesetting, everything else uses JetBrains Mono.
+
+---
+
 ## Unit conversion
 
 `engine/units.js` stores conversion factors as "how many base units per 1 of this unit". Conversion is `value * fromFactor / toFactor`. Temperature is a special case (affine, not a ratio) handled with explicit C/F/K formulas.

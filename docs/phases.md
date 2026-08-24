@@ -20,6 +20,7 @@
 - Calculus panel: numeric derivative (central difference) and definite integral (Simpson's rule)
 - normalizeExpression bridge: handles MathLive ascii-math quirks for nth-root, log base, nCr/nPr, Ans
 - Responsive layout: `dvh`/`vw` units throughout, no pixel values, no breakpoints, scales smoothly at any window size
+- JetBrains Mono font (keypad, result line, overlays) with slashed zero and unambiguous 1/l/I glyphs
 - 225 Vitest tests (keypad contracts + engine coverage)
 - GitHub Actions deploy to GitHub Pages
 
