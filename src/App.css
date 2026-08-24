@@ -117,11 +117,19 @@ body {
 .display-line.has-error { color: #A32D2D; font-size: 1.6dvh; white-space: nowrap; }
 .display-line.is-matrix { font-size: 1.5dvh; text-align: right; }
 
+.history-wrap { position: relative; flex-shrink: 0; margin: 0.4dvh 0; }
+
+.history-clear {
+  position: absolute; top: 0.2dvh; right: 0; z-index: 1;
+  background: none; border: none; color: var(--steel);
+  font-family: inherit; font-size: 0.9dvh; padding: 0.1dvh 0.3vw;
+  cursor: pointer; opacity: 0.45; letter-spacing: 0.5px;
+}
+.history-clear:hover { opacity: 1; color: var(--amber); }
+
 .history-strip {
-  flex-shrink: 0;
   max-height: 7dvh;
   overflow-y: auto;
-  margin: 0.4dvh 0;
   display: flex;
   flex-direction: column;
   gap: 0.1dvh;

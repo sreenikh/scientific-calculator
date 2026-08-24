@@ -156,7 +156,7 @@ export default function App() {
           />
         </div>
 
-        <HistoryStrip entries={history} onRestore={restoreHistory} />
+        <HistoryStrip entries={history} onRestore={restoreHistory} onClear={() => setHistory([])} />
 
         <Keypad
           shiftActive={shiftActive}

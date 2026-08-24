@@ -423,19 +423,13 @@ describe('evaluateExpression: OPS panel - matrix operations', () => {
   })
 })
 
-describe('evaluateExpression: OPS panel - vector operations (inline syntax)', () => {
-  // norm/dot/cross require 1D arrays; users enter inline like norm([3,4])
+describe('evaluateExpression: OPS panel - vector operations (inline)', () => {
   it('norm([3,4]) is 5', () => {
     const r = evaluateExpression('norm([3,4])', {})
     expect(r.ok).toBe(true)
     expect(r.value).toBeCloseTo(5, 10)
   })
-  it('norm([0,0,0]) is 0', () => {
-    const r = evaluateExpression('norm([0,0,0])', {})
-    expect(r.ok).toBe(true)
-    expect(r.value).toBeCloseTo(0, 10)
-  })
-  it('dot([1,0,0],[0,1,0]) orthogonal vectors = 0', () => {
+  it('dot([1,0,0],[0,1,0]) orthogonal = 0', () => {
     const r = evaluateExpression('dot([1,0,0],[0,1,0])', {})
     expect(r.ok).toBe(true)
     expect(r.value).toBeCloseTo(0, 10)
@@ -445,9 +439,38 @@ describe('evaluateExpression: OPS panel - vector operations (inline syntax)', ()
     expect(r.ok).toBe(true)
     expect(r.value).toBeCloseTo(11, 10)
   })
-  it('cross([1,0,0],[0,1,0]) = [0,0,1] (returns matrix)', () => {
+  it('cross([1,0,0],[0,1,0]) returns matrix', () => {
     const r = evaluateExpression('cross([1,0,0],[0,1,0])', {})
     expect(r.ok).toBe(true)
     expect(r.isMatrix).toBe(true)
+  })
+})
+
+describe('evaluateExpression: OPS panel - vector operations (stored 1-row variables)', () => {
+  // 1xN matrices are flattened to 1D in buildScope, enabling dot/norm/cross
+  it('norm of stored 1x2 vector [[3,4]] is 5', () => {
+    const r = evaluateExpression('norm(A)', { vars: { A: [[3, 4]] } })
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(5, 10)
+  })
+  it('norm of stored 1x3 zero vector is 0', () => {
+    const r = evaluateExpression('norm(A)', { vars: { A: [[0, 0, 0]] } })
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(0, 10)
+  })
+  it('dot of stored orthogonal 1x3 vectors is 0', () => {
+    const r = evaluateExpression('dot(A,B)', { vars: { A: [[1,0,0]], B: [[0,1,0]] } })
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(0, 10)
+  })
+  it('dot of stored 1x2 vectors [[1,2]] . [[3,4]] = 11', () => {
+    const r = evaluateExpression('dot(A,B)', { vars: { A: [[1,2]], B: [[3,4]] } })
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(11, 10)
+  })
+  it('Nx1 column vector is also flattened: norm([[3],[4]]) = 5', () => {
+    const r = evaluateExpression('norm(A)', { vars: { A: [[3],[4]] } })
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(5, 10)
   })
 })

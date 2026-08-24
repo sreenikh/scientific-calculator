@@ -121,8 +121,11 @@ export default function MatrixPanel({ onClose, matrixVars, onStore }) {
       </button>
 
       <div className="mat-hint">
-        <span className="mat-hint-label">In main field:</span>
-        {' '} inv(A), A*B, det(A), transpose(B), A-B, 2*C, A^2
+        <span className="mat-hint-label">Matrix (2+ rows):</span>
+        {' '} inv(A), det(A), trace(A), transpose(A), A*B, A^2
+        <br />
+        <span className="mat-hint-label">Vector (1 row):</span>
+        {' '} dot(C,D), norm(C), cross(C,D)
       </div>
 
       {Object.entries(matrixVars).some(([, v]) => v) && (

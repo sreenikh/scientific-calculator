@@ -1,6 +1,6 @@
 const MODES = [
   { num: 1, label: 'EQUATION',     desc: 'Polynomial roots, linear systems',  action: 'openEquation' },
-  { num: 2, label: 'MATRIX',       desc: 'Define A-E, use in main expression', action: 'openMatrix'   },
+  { num: 2, label: 'MATRIX / VECTOR', desc: 'Define A-J; 1-row = vector, else matrix', action: 'openMatrix' },
   { num: 3, label: 'STATISTICS',   desc: 'Coming in Phase 3',                  action: null           },
   { num: 4, label: 'DISTRIBUTION', desc: 'Coming in Phase 3',                  action: null           },
 ]

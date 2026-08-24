@@ -7,11 +7,19 @@ function buildScope(angleMode, vars) {
   const toRad = (x) => (angleMode === 'deg' ? (x * Math.PI) / 180 : x)
   const toOut = (rad) => (angleMode === 'deg' ? (rad * 180) / Math.PI : rad)
 
-  // Convert plain 2D arrays (stored matrix vars) to math.js matrices so
-  // expressions like inv(A), A*B, det(A)+5 work transparently.
   const processedVars = {}
   for (const [k, v] of Object.entries(vars)) {
-    processedVars[k] = Array.isArray(v) ? math.matrix(v) : v
+    if (!Array.isArray(v)) {
+      processedVars[k] = v
+    } else if (v.length === 1 && Array.isArray(v[0])) {
+      // 1xN stored matrix: flatten to a 1D array so dot/norm/cross work
+      processedVars[k] = v[0]
+    } else if (v.length > 0 && Array.isArray(v[0]) && v[0].length === 1) {
+      // Nx1 stored matrix: flatten to a 1D column vector
+      processedVars[k] = v.map(row => row[0])
+    } else {
+      processedVars[k] = math.matrix(v)
+    }
   }
 
   return {
