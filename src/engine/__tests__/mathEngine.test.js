@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { normalizeExpression, evaluateExpression } from '../mathEngine.js'
+import { polyRoots, solveLinearSystem } from '../numeric.js'
 
 const DEG = { angleMode: 'deg' }
 const RAD = { angleMode: 'rad' }
@@ -536,5 +537,134 @@ describe('evaluateExpression: OPS panel - complex operations', () => {
     const r = evaluateExpression('2+3i', { angleMode: 'deg', complexMode: 'polar' })
     expect(r.ok).toBe(true)
     expect(r.display).toContain('∠')
+  })
+})
+
+function rootVal(r) {
+  return { re: r.re !== undefined ? r.re : Number(r), im: r.im !== undefined ? r.im : 0 }
+}
+
+describe('polyRoots: degree 1', () => {
+  it('2x - 6 = 0 -> root at 3', () => {
+    const roots = polyRoots([2, -6])
+    expect(roots).toHaveLength(1)
+    expect(rootVal(roots[0]).re).toBeCloseTo(3, 8)
+    expect(Math.abs(rootVal(roots[0]).im)).toBeCloseTo(0, 8)
+  })
+})
+
+describe('polyRoots: degree 2', () => {
+  it('x^2 - 3x + 2 = 0 -> roots 1 and 2 (real)', () => {
+    const roots = polyRoots([1, -3, 2]).map(rootVal)
+    const res = roots.map(r => r.re).sort((a, b) => a - b)
+    expect(res[0]).toBeCloseTo(1, 8)
+    expect(res[1]).toBeCloseTo(2, 8)
+    roots.forEach(r => expect(Math.abs(r.im)).toBeCloseTo(0, 8))
+  })
+  it('x^2 + 1 = 0 -> roots ±i (purely imaginary)', () => {
+    const roots = polyRoots([1, 0, 1]).map(rootVal)
+    expect(roots).toHaveLength(2)
+    roots.forEach(r => {
+      expect(Math.abs(r.re)).toBeCloseTo(0, 8)
+      expect(Math.abs(r.im)).toBeCloseTo(1, 8)
+    })
+  })
+  it('x^2 - 2x + 1 = 0 -> repeated root at 1', () => {
+    const roots = polyRoots([1, -2, 1]).map(rootVal)
+    roots.forEach(r => expect(r.re).toBeCloseTo(1, 6))
+  })
+})
+
+describe('polyRoots: degree 3', () => {
+  it('(x-1)(x-2)(x-3) -> roots 1, 2, 3', () => {
+    const roots = polyRoots([1, -6, 11, -6]).map(rootVal)
+    expect(roots).toHaveLength(3)
+    const res = roots.map(r => r.re).sort((a, b) => a - b)
+    expect(res[0]).toBeCloseTo(1, 6)
+    expect(res[1]).toBeCloseTo(2, 6)
+    expect(res[2]).toBeCloseTo(3, 6)
+    roots.forEach(r => expect(Math.abs(r.im)).toBeCloseTo(0, 6))
+  })
+})
+
+describe('polyRoots: degree 4', () => {
+  it('(x-1)(x+1)(x-2)(x+2) = x^4-5x^2+4 -> roots ±1, ±2', () => {
+    const roots = polyRoots([1, 0, -5, 0, 4]).map(rootVal)
+    expect(roots).toHaveLength(4)
+    const res = roots.map(r => r.re).sort((a, b) => a - b)
+    expect(res[0]).toBeCloseTo(-2, 6)
+    expect(res[1]).toBeCloseTo(-1, 6)
+    expect(res[2]).toBeCloseTo(1, 6)
+    expect(res[3]).toBeCloseTo(2, 6)
+  })
+})
+
+describe('polyRoots: degree 5 and beyond', () => {
+  // (x-1)(x-2)(x-3)(x-4)(x-5) = x^5 - 15x^4 + 85x^3 - 225x^2 + 274x - 120
+  it('(x-1)(x-2)(x-3)(x-4)(x-5) returns 5 roots', () => {
+    const roots = polyRoots([1, -15, 85, -225, 274, -120])
+    expect(roots).toHaveLength(5)
+  })
+  it('(x-1)(x-2)(x-3)(x-4)(x-5) roots are all near integers 1-5', () => {
+    const roots = polyRoots([1, -15, 85, -225, 274, -120]).map(rootVal)
+    const res = roots.map(r => r.re).sort((a, b) => a - b)
+    ;[1, 2, 3, 4, 5].forEach((v, i) => expect(res[i]).toBeCloseTo(v, 4))
+    roots.forEach(r => expect(Math.abs(r.im)).toBeCloseTo(0, 4))
+  })
+  // (x-1)(x-2)(x-3)(x-4)(x-5)(x-6) for degree 6
+  it('degree 6 polynomial returns 6 roots', () => {
+    const roots = polyRoots([1, -21, 175, -735, 1624, -1764, 720])
+    expect(roots).toHaveLength(6)
+  })
+  it('degree 6 roots are all near integers 1-6', () => {
+    const roots = polyRoots([1, -21, 175, -735, 1624, -1764, 720]).map(rootVal)
+    const res = roots.map(r => r.re).sort((a, b) => a - b)
+    ;[1, 2, 3, 4, 5, 6].forEach((v, i) => expect(res[i]).toBeCloseTo(v, 3))
+  })
+})
+
+describe('solveLinearSystem: 2x2', () => {
+  it('x+y=3, x-y=1 -> x=2, y=1', () => {
+    const r = solveLinearSystem([[1,1],[1,-1]], [3,1])
+    expect(r.ok).toBe(true)
+    expect(r.solution[0]).toBeCloseTo(2, 10)
+    expect(r.solution[1]).toBeCloseTo(1, 10)
+  })
+  it('singular matrix -> no unique solution', () => {
+    const r = solveLinearSystem([[1,2],[2,4]], [1,2])
+    expect(r.ok).toBe(false)
+    expect(r.error).toMatch(/no unique solution/i)
+  })
+})
+
+describe('solveLinearSystem: 3x3', () => {
+  it('identity system -> solution equals b', () => {
+    const r = solveLinearSystem([[1,0,0],[0,1,0],[0,0,1]], [4,5,6])
+    expect(r.ok).toBe(true)
+    expect(r.solution[0]).toBeCloseTo(4, 10)
+    expect(r.solution[1]).toBeCloseTo(5, 10)
+    expect(r.solution[2]).toBeCloseTo(6, 10)
+  })
+  it('known 3x3 system x+y+z=6, 2y+5z=−4, 2x+5y−z=27 -> x=5, y=3, z=−2', () => {
+    const r = solveLinearSystem([[1,1,1],[0,2,5],[2,5,-1]], [6,-4,27])
+    expect(r.ok).toBe(true)
+    expect(r.solution[0]).toBeCloseTo(5, 8)
+    expect(r.solution[1]).toBeCloseTo(3, 8)
+    expect(r.solution[2]).toBeCloseTo(-2, 8)
+  })
+})
+
+describe('solveLinearSystem: 4x4 and 5x5', () => {
+  it('4x4 identity system -> solution equals b', () => {
+    const I4 = [[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]]
+    const r = solveLinearSystem(I4, [1,2,3,4])
+    expect(r.ok).toBe(true)
+    r.solution.forEach((v, i) => expect(v).toBeCloseTo(i + 1, 10))
+  })
+  it('5x5 identity system -> solution equals b', () => {
+    const I5 = Array.from({length:5}, (_, i) => Array.from({length:5}, (_, j) => i===j ? 1 : 0))
+    const r = solveLinearSystem(I5, [10,20,30,40,50])
+    expect(r.ok).toBe(true)
+    r.solution.forEach((v, i) => expect(v).toBeCloseTo((i + 1) * 10, 10))
   })
 })

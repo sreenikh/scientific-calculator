@@ -174,10 +174,34 @@ Press **MODE** to open the mode menu.
 
 | # | Mode | Description |
 |---|------|-------------|
-| 1 | EQUATION | Polynomial roots, linear systems (placeholder) |
+| 1 | EQUATION | Polynomial roots (degree 1-10), linear systems (2x2 to 5x5) |
 | 2 | MATRIX / VECTOR | Opens the matrix/vector storage panel |
 | 3 | STATISTICS | Planned |
 | 4 | DISTRIBUTION | Planned |
+
+---
+
+## Equation panel
+
+Open via **MODE -> 1 EQUATION**.
+
+### Polynomial roots
+
+1. Select the degree (1 through 10) using the degree buttons.
+2. Enter the coefficients from highest degree to lowest. Empty cells default to 0.
+3. Press **Solve**.
+
+Roots appear below, labeled x₁, x₂, etc. Real roots show as a decimal; complex roots show as `a + bi` or `a - bi`.
+
+The leading coefficient (highest degree) cannot be zero. Degree 1 and 2 use closed-form formulas. Degree 3 and above use companion-matrix eigenvalues; highly degenerate or pathological polynomials may fail to converge.
+
+### Linear system (Ax = b)
+
+1. Select the system size: 2x2, 3x3, 4x4, or 5x5.
+2. Fill in the augmented matrix [A | b]. Each row represents one equation; the rightmost column is the right-hand side.
+3. Press **Solve**.
+
+The solution x₁, x₂, ... appears below. If the system has no unique solution (singular or dependent equations), an error message is shown instead.
 
 ---
 

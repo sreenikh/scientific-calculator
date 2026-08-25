@@ -272,7 +272,7 @@ table.iter th:first-child, table.iter td:first-child { text-align: left; color: 
 .mat-stored-preview { color: var(--steel); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* Equation panel */
-.eq-degree-row { display: flex; align-items: center; gap: 0.5vw; margin-bottom: 1dvh; }
+.eq-degree-row { display: flex; align-items: center; gap: 0.5vw; margin-bottom: 1dvh; flex-wrap: wrap; }
 .eq-label { color: var(--amber); font-weight: 700; font-size: 1.2dvh; min-width: 3vw; }
 .eq-deg-btn {
   background: var(--key-mod); border: 1px solid #3A3F4E; color: var(--steel);

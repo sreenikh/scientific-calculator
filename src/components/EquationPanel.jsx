@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { polyRoots, solveLinearSystem } from '../engine/numeric'
 import { math } from '../engine/mathEngine'
 
-const SUPERSCRIPTS = ['', '', '²', '³', '⁴', '⁵']
-const SUBSCRIPTS   = ['₁', '₂', '₃']
+const SUPERSCRIPTS = ['', '', '²', '³', '⁴', '⁵', '⁶', '⁷', '⁸', '⁹', '¹⁰']
+const SUBSCRIPTS   = ['₁', '₂', '₃', '₄', '₅', '₆', '₇', '₈', '₉', '₁₀']
 
 function fmtNum(n) {
   const s = math.format(n, { precision: 8 })
@@ -134,7 +134,7 @@ export default function EquationPanel({ onClose }) {
         <div>
           <div className="eq-degree-row">
             <span className="eq-label">Degree</span>
-            {[1, 2, 3, 4, 5].map(d => (
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(d => (
               <button
                 key={d}
                 className={'eq-deg-btn' + (degree === d ? ' active' : '')}
@@ -178,7 +178,7 @@ export default function EquationPanel({ onClose }) {
         <div>
           <div className="eq-degree-row">
             <span className="eq-label">Size</span>
-            {[2, 3].map(n => (
+            {[2, 3, 4, 5].map(n => (
               <button
                 key={n}
                 className={'eq-deg-btn' + (size === n ? ' active' : '')}
