@@ -179,9 +179,33 @@ The math input field is an exception. MathLive renders its content using its own
 
 ---
 
+## Base-N engine
+
+`engine/baseN.js` provides:
+
+| Export | Description |
+|--------|-------------|
+| `parseBase(str, base)` | Parse a string in the given base (2/8/10/16) to an unsigned 32-bit integer, or null |
+| `formatBin(n)` | Nibble-grouped binary string, e.g. `"1010 1100"` |
+| `formatOct(n)` | Octal string |
+| `formatDec(n)` | Decimal string |
+| `formatHex(n)` | Uppercase hex string |
+| `bitwiseOp(op, a, b)` | AND / OR / XOR / NOT / LSH / RSH on unsigned 32-bit integers |
+| `kmapDims(vars)` | Grid dimensions for 2/3/4-variable K-map |
+| `kmapHeaders(vars)` | Row/col labels and Gray-code header values |
+| `kmapMinterm(vars, row, col)` | Minterm index at a grid position (Gray code ordering) |
+| `findPrimeImplicants(numVars, minterms, dontCares)` | Quine-McCluskey prime implicant list |
+| `findMinimalCover(numVars, minterms, primes)` | Essential primes + greedy cover |
+| `formatImplicant(prime, numVars)` | SOP term string, e.g. `"AB'"` |
+| `karnaughMinimize(vars, cells)` | Full minimization: cells array (0/1/2) -> minimal SOP string |
+
+Cells encode: 0 = minterm 0, 1 = minterm 1, 2 = don't care. `karnaughMinimize` returns `'0'` for no minterms and `'1'` when all cells are covered.
+
+---
+
 ## Testing
 
-441 Vitest tests across four files, running in node environment.
+495 Vitest tests across five files, running in node environment.
 
 ```
 src/
@@ -189,6 +213,7 @@ src/
   engine/__tests__/mathEngine.test.js       - normalizeExpression + evaluateExpression + polyRoots + solveLinearSystem
   engine/__tests__/stats.test.js            - oneVarStats + twoVarStats (all four regression models) + multiVarStats
   engine/__tests__/distributions.test.js    - normalPdf + normalCdf + normalInv + binomialPdf + binomialCdf
+  engine/__tests__/baseN.test.js            - parseBase + format functions + bitwiseOp + kmapMinterm + karnaughMinimize + formatImplicant
 ```
 
 `keypadConfig.js` is extracted from `Keypad.jsx` so tests can import ROWS without JSX/React transforms.
@@ -207,3 +232,9 @@ Test categories in `mathEngine.test.js`:
 - multiVarStats: k=2 and k=3 perfect fits, coefficient recovery, R², collinearity error, insufficient data error
 - normalPdf/normalCdf/normalInv: standard normal values, symmetry, monotonicity, roundtrip, edge cases
 - binomialPdf/binomialCdf: known probabilities, sum-to-one, large n, edge cases (p=0/1, k out of range)
+- parseBase: decimal/binary/hex parsing, invalid input rejection
+- format functions: formatBin (nibble grouping), formatOct, formatDec, formatHex
+- bitwiseOp: AND/OR/XOR/NOT, left and logical right shift, unsigned 32-bit semantics
+- kmapMinterm: 2-var and 3-var Gray code ordering
+- karnaughMinimize: 2-var and 3-var cases, all-zeros, all-ones, don't cares
+- formatImplicant: complemented and uncomplemented terms, all-masked = '1'

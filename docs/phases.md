@@ -119,13 +119,27 @@ Accessed via MODE menu (item 4).
 
 ---
 
-## Phase 4 - Base-N and QoL `[planned]`
+## Phase 4 - Base-N and QoL `[in progress]`
 
-### Base-N calculator
+### Base-N calculator `[done]`
 
-- UI for the BASE-N button (keypad placeholder already exists)
-- Input and display in decimal / binary / octal / hex
-- Bitwise operations: AND, OR, XOR, NOT, shift
+Accessed via the BASE-N key on the keypad (bottom mod row).
+
+Two tabs: Numbers and K-map.
+
+**Numbers tab:**
+- Input base selector: BIN (2), OCT (8), DEC (10), HEX (16)
+- Enter value A in the selected base; live multi-base display (BIN/OCT/DEC/HEX)
+- Bitwise op selector: AND, OR, XOR, NOT, << (left shift), >> (logical right shift)
+- Optional B input (decimal) for two-operand ops; shift count for << / >>
+- Result shown in all four bases
+- All operations on unsigned 32-bit integers
+
+**K-map tab:**
+- Variable count selector: 2, 3, or 4 variables
+- Clickable grid in Gray code order; cells cycle 0 -> 1 -> X (don't care) -> 0
+- Minimize button runs Quine-McCluskey to find essential prime implicants and greedy cover
+- Result: minimal sum-of-products (SOP) expression in A/B/C/D notation with complement as A'/B'
 
 ### Memory
 

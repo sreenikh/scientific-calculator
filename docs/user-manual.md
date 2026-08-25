@@ -390,6 +390,46 @@ Vectors can be stored as 1-row slots (e.g. slot C at 1x3) or entered inline as `
 
 ---
 
+## BASE-N panel
+
+Press **BASE-N** to open the base converter and K-map solver.
+
+### Numbers tab
+
+**Input base** - Select BIN (base 2), OCT (base 8), DEC (base 10), or HEX (base 16). The A input field accepts digits valid for that base (hex allows A-F case-insensitive; spaces are ignored).
+
+Entering a value for A with no operation selected shows it in all four bases immediately.
+
+**Bitwise operations:**
+
+| Button | Operation | B input |
+|--------|-----------|---------|
+| AND | Bitwise AND: bits set in both | Decimal |
+| OR | Bitwise OR: bits set in either | Decimal |
+| XOR | Bitwise XOR: bits set in exactly one | Decimal |
+| NOT | Bitwise complement | Not used |
+| << | Left shift by B bits | Decimal shift count |
+| >> | Logical right shift by B bits | Decimal shift count |
+
+All operations use unsigned 32-bit arithmetic. Press **Compute** to evaluate. The result is displayed in BIN, OCT, DEC, and HEX.
+
+### K-map tab
+
+Karnaugh map minimization for 2, 3, or 4 Boolean variables.
+
+1. Choose the number of variables (2, 3, or 4) with the buttons at the top.
+2. Click cells to cycle their value: **0** (minterm = 0) -> **1** (minterm = 1) -> **X** (don't care) -> 0.
+3. Press **Minimize**.
+
+The result is a minimal sum-of-products (SOP) expression. Variables are named A, B, C, D in order. Complemented literals appear with an apostrophe (A', B'). A don't-care cell (X) can be used by the minimizer to simplify the expression but is not required to be covered.
+
+**Examples:**
+- Cells 1, 3 set to 1 in a 2-var map (AB and A'B) -> result: `B`
+- All cells 1 -> result: `1`
+- No cells 1 -> result: `0`
+
+---
+
 ## CONST panel
 
 Press **CONST** to open the constants library.

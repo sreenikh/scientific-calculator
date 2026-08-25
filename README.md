@@ -28,13 +28,13 @@ A browser-based graphing scientific calculator with textbook-style math input.
 - Matrix/Vector panel: named slots A-J, size picker 1-4 rows/cols; 1-row slots act as vectors
 - OPS panel: Math tab (abs, mod, floor, ceil, round, sign), Matrix tab (inv, det, trace, transpose, size), Vector tab (dot, cross, norm), Complex tab (polar, abs, arg, conj, re, im)
 - `%` key (ALPHA+×) inserts a percentage: `50%` evaluates to 0.5; `mod(a,b)` is the separate modulo operation
+- BASE-N panel: binary/octal/decimal/hex display and conversion; bitwise ops (AND/OR/XOR/NOT/<</>>); Karnaugh map solver (2-4 variables, Quine-McCluskey minimization, don't-care support)
 - Responsive layout: scales to any window size using dvh/vw units, no breakpoints
 
 ## Planned
 
 - Phase 2: Graphing (canvas plotter, pan/zoom, trace, shaded integral regions)
-- Phase 3 remaining: Distributions
-- Phase 4: Base-N, STO/RCL memory, Format options, Table mode
+- Phase 4 remaining: STO/RCL memory, Format options, Table mode
 
 See [docs/phases.md](docs/phases.md) for the full roadmap.
 
@@ -53,7 +53,7 @@ Tests:
 npm test
 ```
 
-441 Vitest tests covering the expression engine, keypad contracts, statistics engine, and distributions.
+495 Vitest tests covering the expression engine, keypad contracts, statistics engine, distributions, and base-N/bitwise/K-map engine.
 
 ---
 
@@ -85,6 +85,8 @@ src/
     mathEngine.js       - math.js wrapper, angle-mode trig, normalizeExpression, formatValue
     numeric.js          - root finding, numeric derivative/integral, poly solver, linear system solver
     stats.js            - 1-variable stats and 2-variable regression (linear/quadratic/exp/power)
+    distributions.js    - normal (pdf/cdf/inv) and binomial (pdf/cdf) distributions
+    baseN.js            - base conversion, bitwise ops, K-map / Quine-McCluskey solver
     units.js            - unit conversion data (16 categories)
     constants.js        - scientific constants library
   components/
@@ -101,5 +103,7 @@ src/
     OperationsPanel.jsx - matrix and vector operations menu
     EquationPanel.jsx   - polynomial roots and linear system solver
     StatPanel.jsx       - 1-variable stats and regression
+    DistributionPanel.jsx - normal and binomial distribution panel
+    BaseNPanel.jsx      - base conversion, bitwise ops, and K-map solver panel
   App.jsx               - top-level state and wiring
 ```
