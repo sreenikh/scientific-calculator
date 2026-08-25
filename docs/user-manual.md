@@ -177,7 +177,50 @@ Press **MODE** to open the mode menu.
 | 1 | EQUATION | Polynomial roots (degree 1-10), linear systems (2x2 to 5x5) |
 | 2 | MATRIX / VECTOR | Opens the matrix/vector storage panel |
 | 3 | STATISTICS | 1-var stats; linear/quadratic/exponential/power regression |
-| 4 | DISTRIBUTION | Planned |
+| 4 | DISTRIBUTION | Normal (pdf/cdf/inv) and Binomial (pdf/cdf) |
+
+---
+
+## Distribution panel
+
+Open via **MODE -> 4 DISTRIBUTION**.
+
+### Normal tab
+
+Set the distribution parameters:
+
+| Field | Description |
+|-------|-------------|
+| μ (mean) | Center of the distribution (default 0) |
+| σ (std dev) | Spread; must be > 0 (default 1) |
+
+Then pick a function:
+
+| Function | Input | Result |
+|----------|-------|--------|
+| pdf | x | Probability density at x |
+| cdf | x | P(X ≤ x); the complement P(X > x) is also shown |
+| inv | p (0 to 1) | x such that P(X ≤ x) = p (inverse cdf) |
+
+Press **Compute** to evaluate.
+
+### Binomial tab
+
+Set the distribution parameters:
+
+| Field | Description |
+|-------|-------------|
+| n (trials) | Number of trials; positive integer |
+| p (prob) | Probability of success per trial (0 to 1) |
+
+Then pick a function:
+
+| Function | Input | Result |
+|----------|-------|--------|
+| pdf | k | P(X = k) -- probability of exactly k successes |
+| cdf | k | P(X ≤ k) -- probability of at most k successes |
+
+k is automatically floored to the nearest integer. Large n values are supported via log-space calculation.
 
 ---
 

@@ -2,7 +2,7 @@ const MODES = [
   { num: 1, label: 'EQUATION',     desc: 'Polynomial roots, linear systems',  action: 'openEquation' },
   { num: 2, label: 'MATRIX / VECTOR', desc: 'Define A-J; 1-row = vector, else matrix', action: 'openMatrix' },
   { num: 3, label: 'STATISTICS',   desc: '1-var stats; linear/quad/exp/power regression', action: 'openStats' },
-  { num: 4, label: 'DISTRIBUTION', desc: 'Coming in Phase 3',                  action: null           },
+  { num: 4, label: 'DISTRIBUTION', desc: 'Normal (pdf/cdf/inv) and Binomial (pdf/cdf)', action: 'openDist' },
 ]
 
 export default function ModePanel({ onClose, onMode }) {

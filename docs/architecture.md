@@ -181,13 +181,14 @@ The math input field is an exception. MathLive renders its content using its own
 
 ## Testing
 
-408 Vitest tests across three files, running in node environment.
+441 Vitest tests across four files, running in node environment.
 
 ```
 src/
-  components/__tests__/keypad.test.js    - structural integrity + key contract tests
-  engine/__tests__/mathEngine.test.js    - normalizeExpression + evaluateExpression + polyRoots + solveLinearSystem
-  engine/__tests__/stats.test.js         - oneVarStats + twoVarStats (all four regression models) + multiVarStats
+  components/__tests__/keypad.test.js       - structural integrity + key contract tests
+  engine/__tests__/mathEngine.test.js       - normalizeExpression + evaluateExpression + polyRoots + solveLinearSystem
+  engine/__tests__/stats.test.js            - oneVarStats + twoVarStats (all four regression models) + multiVarStats
+  engine/__tests__/distributions.test.js    - normalPdf + normalCdf + normalInv + binomialPdf + binomialCdf
 ```
 
 `keypadConfig.js` is extracted from `Keypad.jsx` so tests can import ROWS without JSX/React transforms.
@@ -204,3 +205,5 @@ Test categories in `mathEngine.test.js`:
 - mode: single mode, bimodal, no mode, empty, sorted output
 - twoVarStats: linear/quadratic/exponential/power regression, perfect fits, domain errors
 - multiVarStats: k=2 and k=3 perfect fits, coefficient recovery, R², collinearity error, insufficient data error
+- normalPdf/normalCdf/normalInv: standard normal values, symmetry, monotonicity, roundtrip, edge cases
+- binomialPdf/binomialCdf: known probabilities, sum-to-one, large n, edge cases (p=0/1, k out of range)

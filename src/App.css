@@ -388,3 +388,18 @@ table.iter th:first-child, table.iter td:first-child { text-align: left; color: 
 }
 .stat-pct-add:hover { border-color: var(--teal); color: var(--teal); }
 
+.dist-section-label { font-size: 0.9dvh; color: var(--amber); text-transform: uppercase; letter-spacing: 1px; margin: 0.8dvh 0 0.3dvh; }
+.dist-field { display: flex; align-items: center; gap: 0.5vw; margin-bottom: 0.4dvh; }
+.dist-field-label { font-size: 1.1dvh; color: var(--steel); flex-shrink: 0; width: 8vw; }
+.dist-field-input { flex: 1; background: #1E2029; border: 1px solid #3A3F4E; border-radius: 3px; color: #EDEAE0; font-family: inherit; font-size: 1.2dvh; padding: 0.3dvh 0.4vw; }
+.dist-field-input:focus { outline: none; border-color: var(--teal); }
+.dist-fn-row { display: flex; gap: 0.4vw; margin-bottom: 0.3dvh; }
+.dist-fn-btn { flex: 1; background: #2F333F; border: 1px solid #3A3F4E; border-radius: 4px; color: var(--steel); font-family: inherit; font-size: 1.2dvh; padding: 0.4dvh 0; cursor: pointer; }
+.dist-fn-btn.active { background: var(--teal); border-color: var(--teal); color: #0C231C; font-weight: 700; }
+.dist-fn-btn:not(.active):hover { border-color: var(--teal); color: var(--teal); }
+.dist-fn-desc { font-size: 1dvh; color: var(--steel); margin-bottom: 0.6dvh; min-height: 1.4dvh; }
+.dist-result { margin-top: 0.8dvh; padding: 0.6dvh 0.6vw; background: #1E2029; border-radius: 4px; border-left: 2px solid var(--teal); }
+.dist-result-complement { border-left-color: #3A3F4E; margin-top: 0.3dvh; }
+.dist-result-label { font-size: 1dvh; color: var(--steel); margin-bottom: 0.2dvh; }
+.dist-result-value { font-size: 1.5dvh; color: #EDEAE0; font-weight: 700; }
+
