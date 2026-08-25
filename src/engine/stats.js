@@ -12,6 +12,18 @@ export function percentile(sorted, p) {
   return frac === 0 ? sorted[lo] : sorted[lo] * (1 - frac) + sorted[lo + 1] * frac
 }
 
+export function mode(xs) {
+  if (xs.length === 0) return []
+  const freq = new Map()
+  for (const x of xs) freq.set(x, (freq.get(x) || 0) + 1)
+  const maxFreq = Math.max(...freq.values())
+  if (maxFreq === 1) return []
+  return [...freq.entries()]
+    .filter(([, c]) => c === maxFreq)
+    .map(([v]) => v)
+    .sort((a, b) => a - b)
+}
+
 export function oneVarStats(data) {
   const xs = data.map(Number).filter(isFinite)
   const n = xs.length
@@ -20,18 +32,34 @@ export function oneVarStats(data) {
   const sum = xs.reduce((s, x) => s + x, 0)
   const mean = sum / n
   const variance = xs.reduce((s, x) => s + (x - mean) ** 2, 0) / n
+  const stddev = Math.sqrt(variance)
   const q1 = percentile(sorted, 25)
   const q3 = percentile(sorted, 75)
   const sampleVariance = n > 1 ? variance * n / (n - 1) : NaN
+  const sampleStddev = Math.sqrt(sampleVariance)
+
+  const skewness = (n >= 3 && sampleStddev > 0)
+    ? xs.reduce((s, x) => s + ((x - mean) / sampleStddev) ** 3, 0)
+      * n / ((n - 1) * (n - 2))
+    : NaN
+
+  const kurtosis = (n >= 4 && sampleStddev > 0)
+    ? xs.reduce((s, x) => s + ((x - mean) / sampleStddev) ** 4, 0)
+      * (n * (n + 1)) / ((n - 1) * (n - 2) * (n - 3))
+      - 3 * (n - 1) ** 2 / ((n - 2) * (n - 3))
+    : NaN
+
   return {
     ok: true, n,
     sum, sumx2: xs.reduce((s, x) => s + x * x, 0),
-    mean,
-    median: percentile(sorted, 50),
+    mean, median: percentile(sorted, 50), mode: mode(xs),
     q1, q3, iqr: q3 - q1,
     range: sorted[n - 1] - sorted[0],
-    stddev: Math.sqrt(variance), variance,
-    sampleStddev: Math.sqrt(sampleVariance), sampleVariance,
+    stddev, variance,
+    sampleStddev, sampleVariance,
+    cv:  Math.abs(mean) > 1e-12 ? sampleStddev / mean : NaN,
+    sem: n > 1 ? sampleStddev / Math.sqrt(n) : NaN,
+    skewness, kurtosis,
     min: sorted[0], max: sorted[n - 1],
     sorted,
   }

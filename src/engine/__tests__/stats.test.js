@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { oneVarStats, twoVarStats, percentile } from '../stats.js'
+import { oneVarStats, twoVarStats, percentile, mode } from '../stats.js'
 
 // ── 1-variable stats ────────────────────────────────────────────────────────
 
@@ -38,6 +38,15 @@ describe('oneVarStats: median and quartiles', () => {
   })
 })
 
+describe('mode function', () => {
+  it('single mode', () => expect(mode([1, 2, 2, 3])).toEqual([2]))
+  it('bimodal', () => expect(mode([1, 1, 2, 2, 3])).toEqual([1, 2]))
+  it('all unique returns empty (no mode)', () => expect(mode([1, 2, 3])).toEqual([]))
+  it('empty array returns empty', () => expect(mode([])).toEqual([]))
+  it('all same value is that value', () => expect(mode([5, 5, 5])).toEqual([5]))
+  it('modes are sorted ascending', () => expect(mode([3, 3, 1, 1, 2])).toEqual([1, 3]))
+})
+
 describe('oneVarStats: additional fields', () => {
   const data = [1, 2, 3, 4, 5]
   it('sumx2 = Σx²', () => expect(oneVarStats(data).sumx2).toBeCloseTo(1+4+9+16+25, 10))
@@ -56,6 +65,46 @@ describe('oneVarStats: additional fields', () => {
   })
   it('sample variance is NaN for n=1', () => {
     expect(oneVarStats([42]).sampleVariance).toBeNaN()
+  })
+  it('mode included in result', () => {
+    expect(oneVarStats([1, 2, 2, 3]).mode).toEqual([2])
+  })
+})
+
+describe('oneVarStats: CV, SEM, skewness, kurtosis', () => {
+  it('CV = sampleStddev / mean', () => {
+    const r = oneVarStats([2, 4, 4, 4, 5, 5, 7, 9])
+    expect(r.cv).toBeCloseTo(r.sampleStddev / r.mean, 10)
+  })
+  it('CV is NaN when mean is zero', () => {
+    expect(oneVarStats([-1, 0, 1]).cv).toBeNaN()
+  })
+  it('SEM = sampleStddev / sqrt(n)', () => {
+    const r = oneVarStats([2, 4, 4, 4, 5, 5, 7, 9])
+    expect(r.sem).toBeCloseTo(r.sampleStddev / Math.sqrt(r.n), 10)
+  })
+  it('SEM is NaN for n=1', () => {
+    expect(oneVarStats([5]).sem).toBeNaN()
+  })
+  it('skewness is NaN for n < 3', () => {
+    expect(oneVarStats([1, 2]).skewness).toBeNaN()
+  })
+  it('symmetric dataset has skewness near 0', () => {
+    expect(oneVarStats([1, 2, 3, 4, 5]).skewness).toBeCloseTo(0, 8)
+  })
+  it('right-skewed dataset has positive skewness', () => {
+    expect(oneVarStats([1, 1, 1, 1, 10]).skewness).toBeGreaterThan(0)
+  })
+  it('left-skewed dataset has negative skewness', () => {
+    expect(oneVarStats([1, 10, 10, 10, 10]).skewness).toBeLessThan(0)
+  })
+  it('kurtosis is NaN for n < 4', () => {
+    expect(oneVarStats([1, 2, 3]).kurtosis).toBeNaN()
+  })
+  it('normal-ish dataset has excess kurtosis near 0', () => {
+    // uniform distribution on [1..6] has excess kurtosis -1.2 (platykurtic)
+    const r = oneVarStats([1, 2, 3, 4, 5, 6])
+    expect(r.kurtosis).toBeLessThan(0)
   })
 })
 

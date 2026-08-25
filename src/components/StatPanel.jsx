@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { oneVarStats, twoVarStats, percentile } from '../engine/stats'
+import { oneVarStats, twoVarStats, percentile, mode as computeMode } from '../engine/stats'
 import { math } from '../engine/mathEngine'
 
 const MODELS = [
@@ -10,9 +10,14 @@ const MODELS = [
 ]
 
 function fmt(n) {
-  if (Number.isNaN(n)) return 'NaN'
+  if (Number.isNaN(n)) return '—'
   if (!isFinite(n)) return n > 0 ? '∞' : '-∞'
   return math.format(n, { precision: 8 })
+}
+
+function fmtMode(modes) {
+  if (modes.length === 0) return 'none'
+  return modes.map(v => math.format(v, { precision: 8 })).join(', ')
 }
 
 function makeRows(n) {
@@ -133,21 +138,36 @@ export default function StatPanel({ onClose }) {
       {result && tab === '1var' && (
         <div className="stat-results">
           {[
-            ['n',    result.n],
-            ['Σx',   result.sum],
-            ['Σx²',  result.sumx2],
-            ['x̅',    result.mean],
+            ['n',      result.n],
+            ['Σx',     result.sum],
+            ['Σx²',    result.sumx2],
+            ['x̅',      result.mean],
             ['Median', result.median],
-            ['Q1',   result.q1],
-            ['Q3',   result.q3],
-            ['IQR',  result.iqr],
+          ].map(([label, val]) => (
+            <div key={label} className="stat-result-row">
+              <span className="stat-result-label">{label}</span>
+              <span className="stat-result-val">{fmt(val)}</span>
+            </div>
+          ))}
+          <div className="stat-result-row">
+            <span className="stat-result-label">Mode</span>
+            <span className="stat-result-val">{fmtMode(result.mode)}</span>
+          </div>
+          {[
+            ['Q1',    result.q1],
+            ['Q3',    result.q3],
+            ['IQR',   result.iqr],
             ['Range', result.range],
-            ['σ',    result.stddev],
-            ['σ²',   result.variance],
-            ['s',    result.sampleStddev],
-            ['s²',   result.sampleVariance],
-            ['Min',  result.min],
-            ['Max',  result.max],
+            ['σ',     result.stddev],
+            ['σ²',    result.variance],
+            ['s',     result.sampleStddev],
+            ['s²',    result.sampleVariance],
+            ['CV',    result.cv],
+            ['SEM',   result.sem],
+            ['Skewness', result.skewness],
+            ['Kurtosis', result.kurtosis],
+            ['Min',   result.min],
+            ['Max',   result.max],
           ].map(([label, val]) => (
             <div key={label} className="stat-result-row">
               <span className="stat-result-label">{label}</span>
