@@ -27,6 +27,7 @@ graph TD
     App --> MP["ModePanel.jsx"]
     App --> MAT["MatrixPanel.jsx\n(slots A-J, 1-row = vector)"]
     App --> OP["OperationsPanel.jsx\n(Matrix / Vector tabs)"]
+    App --> EQ["EquationPanel.jsx\n(Polynomial roots + Linear system)"]
 
     Screen --> MF["&lt;math-field&gt;\n(MathLive web component)"]
 
@@ -38,7 +39,7 @@ graph TD
     CA --> N
 ```
 
-The overlay panels (ConstPanel, ConvPanel, SolvePanel, CalculusPanel, ModePanel, MatrixPanel, OperationsPanel) are rendered inside `.device` and cover the full calculator body with `position: absolute; inset: 0`. Only one is open at a time via `panel` state in App.
+The overlay panels (ConstPanel, ConvPanel, SolvePanel, CalculusPanel, ModePanel, MatrixPanel, OperationsPanel, EquationPanel) are rendered inside `.device` and cover the full calculator body with `position: absolute; inset: 0`. Only one is open at a time via `panel` state in App.
 
 ---
 
@@ -170,16 +171,16 @@ The math input field is an exception. MathLive renders its content using its own
 | `newtonRaphson(fn, x0)` | Newton-Raphson root finder, max 50 iterations |
 | `secant(fn, x0, x1)` | Secant method |
 | `bisection(fn, a, b)` | Bisection method |
-| `polyRoots(coeffs)` | Closed-form quadratic; companion-matrix eigenvalues for higher degrees |
-| `solveLinearSystem(A, b)` | Gaussian elimination with partial pivoting |
+| `polyRoots(coeffs)` | Closed-form for degree 1-2; companion-matrix eigenvalues for degree 3-10 |
+| `solveLinearSystem(A, b)` | Gaussian elimination with partial pivoting; supports 2x2 through 5x5 |
 
-`polyRoots` and `solveLinearSystem` are implemented but not yet wired to a UI panel (Phase 3 Equation mode is UI work only when the time comes).
+`polyRoots` and `solveLinearSystem` are used by `EquationPanel` for the Equation mode accessible from the MODE menu.
 
 ---
 
 ## Testing
 
-258 Vitest tests across two files, running in node environment.
+289 Vitest tests across two files, running in node environment.
 
 ```
 src/
@@ -193,3 +194,5 @@ Test categories in `mathEngine.test.js`:
 
 - normalizeExpression: character subs, nth-root bridge, log-base bridge, nPr/nCr bridge, matrix operatorname bridge (inv/det/trace/transpose/size/dot/cross/norm), Ans bridge
 - evaluateExpression: arithmetic, powers/roots, trig (deg + rad), inverse trig, reciprocal trig, logs, combinatorics, Ans, constants, expected failures, full MathLive pipeline per button, complex numbers, matrix variables in scope, OPS matrix operations, OPS vector operations (inline and stored 1-row variables)
+- polyRoots: degree 1-6, real and complex roots, repeated roots
+- solveLinearSystem: 2x2 through 5x5, singular matrix error

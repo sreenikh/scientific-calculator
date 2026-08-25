@@ -77,9 +77,13 @@ Dedicated OPS button in the bottom row opens an operations menu with two tabs:
 
 Operations insert `\operatorname{fn}(` via the MathLive API, which normalizeExpression converts to valid math.js syntax before evaluation.
 
-### Equation mode `[placeholder]`
+### Equation mode `[done]`
 
-Accessible via MODE menu (item 1). Equation mode button is present but opens the BASE-N panel as a placeholder. The math is already implemented in `engine/numeric.js` (`polyRoots`, `solveLinearSystem`); this is UI work only.
+Accessed via MODE menu (item 1).
+
+- Polynomial tab: degree selector 1-10, coefficient inputs (highest degree first), roots displayed as real or complex (a + bi)
+- Linear System tab: 2x2 through 5x5 size selector, augmented matrix [A|b] input, solution via Gaussian elimination with partial pivoting
+- Degree 1-2: closed-form formulas; degree 3+: companion-matrix eigenvalues via math.js `eigs`
 
 ### Statistics mode `[planned]`
 
@@ -125,6 +129,5 @@ Accessible via MODE menu (item 1). Equation mode button is present but opens the
 
 ## Notes
 
-- `engine/numeric.js` already contains `polyRoots` and `solveLinearSystem` - Phase 3 Equation mode is UI work only.
 - The test suite (`npm test`) is the merge gate on every PR. New phases add tests before wiring UI.
 - GitHub Pages is live at https://sreenikh.github.io/scientific-calculator/ via `.github/workflows/deploy.yml` on push to `main`.

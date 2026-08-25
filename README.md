@@ -21,7 +21,8 @@ A browser-based graphing scientific calculator with textbook-style math input.
 - Calculus panel: numeric derivative (central difference) and definite integral (Simpson's rule)
 - Complex number display: rectangular (a+bi) or polar (r∠θ) with toggle on the result line
 - History strip: last 100 expressions with indexed entries; click any to restore; clear button
-- MODE menu: routes to Matrix/Vector panel or Equation placeholder
+- MODE menu: Equation mode and Matrix/Vector panel
+- Equation mode: polynomial roots (degree 1-10) and linear system solver (2x2 to 5x5)
 - Matrix/Vector panel: named slots A-J, size picker 1-4 rows/cols; 1-row slots act as vectors
 - OPS panel: Matrix tab (inv, det, trace, transpose, size) and Vector tab (dot, cross, norm)
 - Responsive layout: scales to any window size using dvh/vw units, no breakpoints
@@ -29,7 +30,7 @@ A browser-based graphing scientific calculator with textbook-style math input.
 ## Planned
 
 - Phase 2: Graphing (canvas plotter, pan/zoom, trace, shaded integral regions)
-- Phase 3 remaining: Equation mode UI, Statistics, Distributions
+- Phase 3 remaining: Statistics, Distributions
 - Phase 4: Base-N, STO/RCL memory, Format options, Table mode
 
 See [docs/phases.md](docs/phases.md) for the full roadmap.
@@ -49,7 +50,7 @@ Tests:
 npm test
 ```
 
-258 Vitest tests covering the expression engine and keypad contracts.
+289 Vitest tests covering the expression engine and keypad contracts.
 
 ---
 
@@ -94,5 +95,6 @@ src/
     ModePanel.jsx       - mode selection menu
     MatrixPanel.jsx     - matrix/vector storage, slots A-J
     OperationsPanel.jsx - matrix and vector operations menu
+    EquationPanel.jsx   - polynomial roots and linear system solver
   App.jsx               - top-level state and wiring
 ```
