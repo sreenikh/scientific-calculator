@@ -1,9 +1,15 @@
 import { solveLinearSystem } from './numeric'
 
-function median(sorted) {
+// Linear interpolation percentile. p is 0-100. sorted must be pre-sorted ascending.
+export function percentile(sorted, p) {
   const n = sorted.length
   if (n === 0) return NaN
-  return n % 2 === 0 ? (sorted[n / 2 - 1] + sorted[n / 2]) / 2 : sorted[Math.floor(n / 2)]
+  if (p <= 0) return sorted[0]
+  if (p >= 100) return sorted[n - 1]
+  const idx = (p / 100) * (n - 1)
+  const lo = Math.floor(idx)
+  const frac = idx - lo
+  return frac === 0 ? sorted[lo] : sorted[lo] * (1 - frac) + sorted[lo + 1] * frac
 }
 
 export function oneVarStats(data) {
@@ -14,14 +20,14 @@ export function oneVarStats(data) {
   const sum = xs.reduce((s, x) => s + x, 0)
   const mean = sum / n
   const variance = xs.reduce((s, x) => s + (x - mean) ** 2, 0) / n
-  const q1 = median(sorted.slice(0, Math.floor(n / 2)))
-  const q3 = median(sorted.slice(Math.ceil(n / 2)))
   return {
     ok: true, n, sum, mean,
-    median: median(sorted),
+    median: percentile(sorted, 50),
     stddev: Math.sqrt(variance), variance,
     min: sorted[0], max: sorted[n - 1],
-    q1, q3,
+    q1: percentile(sorted, 25),
+    q3: percentile(sorted, 75),
+    sorted,
   }
 }
 

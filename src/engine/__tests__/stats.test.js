@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { oneVarStats, twoVarStats } from '../stats.js'
+import { oneVarStats, twoVarStats, percentile } from '../stats.js'
 
 // ── 1-variable stats ────────────────────────────────────────────────────────
 
@@ -27,11 +27,11 @@ describe('oneVarStats: median and quartiles', () => {
   it('median of odd-length dataset', () => {
     expect(oneVarStats([1, 3, 5]).median).toBeCloseTo(3, 10)
   })
-  it('Q1 of [1,2,3,4,5,6,7,8]', () => {
-    expect(oneVarStats([1,2,3,4,5,6,7,8]).q1).toBeCloseTo(2.5, 10)
+  it('Q1 of [1,2,3,4,5,6,7,8] (linear interpolation P25)', () => {
+    expect(oneVarStats([1,2,3,4,5,6,7,8]).q1).toBeCloseTo(2.75, 10)
   })
-  it('Q3 of [1,2,3,4,5,6,7,8]', () => {
-    expect(oneVarStats([1,2,3,4,5,6,7,8]).q3).toBeCloseTo(6.5, 10)
+  it('Q3 of [1,2,3,4,5,6,7,8] (linear interpolation P75)', () => {
+    expect(oneVarStats([1,2,3,4,5,6,7,8]).q3).toBeCloseTo(6.25, 10)
   })
   it('single element: median = that element', () => {
     expect(oneVarStats([42]).median).toBe(42)
@@ -51,6 +51,24 @@ describe('oneVarStats: edge cases', () => {
   it('constant dataset has std dev 0', () => {
     expect(oneVarStats([3, 3, 3, 3]).stddev).toBeCloseTo(0, 10)
   })
+})
+
+describe('percentile function', () => {
+  const sorted = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+  it('P0 returns min', () => expect(percentile(sorted, 0)).toBe(1))
+  it('P100 returns max', () => expect(percentile(sorted, 100)).toBe(10))
+  it('P50 returns median', () => expect(percentile(sorted, 50)).toBeCloseTo(5.5, 10))
+  it('P25 interpolates correctly', () => expect(percentile(sorted, 25)).toBeCloseTo(3.25, 10))
+  it('P75 interpolates correctly', () => expect(percentile(sorted, 75)).toBeCloseTo(7.75, 10))
+  it('P10 of [1..10]', () => expect(percentile(sorted, 10)).toBeCloseTo(1.9, 10))
+  it('P90 of [1..10]', () => expect(percentile(sorted, 90)).toBeCloseTo(9.1, 10))
+  it('single element always returns that element', () => {
+    expect(percentile([42], 0)).toBe(42)
+    expect(percentile([42], 50)).toBe(42)
+    expect(percentile([42], 100)).toBe(42)
+  })
+  it('empty array returns NaN', () => expect(percentile([], 50)).toBeNaN())
+  it('exact index (no interpolation needed)', () => expect(percentile([10, 20, 30], 50)).toBe(20))
 })
 
 // ── 2-variable: linear regression ───────────────────────────────────────────

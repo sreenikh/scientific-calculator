@@ -364,3 +364,13 @@ table.iter th:first-child, table.iter td:first-child { text-align: left; color: 
 .stat-result-label { color: var(--steel); min-width: 4vw; }
 .stat-result-val { color: #EDEAE0; }
 
+.stat-pct-header { font-size: 1dvh; color: var(--amber); text-transform: uppercase; letter-spacing: 1px; margin-top: 0.6dvh; padding-top: 0.6dvh; border-top: 1px solid #33384A; }
+.stat-pct-label { color: var(--steel); }
+.stat-pct-custom-row { display: flex; justify-content: space-between; align-items: center; font-size: 1.2dvh; }
+.stat-pct-input {
+  width: 4vw; background: #20232B; border: 1px solid #3A3F4E; color: #EDEAE0;
+  border-radius: 3px; font-family: inherit; font-size: 1.1dvh;
+  padding: 0.2dvh 0.3vw; text-align: center; margin-left: 0.2vw;
+}
+.stat-pct-input:focus { border-color: var(--teal); outline: none; }
+

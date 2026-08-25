@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { oneVarStats, twoVarStats } from '../engine/stats'
+import { oneVarStats, twoVarStats, percentile } from '../engine/stats'
 import { math } from '../engine/mathEngine'
 
 const MODELS = [
@@ -20,11 +20,12 @@ function makeRows(n) {
 }
 
 export default function StatPanel({ onClose }) {
-  const [tab,    setTab]    = useState('1var')
-  const [model,  setModel]  = useState('linear')
-  const [rows,   setRows]   = useState(makeRows(6))
-  const [result, setResult] = useState(null)
-  const [error,  setError]  = useState(null)
+  const [tab,     setTab]     = useState('1var')
+  const [model,   setModel]   = useState('linear')
+  const [rows,    setRows]    = useState(makeRows(6))
+  const [result,  setResult]  = useState(null)
+  const [error,   setError]   = useState(null)
+  const [customP, setCustomP] = useState(['', ''])
 
   function updateCell(i, field, val) {
     setRows(prev => prev.map((r, idx) => idx === i ? { ...r, [field]: val } : r))
@@ -133,21 +134,51 @@ export default function StatPanel({ onClose }) {
         <div className="stat-results">
           {[
             ['n',      result.n],
-            ['Σx', result.sum],
-            ['x̅', result.mean],
-            ['Median',  result.median],
-            ['Q1',      result.q1],
-            ['Q3',      result.q3],
-            ['s',       result.stddev],
-            ['s²', result.variance],
-            ['Min',     result.min],
-            ['Max',     result.max],
+            ['Σx',     result.sum],
+            ['x̅',      result.mean],
+            ['Median', result.median],
+            ['Q1',     result.q1],
+            ['Q3',     result.q3],
+            ['s',      result.stddev],
+            ['s²',     result.variance],
+            ['Min',    result.min],
+            ['Max',    result.max],
           ].map(([label, val]) => (
             <div key={label} className="stat-result-row">
               <span className="stat-result-label">{label}</span>
               <span className="stat-result-val">{fmt(val)}</span>
             </div>
           ))}
+
+          <div className="stat-pct-header">Percentiles</div>
+          {[10, 25, 50, 75, 90].map(p => (
+            <div key={p} className="stat-result-row">
+              <span className="stat-result-label stat-pct-label">P{p}</span>
+              <span className="stat-result-val">{fmt(percentile(result.sorted, p))}</span>
+            </div>
+          ))}
+          {customP.map((pStr, i) => {
+            const p = parseFloat(pStr)
+            const valid = !isNaN(p) && p >= 0 && p <= 100
+            return (
+              <div key={i} className="stat-pct-custom-row">
+                <span className="stat-result-label">
+                  P<input
+                    className="stat-pct-input"
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={pStr}
+                    onChange={e => setCustomP(prev => prev.map((v, j) => j === i ? e.target.value : v))}
+                    placeholder="0-100"
+                  />
+                </span>
+                <span className="stat-result-val">
+                  {valid ? fmt(percentile(result.sorted, p)) : '—'}
+                </span>
+              </div>
+            )
+          })}
         </div>
       )}
 
