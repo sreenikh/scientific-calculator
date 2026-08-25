@@ -13,24 +13,13 @@ import EquationPanel from './components/EquationPanel'
 import StatPanel from './components/StatPanel'
 import DistributionPanel from './components/DistributionPanel'
 import BaseNPanel from './components/BaseNPanel'
-import { evaluateExpression, formatValue } from './engine/mathEngine'
+import { evaluateExpression, formatValue, toDMS } from './engine/mathEngine'
 import { formatAllBases, validateBaseDigits } from './engine/baseN'
 import './App.css'
 
 const EMPTY_MATRIX_VARS = { A: null, B: null, C: null, D: null, E: null, F: null, G: null, H: null, I: null, J: null }
 // Memory slots K-T: distinct from matrix vars A-J, hex digits A-F, and math.js built-ins.
 const EMPTY_MEM_VARS    = { K: null, L: null, M: null, N: null, O: null, P: null, Q: null, R: null, S: null, T: null }
-
-// Format a numeric result in the active base (integers only; floats stay decimal).
-function formatInBase(value, baseMode) {
-  if (baseMode === 'dec') return null
-  if (typeof value !== 'number' || !Number.isFinite(value)) return null
-  const rounded = Math.round(value)
-  if (Math.abs(value - rounded) > 1e-9) return null
-  if (Math.abs(rounded) > Number.MAX_SAFE_INTEGER) return null
-  const bases = formatAllBases(BigInt(rounded))
-  return bases[baseMode]
-}
 
 // Format a numeric result in the active base (integers only; floats stay decimal).
 function formatInBase(value, baseMode) {
@@ -63,6 +52,9 @@ export default function App() {
   const [stoActive, setStoActive] = useState(false)
   const [rclActive, setRclActive] = useState(false)
   const [baseMode, setBaseMode] = useState('dec')  // 'dec'|'hex'|'oct'|'bin'
+  const [displayMode, setDisplayMode] = useState('math')  // 'math'|'line'
+  const [dmsMode, setDmsMode] = useState(false)
+  const [lastNumericValue, setLastNumericValue] = useState(null)
   const screenRef = useRef(null)
 
   const handleChange = useCallback((newLatex, newAscii) => {
@@ -88,15 +80,21 @@ export default function App() {
     }
     const result = evaluateExpression(exprToUse, { angleMode, vars, complexMode })
     if (result.ok) {
-      // If a non-decimal base is active and the result is an integer, reformat it.
       const baseFormatted = formatInBase(result.value, baseMode)
-      const display = baseFormatted !== null ? baseFormatted : result.display
+      const isNumeric = typeof result.value === 'number' && !result.isComplex && !result.isMatrix
+      const dmsDisplay = dmsMode && isNumeric && baseFormatted === null
+        ? toDMS(result.value)
+        : null
+      const display = baseFormatted !== null ? baseFormatted
+        : dmsDisplay !== null ? dmsDisplay
+        : result.display
 
       setResultDisplay(display)
       setError(null)
       setIsLastComplex(result.isComplex)
       setIsLastMatrix(result.isMatrix)
       setLastComplexValue(result.isComplex ? result.value : null)
+      setLastNumericValue(isNumeric ? result.value : null)
       setAns(result.value)
       setHistory(h => {
         const entry = { expr: exprToUse, latex, display: result.isMatrix ? `[matrix]` : display }
@@ -108,6 +106,7 @@ export default function App() {
       setIsLastComplex(false)
       setIsLastMatrix(false)
       setLastComplexValue(null)
+      setLastNumericValue(null)
     }
   }
 
@@ -162,12 +161,27 @@ export default function App() {
         }
         break
       }
+      case 'toggleDisplayMode': {
+        const newMode = displayMode === 'math' ? 'line' : 'math'
+        setDisplayMode(newMode)
+        screenRef.current?.setDisplayMode(newMode)
+        break
+      }
+      case 'toggleDms': {
+        const next = !dmsMode
+        setDmsMode(next)
+        if (lastNumericValue !== null) {
+          setResultDisplay(next ? toDMS(lastNumericValue) : formatValue(lastNumericValue, angleMode, complexMode))
+        }
+        break
+      }
       case 'clear':
         screenRef.current?.clear()
         setResultDisplay('0')
         setError(null)
         setIsLastComplex(false)
         setIsLastMatrix(false)
+        setLastNumericValue(null)
         break
       case 'del':
         screenRef.current?.deleteBackward()
@@ -240,6 +254,11 @@ export default function App() {
               isMatrix={isLastMatrix}
               complexMode={complexMode}
               baseMode={baseMode}
+              displayMode={displayMode}
+              dmsMode={dmsMode}
+              isLastNumeric={lastNumericValue !== null}
+              onToggleDisplayMode={() => handleAction('toggleDisplayMode')}
+              onToggleDms={() => handleAction('toggleDms')}
               onToggleComplex={() => {
                 const newMode = complexMode === 'rect' ? 'polar' : 'rect'
                 setComplexMode(newMode)

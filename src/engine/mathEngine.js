@@ -43,6 +43,10 @@ function buildScope(angleMode, vars) {
     logb: (x, b) => Math.log(x) / Math.log(b),
     nPr: (n, r) => math.permutations(n, r),
     nCr: (n, r) => math.combinations(n, r),
+    fromDMS: (d, m = 0, s = 0) => {
+      const sign = d < 0 ? -1 : 1
+      return sign * (Math.abs(d) + m / 60 + s / 3600)
+    },
     polar: (r, theta) => math.complex(r * Math.cos(toRad(theta)), r * Math.sin(toRad(theta))),
     arg:   (z) => toOut(math.arg(z)),
     ...processedVars,
@@ -83,6 +87,7 @@ export function normalizeExpression(raw) {
     .replace(/\ba s i n h \(/g, 'asinh(')
     .replace(/\ba c o s h \(/g, 'acosh(')
     .replace(/\ba t a n h \(/g, 'atanh(')
+    .replace(/\bf r o m D M S \(/g, 'fromDMS(')
     .replace(/%/g, '/100')
     .replace(/\bA n s\b/g, 'Ans')
     .trim()
@@ -162,6 +167,18 @@ export function formatValue(value, angleMode = 'deg', complexMode = 'rect') {
   } catch {
     return String(value)
   }
+}
+
+// Converts a decimal-degrees value to a D°M'S" string.
+export function toDMS(decimalDeg) {
+  const sign = decimalDeg < 0 ? '-' : ''
+  const abs = Math.abs(decimalDeg)
+  const d = Math.floor(abs)
+  const mFull = (abs - d) * 60
+  const m = Math.floor(mFull)
+  const s = (mFull - m) * 60
+  const sStr = s.toFixed(4).replace(/\.?0+$/, '')
+  return `${sign}${d}°${m}'${sStr}"`
 }
 
 function humanizeError(err) {

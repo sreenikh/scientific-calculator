@@ -34,12 +34,14 @@ A browser-based graphing scientific calculator with textbook-style math input.
 - BASE button (top modifier row, next to DRG): cycles DEC/HEX/OCT/BIN just like DRG cycles DEG/RAD; status bar shows active base; integer results reformatted automatically; main screen and keypad unchanged
 - BASE-N panel: Numbers tab has a base selector and BigInt expression evaluator (+/-/*/% AND/OR/XOR/NOT/<</>>), result shown in all four bases; K-map tab for Karnaugh map minimization
 - K-Map (BASE-N -> K-map tab): 2-8 variables; 2-6 vars use a Gray-code grid; 7-8 vars use a flat scrollable minterm list; cells cycle 0/1/X (don't care); Quine-McCluskey minimization to minimal SOP
+- Math/Line display toggle: MATH button in the result area switches the MathLive input between textbook layout and linear text; active mode highlighted
+- DMS conversion: `fromDMS(d, m, s)` converts degrees/minutes/seconds to decimal degrees (OPS panel, Convert tab); DMS button on the result line converts any real numeric result to D°M'S" format
 - Responsive layout: scales to any window size using dvh/vw units, no breakpoints
 
 ## Planned
 
 - Phase 2: Graphing (canvas plotter, pan/zoom, trace, shaded integral regions)
-- Phase 4 remaining: STO/RCL memory, Format options, Table mode
+- Phase 4 remaining: Table mode
 
 See [docs/phases.md](docs/phases.md) for the full roadmap.
 
@@ -58,7 +60,7 @@ Tests:
 npm test
 ```
 
-580 Vitest tests covering the expression engine, keypad contracts, statistics engine, distributions, and base-N/bitwise/K-map engine.
+591 Vitest tests covering the expression engine, keypad contracts, statistics engine, distributions, and base-N/bitwise/K-map engine.
 
 ---
 

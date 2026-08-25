@@ -88,6 +88,27 @@ body {
   margin-top: 0.5dvh;
 }
 
+.display-toggles {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3dvh;
+}
+
+.disp-toggle {
+  background: none;
+  border: 1px solid var(--screen-ink);
+  border-radius: 3px;
+  color: var(--screen-ink);
+  font-family: inherit;
+  font-size: 1dvh;
+  padding: 0.1dvh 0.4vw;
+  cursor: pointer;
+  opacity: 0.5;
+}
+.disp-toggle:hover { opacity: 0.85; }
+.disp-toggle.active { opacity: 1; border-color: var(--teal); color: var(--teal); }
+
 .complex-toggle {
   flex-shrink: 0;
   background: none;
