@@ -32,6 +32,17 @@ function formatInBase(value, baseMode) {
   return bases[baseMode]
 }
 
+// Format a numeric result in the active base (integers only; floats stay decimal).
+function formatInBase(value, baseMode) {
+  if (baseMode === 'dec') return null
+  if (typeof value !== 'number' || !Number.isFinite(value)) return null
+  const rounded = Math.round(value)
+  if (Math.abs(value - rounded) > 1e-9) return null
+  if (Math.abs(rounded) > Number.MAX_SAFE_INTEGER) return null
+  const bases = formatAllBases(BigInt(rounded))
+  return bases[baseMode]
+}
+
 export default function App() {
   const [latex, setLatex] = useState('')
   const [asciiMath, setAsciiMath] = useState('')
