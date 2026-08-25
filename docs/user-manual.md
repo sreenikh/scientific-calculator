@@ -178,6 +178,7 @@ Press **MODE** to open the mode menu.
 | 2 | MATRIX / VECTOR | Opens the matrix/vector storage panel |
 | 3 | STATISTICS | 1-var stats; linear/quadratic/exponential/power regression |
 | 4 | DISTRIBUTION | Normal (pdf/cdf/inv) and Binomial (pdf/cdf) |
+| 5 | K-MAP | Karnaugh map minimization (2-8 variables) |
 
 ---
 
@@ -390,43 +391,67 @@ Vectors can be stored as 1-row slots (e.g. slot C at 1x3) or entered inline as `
 
 ---
 
-## BASE-N panel
+## BASE-N mode
 
-Press **BASE-N** to open the base converter and K-map solver.
+Press **BASE-N** (bottom mod row) to cycle the calculator through bases: **DEC -> HEX -> OCT -> BIN -> DEC ...**
 
-### Numbers tab
+When any non-decimal base is active, the standard MathLive field and scientific keypad are replaced by a dedicated integer calculator. Press BASE-N again to advance to the next base; cycle back to DEC to return to the normal scientific calculator.
 
-**Input base** - Select BIN (base 2), OCT (base 8), DEC (base 10), or HEX (base 16). The A input field accepts digits valid for that base (hex allows A-F case-insensitive; spaces are ignored).
+The active base is shown in the status bar (e.g. **HEX**). The **HEX** label in the status bar is also a button that cycles the base.
 
-Entering a value for A with no operation selected shows it in all four bases immediately.
+### Integer expression input
 
-**Bitwise operations:**
+Type an expression using the on-screen keypad or your keyboard. The input field accepts any digits valid for the active base:
 
-| Button | Operation | B input |
-|--------|-----------|---------|
-| AND | Bitwise AND: bits set in both | Decimal |
-| OR | Bitwise OR: bits set in either | Decimal |
-| XOR | Bitwise XOR: bits set in exactly one | Decimal |
-| NOT | Bitwise complement | Not used |
-| << | Left shift by B bits | Decimal shift count |
-| >> | Logical right shift by B bits | Decimal shift count |
+- HEX: 0-9 and A-F (case-insensitive)
+- OCT: 0-7
+- BIN: 0 and 1
 
-All operations use unsigned 32-bit arithmetic. Press **Compute** to evaluate. The result is displayed in BIN, OCT, DEC, and HEX.
+**Operators available in all bases:**
 
-### K-map tab
+| Operator | Description |
+|----------|-------------|
+| + - * / | Arithmetic (integer division truncates toward zero) |
+| % or MOD | Remainder after division |
+| AND or & | Bitwise AND |
+| OR or \| | Bitwise OR |
+| XOR or ^ | Bitwise XOR |
+| NOT or ~ | Bitwise complement (64-bit mask) |
+| << | Left shift |
+| >> | Logical right shift |
+| ( ) | Grouping |
 
-Karnaugh map minimization for 2, 3, or 4 Boolean variables.
+Operator precedence follows standard rules: `|` < `^` < `&` < `<< >>` < `+ -` < `* / %` < unary.
 
-1. Choose the number of variables (2, 3, or 4) with the buttons at the top.
-2. Click cells to cycle their value: **0** (minterm = 0) -> **1** (minterm = 1) -> **X** (don't care) -> 0.
+Press **=** or **Enter** to evaluate. The result is shown in all four bases:
+
+```
+BIN   1 0000 0001
+OCT   401
+DEC   257
+HEX   101
+```
+
+The active base's row is highlighted. Numbers are arbitrary-precision (no 32-bit limit).
+
+### K-Map minimizer (MODE -> 5)
+
+Open via **MODE -> 5 K-MAP**.
+
+1. Choose the number of variables (2-8) using the buttons at the top.
+2. Click cells to cycle their value: **0** (function output = 0), **1** (function output = 1), **X** (don't care).
 3. Press **Minimize**.
 
-The result is a minimal sum-of-products (SOP) expression. Variables are named A, B, C, D in order. Complemented literals appear with an apostrophe (A', B'). A don't-care cell (X) can be used by the minimizer to simplify the expression but is not required to be covered.
+For 2-6 variables a visual Karnaugh map grid is shown with Gray-code ordering. For 7-8 variables a scrollable flat list of all 128 or 256 minterms is shown instead.
+
+The result is a minimal sum-of-products (SOP) expression. Variables are named A, B, C, D, E, F, G, H. Complemented literals use an apostrophe: `A'`, `BC'`, etc.
 
 **Examples:**
-- Cells 1, 3 set to 1 in a 2-var map (AB and A'B) -> result: `B`
-- All cells 1 -> result: `1`
-- No cells 1 -> result: `0`
+- 2-var map, cells m1 and m3 set to 1 -> `B`
+- 3-var map, cells m0-m3 set to 1 -> `A'`
+- All cells 1 -> `1`
+- No cells 1 -> `0`
+- Don't-care cells (X) can be absorbed by the minimizer to reduce the expression
 
 ---
 

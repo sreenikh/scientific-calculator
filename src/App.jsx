@@ -13,6 +13,7 @@ import EquationPanel from './components/EquationPanel'
 import StatPanel from './components/StatPanel'
 import DistributionPanel from './components/DistributionPanel'
 import BaseNPanel from './components/BaseNPanel'
+import BaseNCalculator from './components/BaseNCalculator'
 import { evaluateExpression, formatValue } from './engine/mathEngine'
 import './App.css'
 
@@ -34,6 +35,7 @@ export default function App() {
   const [isLastMatrix, setIsLastMatrix] = useState(false)
   const [lastComplexValue, setLastComplexValue] = useState(null)
   const [matrixVars, setMatrixVars] = useState(EMPTY_MATRIX_VARS)
+  const [baseMode, setBaseMode] = useState('dec')  // 'dec'|'hex'|'oct'|'bin'
   const screenRef = useRef(null)
 
   const handleChange = useCallback((newLatex, newAscii) => {
@@ -112,13 +114,19 @@ export default function App() {
       case 'openSolve':   setPanel('solve');    break
       case 'openDeriv':   setPanel('deriv');    break
       case 'openInteg':   setPanel('integ');    break
-      case 'openBaseN':   setPanel('basen');    break
+      case 'cycleBase': {
+        const cycle = { dec: 'hex', hex: 'oct', oct: 'bin', bin: 'dec' }
+        setBaseMode(m => cycle[m])
+        setPanel(null)
+        break
+      }
       case 'openModeMenu': setPanel('mode');   break
       case 'openMatrix':  setPanel('matrix');   break
       case 'openOps':     setPanel('ops');      break
       case 'openEquation': setPanel('equation'); break
       case 'openStats':    setPanel('stats');    break
       case 'openDist':     setPanel('dist');     break
+      case 'openKMap':     setPanel('kmap');     break
       default: break
     }
   }
@@ -149,36 +157,49 @@ export default function App() {
       </div>
 
       <div className="device">
-        <div className="screen-wrap">
-          <Screen
-            ref={screenRef}
-            onChange={handleChange}
-            resultDisplay={resultDisplay}
-            error={error}
+        {baseMode !== 'dec' ? (
+          <BaseNCalculator
+            baseMode={baseMode}
+            onCycleBase={() => handleAction('cycleBase')}
             angleMode={angleMode}
             shiftActive={shiftActive}
             alphaActive={alphaActive}
-            isComplex={isLastComplex}
-            isMatrix={isLastMatrix}
-            complexMode={complexMode}
-            onToggleComplex={() => {
-              const newMode = complexMode === 'rect' ? 'polar' : 'rect'
-              setComplexMode(newMode)
-              if (lastComplexValue !== null) {
-                setResultDisplay(formatValue(lastComplexValue, angleMode, newMode))
-              }
-            }}
           />
-        </div>
+        ) : (
+          <>
+            <div className="screen-wrap">
+              <Screen
+                ref={screenRef}
+                onChange={handleChange}
+                resultDisplay={resultDisplay}
+                error={error}
+                angleMode={angleMode}
+                shiftActive={shiftActive}
+                alphaActive={alphaActive}
+                isComplex={isLastComplex}
+                isMatrix={isLastMatrix}
+                complexMode={complexMode}
+                baseMode={baseMode}
+                onToggleComplex={() => {
+                  const newMode = complexMode === 'rect' ? 'polar' : 'rect'
+                  setComplexMode(newMode)
+                  if (lastComplexValue !== null) {
+                    setResultDisplay(formatValue(lastComplexValue, angleMode, newMode))
+                  }
+                }}
+              />
+            </div>
 
-        <HistoryStrip entries={history} onRestore={restoreHistory} onClear={() => setHistory([])} />
+            <HistoryStrip entries={history} onRestore={restoreHistory} onClear={() => setHistory([])} />
 
-        <Keypad
-          shiftActive={shiftActive}
-          alphaActive={alphaActive}
-          onInsert={insert}
-          onAction={handleAction}
-        />
+            <Keypad
+              shiftActive={shiftActive}
+              alphaActive={alphaActive}
+              onInsert={insert}
+              onAction={handleAction}
+            />
+          </>
+        )}
 
         {panel === 'const'  && <ConstPanel onClose={() => setPanel(null)} onSelect={insertConstant} />}
         {panel === 'conv'   && <ConvPanel  onClose={() => setPanel(null)} />}
@@ -193,7 +214,7 @@ export default function App() {
         {panel === 'equation' && <EquationPanel onClose={() => setPanel(null)} />}
         {panel === 'stats'    && <StatPanel    onClose={() => setPanel(null)} />}
         {panel === 'dist'     && <DistributionPanel onClose={() => setPanel(null)} />}
-        {panel === 'basen'    && <BaseNPanel        onClose={() => setPanel(null)} />}
+        {panel === 'kmap'     && <BaseNPanel        onClose={() => setPanel(null)} />}
         {panel === 'matrix' && (
           <MatrixPanel
             onClose={() => setPanel(null)}

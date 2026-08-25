@@ -28,7 +28,8 @@ A browser-based graphing scientific calculator with textbook-style math input.
 - Matrix/Vector panel: named slots A-J, size picker 1-4 rows/cols; 1-row slots act as vectors
 - OPS panel: Math tab (abs, mod, floor, ceil, round, sign), Matrix tab (inv, det, trace, transpose, size), Vector tab (dot, cross, norm), Complex tab (polar, abs, arg, conj, re, im)
 - `%` key (ALPHA+×) inserts a percentage: `50%` evaluates to 0.5; `mod(a,b)` is the separate modulo operation
-- BASE-N panel: binary/octal/decimal/hex display and conversion; bitwise ops (AND/OR/XOR/NOT/<</>>); Karnaugh map solver (2-4 variables, Quine-McCluskey minimization, don't-care support)
+- BASE-N mode: press BASE-N key to cycle DEC -> HEX -> OCT -> BIN; in any non-decimal base the calculator switches to a dedicated integer keypad supporting full arithmetic (+, -, *, /, mod), bitwise ops (AND/OR/XOR/NOT/&/|/^/~/<</>>) and parentheses; arbitrary-precision BigInt - no 32-bit limit; result shown in all four bases simultaneously
+- K-Map panel (MODE -> 5): Karnaugh map minimization 2-8 variables; 2-6 vars use a Gray-code grid; 7-8 vars use a flat minterm list; cells cycle 0/1/X (don't care); Quine-McCluskey minimization to minimal SOP
 - Responsive layout: scales to any window size using dvh/vw units, no breakpoints
 
 ## Planned
@@ -53,7 +54,7 @@ Tests:
 npm test
 ```
 
-495 Vitest tests covering the expression engine, keypad contracts, statistics engine, distributions, and base-N/bitwise/K-map engine.
+540 Vitest tests covering the expression engine, keypad contracts, statistics engine, distributions, and base-N/bitwise/K-map engine.
 
 ---
 
@@ -103,7 +104,8 @@ src/
     OperationsPanel.jsx - matrix and vector operations menu
     EquationPanel.jsx   - polynomial roots and linear system solver
     StatPanel.jsx       - 1-variable stats and regression
-    DistributionPanel.jsx - normal and binomial distribution panel
-    BaseNPanel.jsx      - base conversion, bitwise ops, and K-map solver panel
+    DistributionPanel.jsx  - normal and binomial distribution panel
+    BaseNCalculator.jsx    - system-wide integer calculator (HEX/OCT/BIN modes)
+    BaseNPanel.jsx         - K-map solver panel (2-8 variables, accessed via MODE -> 5)
   App.jsx               - top-level state and wiring
 ```

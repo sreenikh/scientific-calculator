@@ -185,27 +185,28 @@ The math input field is an exception. MathLive renders its content using its own
 
 | Export | Description |
 |--------|-------------|
-| `parseBase(str, base)` | Parse a string in the given base (2/8/10/16) to an unsigned 32-bit integer, or null |
-| `formatBin(n)` | Nibble-grouped binary string, e.g. `"1010 1100"` |
-| `formatOct(n)` | Octal string |
-| `formatDec(n)` | Decimal string |
-| `formatHex(n)` | Uppercase hex string |
-| `bitwiseOp(op, a, b)` | AND / OR / XOR / NOT / LSH / RSH on unsigned 32-bit integers |
-| `kmapDims(vars)` | Grid dimensions for 2/3/4-variable K-map |
+| `parseBase(str, base)` | Parse a string in the given base to a BigInt, or null if invalid |
+| `evaluateBaseExpr(expr, base)` | Evaluate an expression string in the given base; returns `{ ok, value }` (BigInt) |
+| `formatAllBases(n)` | Format a BigInt as `{ bin, oct, dec, hex }` strings |
+| `formatBin(n)` | Legacy 32-bit nibble-grouped binary string |
+| `bitwiseOp(op, a, b)` | Legacy 32-bit AND/OR/XOR/NOT/LSH/RSH |
+| `kmapDims(vars)` | Grid dimensions for 2-6-variable K-map; null for 7-8 (flat list) |
 | `kmapHeaders(vars)` | Row/col labels and Gray-code header values |
-| `kmapMinterm(vars, row, col)` | Minterm index at a grid position (Gray code ordering) |
+| `kmapMinterm(vars, row, col)` | Minterm index at a grid position using Gray code (2-6 vars) |
 | `findPrimeImplicants(numVars, minterms, dontCares)` | Quine-McCluskey prime implicant list |
 | `findMinimalCover(numVars, minterms, primes)` | Essential primes + greedy cover |
 | `formatImplicant(prime, numVars)` | SOP term string, e.g. `"AB'"` |
 | `karnaughMinimize(vars, cells)` | Full minimization: cells array (0/1/2) -> minimal SOP string |
 
-Cells encode: 0 = minterm 0, 1 = minterm 1, 2 = don't care. `karnaughMinimize` returns `'0'` for no minterms and `'1'` when all cells are covered.
+`evaluateBaseExpr` supports: `+`, `-`, `*`, `/`, `%`, `AND`/`OR`/`XOR`/`NOT` (keywords or `&`/`|`/`^`/`~`), `<<`, `>>`, parentheses, unary minus. Numbers are BigInt so there is no word-size limit. `NOT` uses a 64-bit mask.
+
+Cells encode: 0 = minterm 0, 1 = minterm 1, 2 = don't care. `karnaughMinimize` returns `'0'` for no minterms and `'1'` when all cells are covered. For 7-8 variables there is no visual grid; the K-map panel uses a flat scrollable minterm list.
 
 ---
 
 ## Testing
 
-495 Vitest tests across five files, running in node environment.
+540 Vitest tests across five files, running in node environment.
 
 ```
 src/
@@ -232,9 +233,12 @@ Test categories in `mathEngine.test.js`:
 - multiVarStats: k=2 and k=3 perfect fits, coefficient recovery, R², collinearity error, insufficient data error
 - normalPdf/normalCdf/normalInv: standard normal values, symmetry, monotonicity, roundtrip, edge cases
 - binomialPdf/binomialCdf: known probabilities, sum-to-one, large n, edge cases (p=0/1, k out of range)
-- parseBase: decimal/binary/hex parsing, invalid input rejection
-- format functions: formatBin (nibble grouping), formatOct, formatDec, formatHex
-- bitwiseOp: AND/OR/XOR/NOT, left and logical right shift, unsigned 32-bit semantics
-- kmapMinterm: 2-var and 3-var Gray code ordering
-- karnaughMinimize: 2-var and 3-var cases, all-zeros, all-ones, don't cares
+- parseBase: decimal/binary/hex BigInt parsing, invalid input rejection
+- formatAllBases: all four base representations, large number (2^63)
+- format functions: formatBin (nibble grouping), formatOct, formatDec, formatHex (legacy 32-bit)
+- bitwiseOp: AND/OR/XOR/NOT, left and logical right shift, unsigned 32-bit semantics (legacy)
+- evaluateBaseExpr: arithmetic (+/-/*//%)), bitwise (AND/OR/XOR/NOT/&/|/^/~/<</>>) in hex/binary/decimal, large numbers, error cases (invalid digit, division by zero)
+- kmapMinterm: 2-var, 3-var, 5-var, 6-var Gray code ordering
+- kmapDims: 2-6 vars return grid dims; 7-8 return null (flat list)
+- karnaughMinimize: 2-var, 3-var, 5-var cases, all-zeros, all-ones, don't cares
 - formatImplicant: complemented and uncomplemented terms, all-masked = '1'

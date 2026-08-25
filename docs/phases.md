@@ -123,23 +123,25 @@ Accessed via MODE menu (item 4).
 
 ### Base-N calculator `[done]`
 
-Accessed via the BASE-N key on the keypad (bottom mod row).
+Pressing the **BASE-N** key in the bottom mod row cycles the calculator through DEC -> HEX -> OCT -> BIN and back. When any non-decimal base is active:
 
-Two tabs: Numbers and K-map.
+- The standard keypad and MathLive field are replaced by a dedicated integer calculator for that base
+- The expression input accepts digits valid for the active base (e.g. A-F in HEX)
+- Operators: + - * / % (mod), AND/OR/XOR/NOT (and &/|/^/~), << >> (bitwise shift), parentheses for grouping
+- Numbers are arbitrary-precision BigInt - no 32-bit limit
+- Result is shown simultaneously in BIN, OCT, DEC, and HEX; the active base is highlighted
+- Switching back to DEC (or pressing BASE-N until DEC) restores the normal scientific calculator
+- The status bar shows HEX/OCT/BIN when a non-decimal base is active
 
-**Numbers tab:**
-- Input base selector: BIN (2), OCT (8), DEC (10), HEX (16)
-- Enter value A in the selected base; live multi-base display (BIN/OCT/DEC/HEX)
-- Bitwise op selector: AND, OR, XOR, NOT, << (left shift), >> (logical right shift)
-- Optional B input (decimal) for two-operand ops; shift count for << / >>
-- Result shown in all four bases
-- All operations on unsigned 32-bit integers
+### K-Map minimizer `[done]`
 
-**K-map tab:**
-- Variable count selector: 2, 3, or 4 variables
-- Clickable grid in Gray code order; cells cycle 0 -> 1 -> X (don't care) -> 0
-- Minimize button runs Quine-McCluskey to find essential prime implicants and greedy cover
-- Result: minimal sum-of-products (SOP) expression in A/B/C/D notation with complement as A'/B'
+Accessed via **MODE -> 5 K-MAP**.
+
+- Variable count: 2, 3, 4, 5, or 6 variables use a visual Gray-code grid; 7 or 8 variables use a flat scrollable minterm list
+- Cells cycle 0 -> 1 -> X (don't care) on click
+- Minimize runs Quine-McCluskey: finds all prime implicants, selects essential primes, greedy cover for the rest
+- Result: minimal sum-of-products (SOP) in A/B/C/D/E/F/G/H with complements written as A'/B'
+- Clear button resets all cells
 
 ### Memory
 

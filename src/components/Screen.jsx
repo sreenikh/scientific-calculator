@@ -8,7 +8,7 @@ MathfieldElement.soundsDirectory = null
 // keypad writes via MathLive's insert/deleteBackward commands exposed through ref.
 const Screen = forwardRef(function Screen(
   { onChange, resultDisplay, error, angleMode, shiftActive, alphaActive,
-    isComplex, isMatrix, complexMode, onToggleComplex },
+    isComplex, isMatrix, complexMode, onToggleComplex, baseMode },
   ref
 ) {
   const fieldRef = useRef(null)
@@ -65,6 +65,9 @@ const Screen = forwardRef(function Screen(
         <span className={angleMode === 'rad' ? 'on' : 'dot'}>RAD</span>
         <span className={shiftActive ? 'on shift-flag' : 'dot'}>SHIFT</span>
         <span className={alphaActive ? 'on alpha-flag' : 'dot'}>ALPHA</span>
+        {baseMode && baseMode !== 'dec' && (
+          <span className="on base-flag">{baseMode.toUpperCase()}</span>
+        )}
       </div>
 
       <math-field
