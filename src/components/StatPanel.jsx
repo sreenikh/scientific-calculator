@@ -146,11 +146,13 @@ export default function StatPanel({ onClose }) {
           ].map(([label, val]) => (
             <div key={label} className="stat-result-row">
               <span className="stat-result-label">{label}</span>
+              <span className="stat-result-leader" />
               <span className="stat-result-val">{fmt(val)}</span>
             </div>
           ))}
           <div className="stat-result-row">
             <span className="stat-result-label">Mode</span>
+            <span className="stat-result-leader" />
             <span className="stat-result-val">{fmtMode(result.mode)}</span>
           </div>
           {[
@@ -171,6 +173,7 @@ export default function StatPanel({ onClose }) {
           ].map(([label, val]) => (
             <div key={label} className="stat-result-row">
               <span className="stat-result-label">{label}</span>
+              <span className="stat-result-leader" />
               <span className="stat-result-val">{fmt(val)}</span>
             </div>
           ))}
@@ -179,6 +182,7 @@ export default function StatPanel({ onClose }) {
           {[10, 25, 50, 75, 90].map(p => (
             <div key={p} className="stat-result-row">
               <span className="stat-result-label">P{p}</span>
+              <span className="stat-result-leader" />
               <span className="stat-result-val">{fmt(percentile(result.sorted, p))}</span>
             </div>
           ))}
@@ -221,6 +225,7 @@ export default function StatPanel({ onClose }) {
           {modelRows(result).map(([label, val]) => (
             <div key={label} className="stat-result-row">
               <span className="stat-result-label">{label}</span>
+              <span className="stat-result-leader" />
               <span className="stat-result-val">{fmt(val)}</span>
             </div>
           ))}

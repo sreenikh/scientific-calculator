@@ -217,12 +217,24 @@ Enter x values in the data list (one per row). Empty rows are ignored. Press **C
 |--------|-------------|
 | n | Count of valid entries |
 | Σx | Sum |
+| Σx² | Sum of squares |
 | x̅ | Mean |
-| Median | Middle value |
-| Q1 / Q3 | Lower / upper quartile |
-| s | Population standard deviation |
-| s² | Population variance |
+| Median | Middle value (P50) |
+| Mode | Most frequent value(s); "none" if all unique |
+| Q1 / Q3 | Lower / upper quartile (P25 / P75, linear interpolation) |
+| IQR | Interquartile range (Q3 - Q1) |
+| Range | Max - Min |
+| σ | Population standard deviation |
+| σ² | Population variance |
+| s | Sample standard deviation |
+| s² | Sample variance |
+| CV | Coefficient of variation (s / x̅); — when mean is zero |
+| SEM | Standard error of mean (s / √n); — for n = 1 |
+| Skewness | Adjusted Fisher-Pearson skewness; — for n < 3 |
+| Kurtosis | Excess kurtosis (Fisher); — for n < 4 |
 | Min / Max | Smallest / largest value |
+
+Fixed percentiles P10, P25, P50, P75, P90 are shown below the main stats. Press **+ Add percentile** to add a custom Pn query (enter any value 0-100); press **×** to remove it.
 
 ### 2-Variable tab
 

@@ -89,7 +89,9 @@ Accessed via MODE menu (item 1).
 
 Accessed via MODE menu (item 3).
 
-- 1-variable tab: enter x values; computes n, Σx, mean, median, Q1, Q3, population std dev and variance, min, max
+- 1-variable tab: enter x values; computes n, Σx, Σx², mean, median, mode, Q1, Q3, IQR, range, population std dev (σ) and variance (σ²), sample std dev (s) and variance (s²), CV, SEM, skewness (Fisher), excess kurtosis, min, max
+  - Fixed percentiles P10/P25/P50/P75/P90; dynamic custom percentile inputs (add/remove any number of Pn queries)
+  - Linear interpolation percentile method; NaN values display as — rather than erroring
 - 2-variable tab: enter (x, y) pairs; choose Linear, Quadratic, Exponential, or Power regression
   - Linear/Exp/Power: returns a, b, r, r²
   - Quadratic: returns a, b, c, r² (normal equations via 3x3 Gaussian elimination)

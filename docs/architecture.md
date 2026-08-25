@@ -181,7 +181,7 @@ The math input field is an exception. MathLive renders its content using its own
 
 ## Testing
 
-331 Vitest tests across three files, running in node environment.
+364 Vitest tests across three files, running in node environment.
 
 ```
 src/
@@ -198,5 +198,7 @@ Test categories in `mathEngine.test.js`:
 - evaluateExpression: arithmetic, powers/roots, trig (deg + rad), inverse trig, reciprocal trig, logs, combinatorics, Ans, constants, expected failures, full MathLive pipeline per button, complex numbers, matrix variables in scope, OPS matrix operations, OPS vector operations (inline and stored 1-row variables)
 - polyRoots: degree 1-6, real and complex roots, repeated roots
 - solveLinearSystem: 2x2 through 5x5, singular matrix error
-- oneVarStats: n/sum/mean/median/quartiles/stddev/variance/min/max, edge cases
+- oneVarStats: n/sum/Σx²/mean/median/mode/quartiles/IQR/range/stddev/variance/sampleStddev/sampleVariance/CV/SEM/skewness/kurtosis/min/max, edge cases
+- percentile: linear interpolation, P0/P50/P100 boundaries, single element, empty array
+- mode: single mode, bimodal, no mode, empty, sorted output
 - twoVarStats: linear/quadratic/exponential/power regression, perfect fits, domain errors
