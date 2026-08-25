@@ -61,7 +61,7 @@ export const ROWS = [
     { id: 'const', label: 'CONST',  action: 'openConst', mod: true },
     { id: 'conv',  label: 'CONV',   action: 'openConv',  mod: true },
     { id: 'solve', label: 'SOLVE',  action: 'openSolve', mod: true },
-    { id: 'basen', label: 'BASE-N', action: 'cycleBase', mod: true },
+    { id: 'basen', label: 'BASE-N', action: 'openBaseN', mod: true },
     { id: 'ops',   label: 'OPS',    action: 'openOps',   mod: true },
   ],
 ]

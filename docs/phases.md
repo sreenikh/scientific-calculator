@@ -121,26 +121,22 @@ Accessed via MODE menu (item 4).
 
 ## Phase 4 - Base-N and QoL `[in progress]`
 
-### Base-N calculator `[done]`
+### Base-N panel `[done]`
 
-Pressing the **BASE-N** key in the bottom mod row cycles the calculator through DEC -> HEX -> OCT -> BIN and back. When any non-decimal base is active:
+Accessed via the **BASE-N** key in the bottom mod row. Opens an overlay with two tabs.
 
-- The standard keypad and MathLive field are replaced by a dedicated integer calculator for that base
-- The expression input accepts digits valid for the active base (e.g. A-F in HEX)
-- Operators: + - * / % (mod), AND/OR/XOR/NOT (and &/|/^/~), << >> (bitwise shift), parentheses for grouping
-- Numbers are arbitrary-precision BigInt - no 32-bit limit
-- Result is shown simultaneously in BIN, OCT, DEC, and HEX; the active base is highlighted
-- Switching back to DEC (or pressing BASE-N until DEC) restores the normal scientific calculator
-- The status bar shows HEX/OCT/BIN when a non-decimal base is active
+**Numbers tab:**
+- Base selector (DEC/HEX/OCT/BIN) acts like the DRG toggle: selecting a base changes the calculator mode
+- When a non-decimal base is active, the status bar shows HEX/OCT/BIN and integer results on the main screen are reformatted in that base
+- Expression input accepts any base-valid digits and operators: + - * / % AND OR XOR NOT & | ^ ~ << >> ( )
+- Numbers are arbitrary-precision BigInt - no overflow
+- Result is shown in all four bases; the active base row is highlighted
 
-### K-Map minimizer `[done]`
-
-Accessed via **MODE -> 5 K-MAP**.
-
-- Variable count: 2, 3, 4, 5, or 6 variables use a visual Gray-code grid; 7 or 8 variables use a flat scrollable minterm list
+**K-map tab:**
+- Variable count: 2-6 variables use a visual Gray-code grid (5-var: 4x8, 6-var: 8x8); 7-8 variables use a flat scrollable minterm list
 - Cells cycle 0 -> 1 -> X (don't care) on click
-- Minimize runs Quine-McCluskey: finds all prime implicants, selects essential primes, greedy cover for the rest
-- Result: minimal sum-of-products (SOP) in A/B/C/D/E/F/G/H with complements written as A'/B'
+- Minimize runs Quine-McCluskey: essential primes + greedy cover
+- Result: minimal SOP in A/B/C/D/E/F/G/H with complements as A'/B'
 - Clear button resets all cells
 
 ### Memory

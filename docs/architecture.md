@@ -200,7 +200,11 @@ The math input field is an exception. MathLive renders its content using its own
 
 `evaluateBaseExpr` supports: `+`, `-`, `*`, `/`, `%`, `AND`/`OR`/`XOR`/`NOT` (keywords or `&`/`|`/`^`/`~`), `<<`, `>>`, parentheses, unary minus. Numbers are BigInt so there is no word-size limit. `NOT` uses a 64-bit mask.
 
-Cells encode: 0 = minterm 0, 1 = minterm 1, 2 = don't care. `karnaughMinimize` returns `'0'` for no minterms and `'1'` when all cells are covered. For 7-8 variables there is no visual grid; the K-map panel uses a flat scrollable minterm list.
+Cells encode: 0 = minterm 0, 1 = minterm 1, 2 = don't care. `karnaughMinimize` returns `'0'` for no minterms and `'1'` when all cells are covered.
+
+For 2-6 variables the K-map tab uses `kmapDims`/`kmapHeaders`/`kmapMinterm` to render a visual Gray-code grid. For 7-8 variables there is no visual grid; the panel shows a flat scrollable minterm list of 128 or 256 cells.
+
+The Numbers tab passes `baseMode` from App state (via `onSetBase` callback) so choosing a base inside the panel also changes the global mode. App.jsx's `formatInBase` converts integer results to the selected base for the main result line. The status bar shows HEX/OCT/BIN when non-decimal.
 
 ---
 

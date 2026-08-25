@@ -5,7 +5,7 @@ const ALL_KEYS  = ROWS.flat()
 const ALL_VALID_ACTIONS = new Set([
   'toggleShift', 'toggleAlpha', 'openModeMenu', 'toggleAngle',
   'clear', 'del', 'evaluate',
-  'openConst', 'openConv', 'openSolve', 'openDeriv', 'openInteg', 'cycleBase', 'openOps',
+  'openConst', 'openConv', 'openSolve', 'openDeriv', 'openInteg', 'openBaseN', 'openOps',
 ])
 
 describe('keypad structure', () => {
@@ -128,7 +128,7 @@ describe('keypad key contracts: modifier / action keys', () => {
   it('CONST  → openConst',    () => expect(key('const').action).toBe('openConst'))
   it('CONV   → openConv',     () => expect(key('conv').action).toBe('openConv'))
   it('SOLVE  → openSolve',    () => expect(key('solve').action).toBe('openSolve'))
-  it('BASE-N → cycleBase',    () => expect(key('basen').action).toBe('cycleBase'))
+  it('BASE-N → openBaseN',    () => expect(key('basen').action).toBe('openBaseN'))
   it('d/dx   → openDeriv',    () => expect(key('deriv').action).toBe('openDeriv'))
   it('∫dx    → openInteg',    () => expect(key('integ').action).toBe('openInteg'))
 })
