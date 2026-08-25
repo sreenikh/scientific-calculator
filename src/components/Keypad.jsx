@@ -1,7 +1,19 @@
 import { ROWS } from './keypadConfig.js'
 
-export default function Keypad({ shiftActive, alphaActive, onInsert, onAction }) {
+const DIGIT_TO_VAR = { '1':'A','2':'B','3':'C','4':'D','5':'E','6':'F','7':'G','8':'H','9':'I','0':'J' }
+
+export default function Keypad({ shiftActive, alphaActive, stoActive, onInsert, onAction }) {
   function press(key) {
+    // STO mode: digit keys store ans to memory variable; anything else cancels STO and falls through.
+    if (stoActive) {
+      if (key.id in DIGIT_TO_VAR) {
+        onAction('storeMem_' + DIGIT_TO_VAR[key.id])
+        return
+      }
+      onAction('consumeSto')
+      // Fall through so the key still does its normal thing.
+    }
+
     // Check shift/alpha layers first so SHIFT+key correctly overrides primary action.
     if (shiftActive && key.shift) {
       if (key.shift.action) onAction(key.shift.action)

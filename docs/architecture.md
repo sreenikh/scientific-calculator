@@ -250,6 +250,7 @@ Test categories in `mathEngine.test.js`:
 - bitwiseOp: AND/OR/XOR/NOT, left and logical right shift, unsigned 32-bit semantics (legacy)
 - evaluateBaseExpr: arithmetic (+/-/*//%)), bitwise (AND/OR/XOR/NOT/&/|/^/~/<</>>) in hex/binary/decimal, large numbers, error cases (invalid digit, division by zero), mixed-base prefixes (0b/0x/0o/0h/0d)
 - validateBaseDigits: BIN rejects 2-9, OCT rejects 8-9, DEC/HEX always null; reports base name and offending digit in error string
+- keypad contracts: SHIFT+AC = activateSto
 - normalizeExpression - hyperbolic inverse bridge: a s i n h/a c o s h/a t a n h -> asinh/acosh/atanh
 - evaluateExpression - hyperbolic functions: sinh/cosh/tanh at 0 and 1, roundtrip inverses asinh/acosh/atanh
 - kmapMinterm: 2-var, 3-var, 5-var, 6-var Gray code ordering

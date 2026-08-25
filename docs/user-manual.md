@@ -157,6 +157,42 @@ Factorial: type `5` then press **x!** to get `5!`.
 
 ---
 
+## Memory (STO / RCL)
+
+The calculator has 10 scalar memory slots: **A through J**.
+
+### Storing a value
+
+1. Evaluate an expression to get a result.
+2. Press **SHIFT** then **AC** - the status bar shows **STO** in amber.
+3. Press a digit key **1-9** or **0** to store to slot A-J (1=A, 2=B, ..., 9=I, 0=J).
+
+The STO indicator clears and the slot letter appears in teal in the status bar.
+
+Pressing any non-digit key while STO is active cancels the store and processes that key normally.
+
+### Recalling a value
+
+Type the slot letter directly in any expression using the **ALPHA** layer:
+
+| Press | Inserts |
+|-------|---------|
+| ALPHA + 1 | A |
+| ALPHA + 2 | B |
+| ... | ... |
+| ALPHA + 0 | J |
+
+Pressing **=** evaluates the expression with the stored value substituted.
+
+**Example:**
+1. Evaluate `25 * 4` → result is `100`.
+2. Press SHIFT → AC → 1 → stores `100` to slot A.
+3. Type `sqrt(` → ALPHA+1 → `)` → press `=` → evaluates `sqrt(A)` → result is `10`.
+
+**Note:** If the same slot holds both a memory scalar and a matrix (stored via the Matrix panel), the matrix takes precedence in expressions.
+
+---
+
 ## Angle mode (DRG)
 
 Press **DRG** to toggle between **DEG** and **RAD**. The status bar updates immediately. All trig functions and their inverses use the active mode.

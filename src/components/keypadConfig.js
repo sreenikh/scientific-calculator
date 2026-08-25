@@ -43,7 +43,7 @@ export const ROWS = [
     { id: '8',   label: '8',   insert: '8', alpha: { label: 'H', insert: 'H' } },
     { id: '9',   label: '9',   insert: '9', alpha: { label: 'I', insert: 'I' } },
     { id: 'del', label: 'DEL', action: 'del' },
-    { id: 'ac',  label: 'AC',  action: 'clear' },
+    { id: 'ac',  label: 'AC',  action: 'clear', shift: { label: 'STO', action: 'activateSto' } },
   ],
   [
     { id: '4',   label: '4', insert: '4', alpha: { label: 'D', insert: 'D' } },
