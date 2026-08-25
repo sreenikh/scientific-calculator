@@ -360,9 +360,10 @@ table.iter th:first-child, table.iter td:first-child { text-align: left; color: 
 
 .stat-results { display: flex; flex-direction: column; gap: 0.4dvh; border-top: 1px solid #33384A; padding-top: 0.8dvh; }
 .stat-result-eq { font-size: 1.3dvh; color: var(--amber); font-weight: 700; margin-bottom: 0.4dvh; }
-.stat-result-row { display: flex; justify-content: space-between; align-items: baseline; font-size: 1.2dvh; }
-.stat-result-label { color: var(--steel); min-width: 4vw; }
-.stat-result-val { color: #EDEAE0; }
+.stat-result-row { display: flex; align-items: baseline; font-size: 1.2dvh; gap: 0.3vw; }
+.stat-result-label { color: var(--steel); flex-shrink: 0; }
+.stat-result-leader { flex: 1; border-bottom: 1px dotted #3A3F4E; margin-bottom: 0.25dvh; min-width: 1vw; }
+.stat-result-val { color: #EDEAE0; flex-shrink: 0; }
 
 .stat-pct-header { font-size: 1dvh; color: var(--amber); text-transform: uppercase; letter-spacing: 1px; margin-top: 0.6dvh; padding-top: 0.6dvh; border-top: 1px solid #33384A; }
 .stat-pct-custom-row { display: flex; align-items: center; gap: 0.4vw; font-size: 1.2dvh; margin-top: 0.3dvh; }

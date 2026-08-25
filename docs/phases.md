@@ -70,12 +70,16 @@ Accessed via MODE menu.
 
 ### OPS panel `[done]`
 
-Dedicated OPS button in the bottom row opens an operations menu with two tabs:
+Dedicated OPS button in the bottom row opens an operations menu with four tabs:
 
+- Math: abs (absolute value / complex magnitude), mod (remainder after division), floor, ceil, round, sign
 - Matrix: inv, det, trace, transpose, size
 - Vector: dot (any length, both same size), cross (requires 3-component vectors), norm
+- Complex: polar, abs, arg, conj, re, im
 
 Operations insert `\operatorname{fn}(` via the MathLive API, which normalizeExpression converts to valid math.js syntax before evaluation.
+
+`%` is available on ALPHA+× and evaluates as percentage (divide by 100): `50%` = 0.5. Modulo is separate via `mod(a, b)` in the Math tab.
 
 ### Equation mode `[done]`
 
@@ -89,7 +93,9 @@ Accessed via MODE menu (item 1).
 
 Accessed via MODE menu (item 3).
 
-- 1-variable tab: enter x values; computes n, Σx, mean, median, Q1, Q3, population std dev and variance, min, max
+- 1-variable tab: enter x values; computes n, Σx, Σx², mean, median, mode, Q1, Q3, IQR, range, population std dev (σ) and variance (σ²), sample std dev (s) and variance (s²), CV, SEM, skewness (Fisher), excess kurtosis, min, max
+  - Fixed percentiles P10/P25/P50/P75/P90; dynamic custom percentile inputs (add/remove any number of Pn queries)
+  - Linear interpolation percentile method; NaN values display as — rather than erroring
 - 2-variable tab: enter (x, y) pairs; choose Linear, Quadratic, Exponential, or Power regression
   - Linear/Exp/Power: returns a, b, r, r²
   - Quadratic: returns a, b, c, r² (normal equations via 3x3 Gaussian elimination)
