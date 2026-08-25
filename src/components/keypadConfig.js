@@ -41,7 +41,7 @@ export const ROWS = [
     { id: '4',   label: '4', insert: '4', alpha: { label: 'D', insert: 'D' } },
     { id: '5',   label: '5', insert: '5', alpha: { label: 'E', insert: 'E' } },
     { id: '6',   label: '6', insert: '6', alpha: { label: 'F', insert: 'F' } },
-    { id: 'mul', label: '×', insert: '\\times ' },
+    { id: 'mul', label: '×', insert: '\\times ', alpha: { label: '%', insert: '%' } },
     { id: 'div', label: '÷', insert: '\\frac{#0}{}' },
   ],
   [

@@ -485,6 +485,35 @@ describe('normalizeExpression: complex operatorname bridge', () => {
   it('i m (      -> im(',    () => expect(normalizeExpression('i m (')).toBe('im('))
 })
 
+describe('normalizeExpression: math operatorname bridge', () => {
+  it('m o d (    -> mod(',   () => expect(normalizeExpression('m o d (')).toBe('mod('))
+  it('f l o o r ( -> floor(', () => expect(normalizeExpression('f l o o r (')).toBe('floor('))
+  it('c e i l (  -> ceil(',  () => expect(normalizeExpression('c e i l (')).toBe('ceil('))
+  it('r o u n d ( -> round(', () => expect(normalizeExpression('r o u n d (')).toBe('round('))
+  it('s i g n (  -> sign(',  () => expect(normalizeExpression('s i g n (')).toBe('sign('))
+  it('50%        -> 50/100', () => expect(normalizeExpression('50%')).toBe('50/100'))
+  it('25.5%      -> 25.5/100', () => expect(normalizeExpression('25.5%')).toBe('25.5/100'))
+  it('50% + 20%  -> 50/100 + 20/100', () => expect(normalizeExpression('50% + 20%')).toBe('50/100 + 20/100'))
+})
+
+describe('evaluateExpression: OPS Math tab functions', () => {
+  it('abs(-7) = 7',          () => expect(evaluateExpression('abs(-7)').value).toBeCloseTo(7, 10))
+  it('abs(3+4i) = 5',        () => expect(evaluateExpression('abs(3+4i)').value).toBeCloseTo(5, 10))
+  it('mod(10, 3) = 1',       () => expect(evaluateExpression('mod(10, 3)').value).toBeCloseTo(1, 10))
+  it('mod(7, 2) = 1',        () => expect(evaluateExpression('mod(7, 2)').value).toBeCloseTo(1, 10))
+  it('floor(3.9) = 3',       () => expect(evaluateExpression('floor(3.9)').value).toBeCloseTo(3, 10))
+  it('floor(-1.2) = -2',     () => expect(evaluateExpression('floor(-1.2)').value).toBeCloseTo(-2, 10))
+  it('ceil(3.1) = 4',        () => expect(evaluateExpression('ceil(3.1)').value).toBeCloseTo(4, 10))
+  it('ceil(-1.8) = -1',      () => expect(evaluateExpression('ceil(-1.8)').value).toBeCloseTo(-1, 10))
+  it('round(3.5) = 4',       () => expect(evaluateExpression('round(3.5)').value).toBeCloseTo(4, 10))
+  it('round(3.4) = 3',       () => expect(evaluateExpression('round(3.4)').value).toBeCloseTo(3, 10))
+  it('sign(-5) = -1',        () => expect(evaluateExpression('sign(-5)').value).toBeCloseTo(-1, 10))
+  it('sign(0) = 0',          () => expect(evaluateExpression('sign(0)').value).toBeCloseTo(0, 10))
+  it('sign(3) = 1',          () => expect(evaluateExpression('sign(3)').value).toBeCloseTo(1, 10))
+  it('50% evaluates to 0.5', () => expect(evaluateExpression('50%').value).toBeCloseTo(0.5, 10))
+  it('1 + 50% = 1.5',        () => expect(evaluateExpression('1 + 50%').value).toBeCloseTo(1.5, 10))
+})
+
 describe('evaluateExpression: OPS panel - complex operations', () => {
   it('polar(5, 53.13) in DEG is approximately 3+4i', () => {
     const r = evaluateExpression('polar(5, 53.13)', { angleMode: 'deg' })

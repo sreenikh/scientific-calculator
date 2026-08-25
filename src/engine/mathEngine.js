@@ -75,6 +75,12 @@ export function normalizeExpression(raw) {
     .replace(/\bc o n j \(/g, 'conj(')
     .replace(/\br e \(/g, 're(')
     .replace(/\bi m \(/g, 'im(')
+    .replace(/\bm o d \(/g, 'mod(')
+    .replace(/\bf l o o r \(/g, 'floor(')
+    .replace(/\bc e i l \(/g, 'ceil(')
+    .replace(/\br o u n d \(/g, 'round(')
+    .replace(/\bs i g n \(/g, 'sign(')
+    .replace(/%/g, '/100')
     .replace(/\bA n s\b/g, 'Ans')
     .trim()
 }

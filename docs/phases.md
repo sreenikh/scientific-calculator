@@ -70,12 +70,16 @@ Accessed via MODE menu.
 
 ### OPS panel `[done]`
 
-Dedicated OPS button in the bottom row opens an operations menu with two tabs:
+Dedicated OPS button in the bottom row opens an operations menu with four tabs:
 
+- Math: abs (absolute value / complex magnitude), mod (remainder after division), floor, ceil, round, sign
 - Matrix: inv, det, trace, transpose, size
 - Vector: dot (any length, both same size), cross (requires 3-component vectors), norm
+- Complex: polar, abs, arg, conj, re, im
 
 Operations insert `\operatorname{fn}(` via the MathLive API, which normalizeExpression converts to valid math.js syntax before evaluation.
+
+`%` is available on ALPHA+× and evaluates as percentage (divide by 100): `50%` = 0.5. Modulo is separate via `mod(a, b)` in the Math tab.
 
 ### Equation mode `[done]`
 

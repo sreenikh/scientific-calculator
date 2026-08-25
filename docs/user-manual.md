@@ -289,6 +289,19 @@ Type `inv(A)`, `A*B`, `det(A)`, `transpose(B)`, `A-B`, `2*C` directly in the mai
 
 Press **OPS** to open the operations menu. Click an operation to insert it into the math field, then fill in the arguments and press **=**.
 
+### Math tab
+
+| Operation | Description |
+|-----------|-------------|
+| abs | Absolute value (real numbers) or complex magnitude |
+| mod | Remainder after division: `mod(a, b)` |
+| floor | Round down to nearest integer |
+| ceil | Round up to nearest integer |
+| round | Round to nearest integer |
+| sign | Sign of a number: -1, 0, or 1 |
+
+**Percentage vs modulo:** `%` (ALPHA+×) means divide by 100 -- `50%` evaluates to 0.5. For integer remainder use `mod(a, b)` from the Math tab.
+
 ### Matrix tab
 
 | Operation | Description | Requires |
@@ -308,6 +321,17 @@ Press **OPS** to open the operations menu. Click an operation to insert it into 
 | norm | Magnitude / length | Any vector |
 
 Vectors can be stored as 1-row slots (e.g. slot C at 1x3) or entered inline as `[1, 2, 3]`. Cross product requires 3-component vectors specifically.
+
+### Complex tab
+
+| Operation | Description |
+|-----------|-------------|
+| polar | Build complex from polar: `polar(r, θ)` -- angle follows DEG/RAD mode |
+| abs | Magnitude of a complex number |
+| arg | Argument (angle) -- follows DEG/RAD mode |
+| conj | Complex conjugate: a+bi → a-bi |
+| re | Real part |
+| im | Imaginary part |
 
 ---
 

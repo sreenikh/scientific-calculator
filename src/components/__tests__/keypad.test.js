@@ -132,3 +132,9 @@ describe('keypad key contracts: modifier / action keys', () => {
   it('d/dx   → openDeriv',    () => expect(key('deriv').action).toBe('openDeriv'))
   it('∫dx    → openInteg',    () => expect(key('integ').action).toBe('openInteg'))
 })
+
+describe('keypad key contracts: arithmetic operators', () => {
+  it('× inserts \\times ',     () => expect(key('mul').insert).toBe('\\times '))
+  it('ALPHA × inserts %',      () => expect(key('mul').alpha.insert).toBe('%'))
+  it('÷ inserts \\frac{#0}{}', () => expect(key('div').insert).toBe('\\frac{#0}{}'))
+})

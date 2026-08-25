@@ -181,7 +181,7 @@ The math input field is an exception. MathLive renders its content using its own
 
 ## Testing
 
-364 Vitest tests across three files, running in node environment.
+390 Vitest tests across three files, running in node environment.
 
 ```
 src/
