@@ -137,3 +137,44 @@ export function twoVarStats(xs, ys, model = 'linear') {
 
   return { ok: false, error: 'Unknown model' }
 }
+
+// Multiple linear regression: y = b0 + b1*x1 + b2*x2 + ... + bk*xk
+// data: array of rows; each row is [x1, x2, ..., xk, y] (all numeric, length k+1)
+export function multiVarStats(data, k) {
+  const valid = data.filter(row => row.length === k + 1 && row.every(v => isFinite(v)))
+  const n = valid.length
+  const minPoints = k + 2
+  if (n < minPoints) return { ok: false, error: `Need at least ${minPoints} data points for ${k}-predictor regression` }
+
+  const p = k + 1
+  // Design matrix rows: [1, x1, x2, ..., xk]
+  const X = valid.map(row => [1, ...row.slice(0, k)])
+  const y = valid.map(row => row[k])
+
+  // XtX (p x p) and Xty (p x 1) via normal equations
+  const XtX = Array.from({ length: p }, (_, i) =>
+    Array.from({ length: p }, (_, j) =>
+      X.reduce((s, row) => s + row[i] * row[j], 0)
+    )
+  )
+  const Xty = Array.from({ length: p }, (_, i) =>
+    X.reduce((s, row, ri) => s + row[i] * y[ri], 0)
+  )
+
+  const sol = solveLinearSystem(XtX, Xty)
+  if (!sol.ok) return { ok: false, error: 'Cannot fit: predictors may be collinear' }
+
+  const coeffs = sol.solution   // [b0, b1, ..., bk]
+
+  const yMean = y.reduce((s, v) => s + v, 0) / n
+  let ssTot = 0, ssRes = 0
+  for (let i = 0; i < n; i++) {
+    const yHat = X[i].reduce((s, x, j) => s + x * coeffs[j], 0)
+    ssTot += (y[i] - yMean) ** 2
+    ssRes += (y[i] - yHat) ** 2
+  }
+  const r2    = ssTot < 1e-12 ? 1 : 1 - ssRes / ssTot
+  const adjR2 = n > k + 1 ? 1 - (1 - r2) * (n - 1) / (n - k - 1) : NaN
+
+  return { ok: true, k, n, coeffs, r2, adjR2 }
+}

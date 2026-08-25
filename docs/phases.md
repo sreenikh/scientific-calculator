@@ -100,6 +100,9 @@ Accessed via MODE menu (item 3).
   - Linear/Exp/Power: returns a, b, r, r²
   - Quadratic: returns a, b, c, r² (normal equations via 3x3 Gaussian elimination)
   - Exponential and Power models linearize via log transform; require y > 0 (Power also requires x > 0)
+- k-variable tab: multiple linear regression with 2-5 predictors; y = b0 + b1*x1 + ... + bk*xk
+  - Normal equations solved via Gaussian elimination; returns b0..bk, R², adjusted R²
+  - Detects collinear predictors and returns an error
 - Scrollable data list; rows added on demand; individual rows deletable
 
 ### Distribution mode `[planned]`
