@@ -127,8 +127,9 @@ Accessed via MODE menu (item 4).
 
 **BASE button** (top modifier row, alongside SHIFT / ALPHA / MODE / DRG):
 - Cycles DEC -> HEX -> OCT -> BIN -> DEC, exactly like DRG cycles DEG/RAD
-- Status bar shows the active base when non-decimal; integer results are reformatted automatically
+- Status bar shows the active base when non-decimal; integer results are reformatted immediately when cycling
 - The main screen, MathLive field, and keypad remain unchanged
+- Digit validation: BIN rejects digits 2-9; OCT rejects 8-9; invalid input shows an error instead of evaluating
 
 **BASE-N panel** (bottom mod row key) - overlay with two tabs:
 

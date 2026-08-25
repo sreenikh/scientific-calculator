@@ -201,6 +201,7 @@ The math input field is an exception. MathLive renders its content using its own
 | `findMinimalCover(numVars, minterms, primes)` | Essential primes + greedy cover |
 | `formatImplicant(prime, numVars)` | SOP term string, e.g. `"AB'"` |
 | `karnaughMinimize(vars, cells)` | Full minimization: cells array (0/1/2) -> minimal SOP string |
+| `validateBaseDigits(expr, baseMode)` | Returns an error string if the expression contains digits invalid for the active base (e.g. `'5'` in BIN), or null if valid |
 
 `evaluateBaseExpr` supports: `+`, `-`, `*`, `/`, `%`, `AND`/`OR`/`XOR`/`NOT` (keywords or `&`/`|`/`^`/`~`), `<<`, `>>`, parentheses, unary minus. Numbers are BigInt so there is no word-size limit. `NOT` uses a 64-bit mask.
 
@@ -248,6 +249,7 @@ Test categories in `mathEngine.test.js`:
 - format functions: formatBin (nibble grouping), formatOct, formatDec, formatHex (legacy 32-bit)
 - bitwiseOp: AND/OR/XOR/NOT, left and logical right shift, unsigned 32-bit semantics (legacy)
 - evaluateBaseExpr: arithmetic (+/-/*//%)), bitwise (AND/OR/XOR/NOT/&/|/^/~/<</>>) in hex/binary/decimal, large numbers, error cases (invalid digit, division by zero), mixed-base prefixes (0b/0x/0o/0h/0d)
+- validateBaseDigits: BIN rejects 2-9, OCT rejects 8-9, DEC/HEX always null; reports base name and offending digit in error string
 - normalizeExpression - hyperbolic inverse bridge: a s i n h/a c o s h/a t a n h -> asinh/acosh/atanh
 - evaluateExpression - hyperbolic functions: sinh/cosh/tanh at 0 and 1, roundtrip inverses asinh/acosh/atanh
 - kmapMinterm: 2-var, 3-var, 5-var, 6-var Gray code ordering

@@ -408,9 +408,19 @@ Vectors can be stored as 1-row slots (e.g. slot C at 1x3) or entered inline as `
 Press **BASE** (top modifier row, next to DRG) to cycle through base modes: DEC -> HEX -> OCT -> BIN -> DEC.
 
 - The status bar updates immediately: **HEX**, **OCT**, or **BIN** appears next to DEG/RAD when a non-decimal base is active.
-- All integer results are automatically reformatted in the active base. For example, evaluating `255` in HEX mode shows `FF`.
+- The current result is reformatted in the new base as soon as you press BASE - no need to press = again.
 - The screen, math field, and keypad are unchanged - everything works exactly as in decimal mode.
 - Press BASE again to cycle to the next base.
+
+**Digit validation:** when a non-decimal base is active, pressing = validates the expression before evaluating:
+
+| Mode | Invalid digits |
+|------|----------------|
+| BIN | 2 3 4 5 6 7 8 9 |
+| OCT | 8 9 |
+| HEX | none (0-9 are all valid hex digits) |
+
+Typing `5 + 6` in BIN mode and pressing = shows an error: `'5' is not a valid digit in BIN mode`.
 
 ---
 
@@ -540,5 +550,6 @@ Returns a numeric approximation using Simpson's rule with 200 subintervals.
 | cross() requires 3-component vectors | cross called on 2D or other non-3D vectors | Store or enter vectors as 1x3 |
 | Matrix must be square | det or inv called on a non-square matrix | Use a 2x2, 3x3, etc. slot |
 | Math error: division by zero | Expression divides by zero | Check the denominator |
+| 'X' is not a valid digit in BIN/OCT mode | Expression contains a digit outside the active base | Use only 0-1 in BIN, 0-7 in OCT |
 
 **Result shows `-inf`** - the input is outside the function's domain (e.g. `log(0)`). This is a math domain issue, not a calculator bug.
