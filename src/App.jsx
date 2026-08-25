@@ -14,7 +14,7 @@ import StatPanel from './components/StatPanel'
 import DistributionPanel from './components/DistributionPanel'
 import BaseNPanel from './components/BaseNPanel'
 import { evaluateExpression, formatValue } from './engine/mathEngine'
-import { formatAllBases } from './engine/baseN'
+import { formatAllBases, validateBaseDigits } from './engine/baseN'
 import './App.css'
 
 const EMPTY_MATRIX_VARS = { A: null, B: null, C: null, D: null, E: null, F: null, G: null, H: null, I: null, J: null }
@@ -61,6 +61,8 @@ export default function App() {
 
   function evaluate() {
     const exprToUse = asciiMath || latex
+    const baseErr = validateBaseDigits(exprToUse, baseMode)
+    if (baseErr) { setError(baseErr); return }
     const vars = { Ans: ans }
     for (const [k, v] of Object.entries(matrixVars)) {
       if (v !== null) vars[k] = v

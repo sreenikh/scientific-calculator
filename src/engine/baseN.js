@@ -373,6 +373,19 @@ export function formatImplicant(prime, numVars, varNames = DEFAULT_VARS) {
   return term || '1'
 }
 
+// Returns an error string if any numeric literal in expr uses a digit invalid for baseMode.
+// BIN: only 0 and 1 allowed. OCT: only 0-7 allowed. HEX/DEC: no restriction.
+export function validateBaseDigits(expr, baseMode) {
+  if (baseMode === 'dec' || baseMode === 'hex') return null
+  const invalid = baseMode === 'bin' ? /[2-9]/ : /[89]/
+  const nums = expr.match(/\d+/g) || []
+  for (const n of nums) {
+    const m = n.match(invalid)
+    if (m) return `'${m[0]}' is not a valid digit in ${baseMode.toUpperCase()} mode`
+  }
+  return null
+}
+
 export function karnaughMinimize(vars, cells) {
   const total = 1 << vars
   const minterms = [], dontCares = []

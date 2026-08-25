@@ -216,7 +216,7 @@ The Numbers tab passes `baseMode` from App state (via `onSetBase` callback) so c
 
 ## Testing
 
-568 Vitest tests across five files, running in node environment.
+578 Vitest tests across five files, running in node environment.
 
 ```
 src/

@@ -4,6 +4,7 @@ import {
   bitwiseOp, evaluateBaseExpr,
   kmapMinterm, kmapDims,
   findPrimeImplicants, findMinimalCover, formatImplicant, karnaughMinimize,
+  validateBaseDigits,
 } from '../baseN'
 
 // ---------- parseBase ----------
@@ -230,4 +231,19 @@ describe('formatImplicant', () => {
   it('mask=1 value=2 -> A',             () => expect(formatImplicant({ value: 2, mask: 1 }, 2)).toBe('A'))
   it('mask=2 value=1 -> B',             () => expect(formatImplicant({ value: 1, mask: 2 }, 2)).toBe('B'))
   it('all masked -> 1',                 () => expect(formatImplicant({ value: 0, mask: 3 }, 2)).toBe('1'))
+})
+
+// ---------- validateBaseDigits ----------
+
+describe('validateBaseDigits', () => {
+  it('dec mode: always returns null',         () => expect(validateBaseDigits('5+6', 'dec')).toBeNull())
+  it('hex mode: always returns null',         () => expect(validateBaseDigits('9+A', 'hex')).toBeNull())
+  it('bin mode: 0+1 valid',                   () => expect(validateBaseDigits('0+1', 'bin')).toBeNull())
+  it('bin mode: 5 is invalid',                () => expect(validateBaseDigits('5+6', 'bin')).toMatch(/'5'/))
+  it('bin mode: 2 is invalid',                () => expect(validateBaseDigits('1+2', 'bin')).toMatch(/'2'/))
+  it('bin mode: reports BIN in message',      () => expect(validateBaseDigits('3', 'bin')).toMatch(/BIN/))
+  it('oct mode: 0-7 valid',                   () => expect(validateBaseDigits('7+3', 'oct')).toBeNull())
+  it('oct mode: 8 is invalid',               () => expect(validateBaseDigits('8+1', 'oct')).toMatch(/'8'/))
+  it('oct mode: 9 is invalid',               () => expect(validateBaseDigits('9', 'oct')).toMatch(/'9'/))
+  it('oct mode: reports OCT in message',      () => expect(validateBaseDigits('9', 'oct')).toMatch(/OCT/))
 })
