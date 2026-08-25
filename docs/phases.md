@@ -123,22 +123,20 @@ Accessed via MODE menu (item 4).
 
 ### Base-N mode `[done]`
 
-Accessed via the **BASE-N** key in the bottom mod row. Opens an overlay with two tabs.
+**BASE button** (top modifier row, alongside SHIFT / ALPHA / MODE / DRG):
+- Cycles DEC -> HEX -> OCT -> BIN -> DEC, exactly like DRG cycles DEG/RAD
+- Status bar shows the active base when non-decimal; integer results are reformatted automatically
+- The main screen, MathLive field, and keypad remain unchanged
 
-**Numbers tab - base mode selector:**
-- Base selector (DEC/HEX/OCT/BIN) acts like the DRG toggle: selecting HEX/OCT/BIN switches the entire main screen and keypad to a dedicated base-N calculator
-- Clicking DEC returns to the scientific calculator
+**BASE-N panel** (bottom mod row key) - overlay with two tabs:
 
-**Dedicated base-N calculator (shown when HEX/OCT/BIN is active):**
-- Status bar with DEC/HEX/OCT/BIN toggle buttons and SHIFT/ALPHA indicators
-- Dedicated keypad: hex digit keys A-F (disabled when not HEX), digit keys 0-9 (some disabled per active base), arithmetic (+/-/*/%), bitwise AND/OR/XOR/NOT/<</>>
-- Plain text expression input; keyboard-typeable; Enter evaluates
-- Mixed-base prefix notation: `0b` binary, `0x`/`0h` hex, `0o` octal, `0d` decimal -- usable within any expression regardless of active base (e.g. `A + 0b10` in HEX = 12)
+*Numbers tab:*
+- Base selector (DEC/HEX/OCT/BIN) provides the same mode switch as the BASE button
+- Plain-text expression evaluator with +/-/*/% and AND/OR/XOR/NOT/<</>>
 - Numbers are arbitrary-precision BigInt - no overflow
-- Result shown in all four bases simultaneously; active base row highlighted in amber
-- KMAP button in the keypad opens the K-map tab
+- Result shown in all four bases simultaneously; active base highlighted
 
-**K-map tab:**
+*K-map tab:*
 - Variable count: 2-6 variables use a visual Gray-code grid (5-var: 4x8, 6-var: 8x8); 7-8 variables use a flat scrollable minterm list
 - Cells cycle 0 -> 1 -> X (don't care) on click
 - Minimize runs Quine-McCluskey: essential primes + greedy cover

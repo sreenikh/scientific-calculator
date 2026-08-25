@@ -8,6 +8,7 @@ export const ROWS = [
     { id: 'alpha', label: 'ALPHA', action: 'toggleAlpha', mod: true },
     { id: 'mode',  label: 'MODE',  action: 'openModeMenu', mod: true },
     { id: 'angle', label: 'DRG',   action: 'toggleAngle',  mod: true },
+    { id: 'base',  label: 'BASE',  action: 'cycleBase',    mod: true },
   ],
   [
     { id: 'sin', label: 'sin', insert: '\\sin(',   shift: { label: 'sin⁻¹', insert: '\\arcsin(' }, alpha: { label: 'csc', insert: '\\csc(' } },

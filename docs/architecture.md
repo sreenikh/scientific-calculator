@@ -31,7 +31,6 @@ graph TD
     App --> ST["StatPanel.jsx\n(1-var stats + regression)"]
     App --> DI["DistributionPanel.jsx\n(Normal + Binomial)"]
     App --> BNP["BaseNPanel.jsx\n(Numbers tab + K-map tab)"]
-    App --> BNC["BaseNCalculator.jsx\n(dedicated base-N keypad)"]
 
     Screen --> MF["&lt;math-field&gt;\n(MathLive web component)"]
 
@@ -45,7 +44,7 @@ graph TD
 
 The overlay panels (ConstPanel, ConvPanel, SolvePanel, CalculusPanel, ModePanel, MatrixPanel, OperationsPanel, EquationPanel, StatPanel, DistributionPanel, BaseNPanel) are rendered inside `.device` and cover the full calculator body with `position: absolute; inset: 0`. Only one is open at a time via `panel` state in App.
 
-When `baseMode` is `'hex'`, `'oct'`, or `'bin'`, App renders `BaseNCalculator` in place of the normal `Screen + HistoryStrip + Keypad` stack. `BaseNPanel` remains accessible from both modes (via the BASE-N key in normal mode or the KMAP button in the base-N keypad).
+The BASE button (top modifier row) cycles `baseMode` through `dec -> hex -> oct -> bin -> dec` via the `cycleBase` action, the same pattern as DRG cycling `angleMode`. When `baseMode` is non-decimal the status bar shows the active base and `formatInBase()` in App reformats integer results. `BaseNPanel` is an additional overlay for base-N expression evaluation and K-map minimization.
 
 ---
 

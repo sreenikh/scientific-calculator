@@ -28,8 +28,9 @@ A browser-based graphing scientific calculator with textbook-style math input.
 - Matrix/Vector panel: named slots A-J, size picker 1-4 rows/cols; 1-row slots act as vectors
 - OPS panel: Math tab (abs, mod, floor, ceil, round, sign), Matrix tab (inv, det, trace, transpose, size), Vector tab (dot, cross, norm), Complex tab (polar, abs, arg, conj, re, im)
 - `%` key (ALPHA+×) inserts a percentage: `50%` evaluates to 0.5; `mod(a,b)` is the separate modulo operation
-- BASE-N mode: press BASE-N to open the panel; Numbers tab has a base selector (DEC/HEX/OCT/BIN); selecting HEX/OCT/BIN replaces the main screen and keypad with a dedicated base-N calculator (Casio-style) - dedicated hex digit keys A-F, bitwise AND/OR/XOR/NOT/<</>> keys, disabled keys for invalid digits in the active base, result shown in all four bases simultaneously; clicking DEC returns to scientific mode; mixed-base prefixes supported: `0b` binary, `0x` hex, `0o` octal (e.g. `A + 0b10` in HEX = 12)
-- K-Map panel (BASE-N -> K-map tab, or KMAP button in base-N keypad): 2-8 variables; 2-6 vars use a Gray-code grid; 7-8 vars use a flat scrollable minterm list; cells cycle 0/1/X (don't care); Quine-McCluskey minimization to minimal SOP
+- BASE button (top modifier row, next to DRG): cycles DEC/HEX/OCT/BIN just like DRG cycles DEG/RAD; status bar shows active base; integer results reformatted automatically; main screen and keypad unchanged
+- BASE-N panel: Numbers tab has a base selector and BigInt expression evaluator (+/-/*/% AND/OR/XOR/NOT/<</>>), result shown in all four bases; K-map tab for Karnaugh map minimization
+- K-Map (BASE-N -> K-map tab): 2-8 variables; 2-6 vars use a Gray-code grid; 7-8 vars use a flat scrollable minterm list; cells cycle 0/1/X (don't care); Quine-McCluskey minimization to minimal SOP
 - Responsive layout: scales to any window size using dvh/vw units, no breakpoints
 
 ## Planned
@@ -106,6 +107,5 @@ src/
     StatPanel.jsx       - 1-variable stats and regression
     DistributionPanel.jsx  - normal and binomial distribution panel
     BaseNPanel.jsx         - base conversion (Numbers tab) and K-map solver (K-map tab)
-    BaseNCalculator.jsx    - dedicated base-N keypad (replaces main UI when HEX/OCT/BIN is active)
   App.jsx               - top-level state and wiring
 ```

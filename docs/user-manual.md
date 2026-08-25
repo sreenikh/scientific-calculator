@@ -391,41 +391,26 @@ Vectors can be stored as 1-row slots (e.g. slot C at 1x3) or entered inline as `
 
 ---
 
-## BASE-N mode
+## BASE key
 
-Press **BASE-N** to open the Base-N panel. It has two tabs: Numbers and K-map.
+Press **BASE** (top modifier row, next to DRG) to cycle through base modes: DEC -> HEX -> OCT -> BIN -> DEC.
 
-### Numbers tab - switching the base mode
-
-The **base selector** at the top (DEC / HEX / OCT / BIN) works like the DRG angle toggle:
-
-- Click **HEX**, **OCT**, or **BIN** to enter that base mode. The entire main screen and keypad are replaced with a dedicated base-N calculator (similar to a Casio BASE-N mode).
-- Click **DEC** (either in this panel or in the base-N keypad status bar) to return to the scientific calculator.
+- The status bar updates immediately: **HEX**, **OCT**, or **BIN** appears next to DEG/RAD when a non-decimal base is active.
+- All integer results are automatically reformatted in the active base. For example, evaluating `255` in HEX mode shows `FF`.
+- The screen, math field, and keypad are unchanged - everything works exactly as in decimal mode.
+- Press BASE again to cycle to the next base.
 
 ---
 
-### Dedicated base-N calculator
+## BASE-N panel
 
-When HEX, OCT, or BIN is active, the screen and keypad switch to a dedicated interface:
+Press **BASE-N** (bottom mod row) to open the Base-N panel. It has two tabs: Numbers and K-map.
 
-**Status bar:** DEC / HEX / OCT / BIN buttons let you switch base without reopening the panel. SHIFT and ALPHA indicators are shown.
+### Numbers tab
 
-**Expression input:** A plain text field. Type an expression using the keypad below or your keyboard, then press **=** or Enter.
+The **base selector** (DEC / HEX / OCT / BIN) at the top switches the global base mode, same as the BASE button.
 
-**Keypad:**
-
-| Key group | Keys | Notes |
-|-----------|------|-------|
-| Hex digits | A B C D E F | Disabled (greyed out) when not in HEX mode |
-| Digits | 0-9 | 2-9 disabled in BIN; 8-9 disabled in OCT |
-| Arithmetic | + - * / % | Integer division truncates |
-| Bitwise | AND OR XOR NOT << >> | Full keyword operators |
-| Grouping | ( ) | |
-| DEL / AC | delete last / clear all | |
-| = | evaluate | |
-| KMAP | opens K-map panel | |
-
-**Operators accepted:**
+**Expression evaluator:** type any integer expression in the input field and press **Evaluate** or Enter.
 
 | Operator | Description |
 |----------|-------------|
@@ -438,7 +423,7 @@ When HEX, OCT, or BIN is active, the screen and keypad switch to a dedicated int
 | << >> | Left / logical right shift |
 | ( ) | Grouping |
 
-**Result:** shown in all four bases simultaneously. The row matching the active base is highlighted in amber:
+The result is shown in all four bases. The row matching the active base is highlighted:
 
 ```
 BIN   1 1111 1111
@@ -448,22 +433,6 @@ HEX   FF     <- highlighted when HEX is active
 ```
 
 Numbers are arbitrary-precision (BigInt) - no overflow.
-
-**Mixed-base prefixes:** You can mix bases within a single expression using prefixes, regardless of the active base:
-
-| Prefix | Base |
-|--------|------|
-| 0b | binary |
-| 0x or 0h | hexadecimal |
-| 0o | octal |
-| 0d | decimal |
-
-Examples:
-- `A + 0b10` in HEX mode: hex A (10) + binary 2 = 12
-- `0xFF + 0b10` in DEC mode: 255 + 2 = 257
-- `0o17 - 5` in DEC mode: 15 - 5 = 10
-
----
 
 ### K-map tab - Karnaugh map minimization
 
