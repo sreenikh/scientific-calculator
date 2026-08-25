@@ -30,6 +30,7 @@ A browser-based graphing scientific calculator with textbook-style math input.
 - Matrix/Vector panel: named slots A-J, size picker 1-4 rows/cols; 1-row slots act as vectors
 - OPS panel: Math tab (abs, mod, floor, ceil, round, sign), Matrix tab (inv, det, trace, transpose, size), Vector tab (dot, cross, norm), Complex tab (polar, abs, arg, conj, re, im)
 - `%` key (ALPHA+×) inserts a percentage: `50%` evaluates to 0.5; `mod(a,b)` is the separate modulo operation
+- Memory STO/RCL: SHIFT+AC enters STO mode; press digit 1-9/0 to store current result to slot K-T; ALPHA+AC enters RCL mode, then press digit 1-9/0 to insert the slot variable name (K-T) into the expression; set slots shown as teal letters in status bar. Slots K-T are distinct from matrix variables A-J and hex digits A-F
 - BASE button (top modifier row, next to DRG): cycles DEC/HEX/OCT/BIN just like DRG cycles DEG/RAD; status bar shows active base; integer results reformatted automatically; main screen and keypad unchanged
 - BASE-N panel: Numbers tab has a base selector and BigInt expression evaluator (+/-/*/% AND/OR/XOR/NOT/<</>>), result shown in all four bases; K-map tab for Karnaugh map minimization
 - K-Map (BASE-N -> K-map tab): 2-8 variables; 2-6 vars use a Gray-code grid; 7-8 vars use a flat scrollable minterm list; cells cycle 0/1/X (don't care); Quine-McCluskey minimization to minimal SOP
@@ -57,7 +58,7 @@ Tests:
 npm test
 ```
 
-578 Vitest tests covering the expression engine, keypad contracts, statistics engine, distributions, and base-N/bitwise/K-map engine.
+580 Vitest tests covering the expression engine, keypad contracts, statistics engine, distributions, and base-N/bitwise/K-map engine.
 
 ---
 

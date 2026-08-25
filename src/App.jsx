@@ -18,6 +18,19 @@ import { formatAllBases, validateBaseDigits } from './engine/baseN'
 import './App.css'
 
 const EMPTY_MATRIX_VARS = { A: null, B: null, C: null, D: null, E: null, F: null, G: null, H: null, I: null, J: null }
+// Memory slots K-T: distinct from matrix vars A-J, hex digits A-F, and math.js built-ins.
+const EMPTY_MEM_VARS    = { K: null, L: null, M: null, N: null, O: null, P: null, Q: null, R: null, S: null, T: null }
+
+// Format a numeric result in the active base (integers only; floats stay decimal).
+function formatInBase(value, baseMode) {
+  if (baseMode === 'dec') return null
+  if (typeof value !== 'number' || !Number.isFinite(value)) return null
+  const rounded = Math.round(value)
+  if (Math.abs(value - rounded) > 1e-9) return null
+  if (Math.abs(rounded) > Number.MAX_SAFE_INTEGER) return null
+  const bases = formatAllBases(BigInt(rounded))
+  return bases[baseMode]
+}
 
 // Format a numeric result in the active base (integers only; floats stay decimal).
 function formatInBase(value, baseMode) {
@@ -46,6 +59,9 @@ export default function App() {
   const [isLastMatrix, setIsLastMatrix] = useState(false)
   const [lastComplexValue, setLastComplexValue] = useState(null)
   const [matrixVars, setMatrixVars] = useState(EMPTY_MATRIX_VARS)
+  const [memVars, setMemVars] = useState(EMPTY_MEM_VARS)
+  const [stoActive, setStoActive] = useState(false)
+  const [rclActive, setRclActive] = useState(false)
   const [baseMode, setBaseMode] = useState('dec')  // 'dec'|'hex'|'oct'|'bin'
   const screenRef = useRef(null)
 
@@ -64,6 +80,9 @@ export default function App() {
     const baseErr = validateBaseDigits(exprToUse, baseMode)
     if (baseErr) { setError(baseErr); return }
     const vars = { Ans: ans }
+    for (const [k, v] of Object.entries(memVars)) {
+      if (v !== null) vars[k] = v
+    }
     for (const [k, v] of Object.entries(matrixVars)) {
       if (v !== null) vars[k] = v
     }
@@ -97,16 +116,36 @@ export default function App() {
       case 'toggleShift':
         setShiftActive(s => !s)
         setAlphaActive(false)
+        setStoActive(false)
+        setRclActive(false)
         break
       case 'toggleAlpha':
         setAlphaActive(a => !a)
         setShiftActive(false)
+        setStoActive(false)
+        setRclActive(false)
         break
       case 'consumeShift':
         setShiftActive(false)
         break
       case 'consumeAlpha':
         setAlphaActive(false)
+        break
+      case 'activateSto':
+        setStoActive(true)
+        setShiftActive(false)
+        setRclActive(false)
+        break
+      case 'consumeSto':
+        setStoActive(false)
+        break
+      case 'activateRcl':
+        setRclActive(true)
+        setAlphaActive(false)
+        setStoActive(false)
+        break
+      case 'consumeRcl':
+        setRclActive(false)
         break
       case 'toggleAngle':
         setAngleMode(m => m === 'deg' ? 'rad' : 'deg')
@@ -148,7 +187,13 @@ export default function App() {
       case 'openEquation': setPanel('equation'); break
       case 'openStats':    setPanel('stats');    break
       case 'openDist':     setPanel('dist');     break
-      default: break
+      default:
+        if (/^storeMem_[K-T]$/.test(action)) {
+          const letter = action[action.length - 1]
+          setMemVars(mv => ({ ...mv, [letter]: ans }))
+          setStoActive(false)
+        }
+        break
     }
   }
 
@@ -188,6 +233,9 @@ export default function App() {
               angleMode={angleMode}
               shiftActive={shiftActive}
               alphaActive={alphaActive}
+              stoActive={stoActive}
+              rclActive={rclActive}
+              memVars={memVars}
               isComplex={isLastComplex}
               isMatrix={isLastMatrix}
               complexMode={complexMode}
@@ -207,6 +255,8 @@ export default function App() {
           <Keypad
             shiftActive={shiftActive}
             alphaActive={alphaActive}
+            stoActive={stoActive}
+            rclActive={rclActive}
             onInsert={insert}
             onAction={handleAction}
           />

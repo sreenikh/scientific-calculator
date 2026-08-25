@@ -404,6 +404,9 @@ table.iter th:first-child, table.iter td:first-child { text-align: left; color: 
 .dist-result-value { font-size: 1.5dvh; color: #EDEAE0; font-weight: 700; }
 
 .base-flag { color: var(--teal) !important; }
+.sto-flag  { color: var(--amber) !important; }
+.rcl-flag  { color: #7EB8CC !important; }
+.mem-flag  { color: #7EB8CC !important; font-size: 1dvh !important; }
 
 /* BASE-N mode: full-device calculator */
 .bn-kp-wrap { display: flex; flex-direction: column; height: 100%; overflow: hidden; }

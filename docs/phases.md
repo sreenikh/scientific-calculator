@@ -146,10 +146,12 @@ Accessed via MODE menu (item 4).
 - Result: minimal SOP in A/B/C/D/E/F/G/H with complements as A'/B'
 - Clear button resets all cells
 
-### Memory
+### Memory `[done]`
 
-- STO and RCL for variables
-- Variable display in screen status bar when set
+- **STO**: SHIFT+AC enters STO mode (amber STO indicator in status bar); press digit 1-9 or 0 to store the current result to memory slot K-T; any non-digit key cancels STO mode and processes normally
+- **RCL**: ALPHA+AC enters RCL mode (teal RCL indicator in status bar); press digit 1-9 or 0 to insert the slot variable name (K-T) into the expression; any non-digit key cancels RCL mode and processes normally
+- Memory slots K-T are scalars distinct from matrix variables A-J and hex digits A-F; injected into the evaluation scope alongside matrix variables
+- Status bar: set memory slots appear as small teal letters (e.g. K M) to the right of the ALPHA indicator
 
 ### Format and display options
 

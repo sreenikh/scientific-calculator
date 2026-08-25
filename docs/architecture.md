@@ -124,6 +124,10 @@ Stored as plain 2D JS arrays in React state and injected into scope by `buildSco
 
 This means a slot set to 1x3 in the matrix panel becomes a 3-element vector in scope, while a 2x2 or 3x3 slot becomes a DenseMatrix.
 
+**Memory variables (K-T):**
+
+Ten scalar slots stored in React state and injected into the evaluation scope alongside matrix variables. Namespaced K-T to avoid collision with matrix variables A-J and hex digits A-F. Non-null slots are substituted as plain numeric values. STO mode (SHIFT+AC then digit 1-9/0) writes the current result; RCL mode (ALPHA+AC then digit) inserts the slot letter into the expression for evaluation.
+
 ---
 
 ## Complex number output
@@ -250,6 +254,7 @@ Test categories in `mathEngine.test.js`:
 - bitwiseOp: AND/OR/XOR/NOT, left and logical right shift, unsigned 32-bit semantics (legacy)
 - evaluateBaseExpr: arithmetic (+/-/*//%)), bitwise (AND/OR/XOR/NOT/&/|/^/~/<</>>) in hex/binary/decimal, large numbers, error cases (invalid digit, division by zero), mixed-base prefixes (0b/0x/0o/0h/0d)
 - validateBaseDigits: BIN rejects 2-9, OCT rejects 8-9, DEC/HEX always null; reports base name and offending digit in error string
+- keypad contracts: SHIFT+AC = activateSto, ALPHA+AC = activateRcl
 - normalizeExpression - hyperbolic inverse bridge: a s i n h/a c o s h/a t a n h -> asinh/acosh/atanh
 - evaluateExpression - hyperbolic functions: sinh/cosh/tanh at 0 and 1, roundtrip inverses asinh/acosh/atanh
 - kmapMinterm: 2-var, 3-var, 5-var, 6-var Gray code ordering
