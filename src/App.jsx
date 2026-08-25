@@ -11,6 +11,7 @@ import MatrixPanel from './components/MatrixPanel'
 import OperationsPanel from './components/OperationsPanel'
 import EquationPanel from './components/EquationPanel'
 import StatPanel from './components/StatPanel'
+import DistributionPanel from './components/DistributionPanel'
 import { evaluateExpression, formatValue } from './engine/mathEngine'
 import './App.css'
 
@@ -116,6 +117,7 @@ export default function App() {
       case 'openOps':     setPanel('ops');      break
       case 'openEquation': setPanel('equation'); break
       case 'openStats':    setPanel('stats');    break
+      case 'openDist':     setPanel('dist');     break
       default: break
     }
   }
@@ -189,6 +191,7 @@ export default function App() {
         )}
         {panel === 'equation' && <EquationPanel onClose={() => setPanel(null)} />}
         {panel === 'stats'    && <StatPanel    onClose={() => setPanel(null)} />}
+        {panel === 'dist'     && <DistributionPanel onClose={() => setPanel(null)} />}
         {panel === 'matrix' && (
           <MatrixPanel
             onClose={() => setPanel(null)}

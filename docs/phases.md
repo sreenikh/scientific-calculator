@@ -105,11 +105,17 @@ Accessed via MODE menu (item 3).
   - Detects collinear predictors and returns an error
 - Scrollable data list; rows added on demand; individual rows deletable
 
-### Distribution mode `[planned]`
+### Distribution mode `[done]`
 
-- Normal distribution: pdf, cdf, inverse cdf
-- Binomial distribution: pdf, cdf
-- Input: distribution parameters + x value or probability
+Accessed via MODE menu (item 4).
+
+- Normal tab: parameters μ and σ; three functions:
+  - pdf -- probability density at x
+  - cdf -- P(X ≤ x); complement P(X > x) shown alongside
+  - inv -- inverse cdf: x such that P(X ≤ x) = p (Acklam rational approximation, error < 1.15e-9)
+- Binomial tab: parameters n (trials) and p (probability); two functions:
+  - pdf -- P(X = k) via log-space calculation to handle large n without overflow
+  - cdf -- P(X ≤ k)
 
 ---
 
