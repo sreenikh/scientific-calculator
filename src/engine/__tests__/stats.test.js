@@ -38,6 +38,27 @@ describe('oneVarStats: median and quartiles', () => {
   })
 })
 
+describe('oneVarStats: additional fields', () => {
+  const data = [1, 2, 3, 4, 5]
+  it('sumx2 = Σx²', () => expect(oneVarStats(data).sumx2).toBeCloseTo(1+4+9+16+25, 10))
+  it('iqr = Q3 - Q1', () => {
+    const r = oneVarStats(data)
+    expect(r.iqr).toBeCloseTo(r.q3 - r.q1, 10)
+  })
+  it('range = max - min', () => expect(oneVarStats(data).range).toBeCloseTo(4, 10))
+  it('sample variance = population variance * n/(n-1)', () => {
+    const r = oneVarStats(data)
+    expect(r.sampleVariance).toBeCloseTo(r.variance * 5 / 4, 10)
+  })
+  it('sample std dev = sqrt(sample variance)', () => {
+    const r = oneVarStats(data)
+    expect(r.sampleStddev).toBeCloseTo(Math.sqrt(r.sampleVariance), 10)
+  })
+  it('sample variance is NaN for n=1', () => {
+    expect(oneVarStats([42]).sampleVariance).toBeNaN()
+  })
+})
+
 describe('oneVarStats: edge cases', () => {
   it('returns error for empty array', () => {
     expect(oneVarStats([]).ok).toBe(false)

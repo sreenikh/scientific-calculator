@@ -25,7 +25,7 @@ export default function StatPanel({ onClose }) {
   const [rows,    setRows]    = useState(makeRows(6))
   const [result,  setResult]  = useState(null)
   const [error,   setError]   = useState(null)
-  const [customP, setCustomP] = useState(['', ''])
+  const [customP, setCustomP] = useState([])
 
   function updateCell(i, field, val) {
     setRows(prev => prev.map((r, idx) => idx === i ? { ...r, [field]: val } : r))
@@ -133,16 +133,21 @@ export default function StatPanel({ onClose }) {
       {result && tab === '1var' && (
         <div className="stat-results">
           {[
-            ['n',      result.n],
-            ['Σx',     result.sum],
-            ['x̅',      result.mean],
+            ['n',    result.n],
+            ['Σx',   result.sum],
+            ['Σx²',  result.sumx2],
+            ['x̅',    result.mean],
             ['Median', result.median],
-            ['Q1',     result.q1],
-            ['Q3',     result.q3],
-            ['s',      result.stddev],
-            ['s²',     result.variance],
-            ['Min',    result.min],
-            ['Max',    result.max],
+            ['Q1',   result.q1],
+            ['Q3',   result.q3],
+            ['IQR',  result.iqr],
+            ['Range', result.range],
+            ['σ',    result.stddev],
+            ['σ²',   result.variance],
+            ['s',    result.sampleStddev],
+            ['s²',   result.sampleVariance],
+            ['Min',  result.min],
+            ['Max',  result.max],
           ].map(([label, val]) => (
             <div key={label} className="stat-result-row">
               <span className="stat-result-label">{label}</span>
@@ -153,7 +158,7 @@ export default function StatPanel({ onClose }) {
           <div className="stat-pct-header">Percentiles</div>
           {[10, 25, 50, 75, 90].map(p => (
             <div key={p} className="stat-result-row">
-              <span className="stat-result-label stat-pct-label">P{p}</span>
+              <span className="stat-result-label">P{p}</span>
               <span className="stat-result-val">{fmt(percentile(result.sorted, p))}</span>
             </div>
           ))}
@@ -162,7 +167,7 @@ export default function StatPanel({ onClose }) {
             const valid = !isNaN(p) && p >= 0 && p <= 100
             return (
               <div key={i} className="stat-pct-custom-row">
-                <span className="stat-result-label">
+                <span className="stat-pct-p-label">
                   P<input
                     className="stat-pct-input"
                     type="number"
@@ -176,9 +181,17 @@ export default function StatPanel({ onClose }) {
                 <span className="stat-result-val">
                   {valid ? fmt(percentile(result.sorted, p)) : '—'}
                 </span>
+                <button
+                  className="stat-pct-del"
+                  onClick={() => setCustomP(prev => prev.filter((_, j) => j !== i))}
+                >×</button>
               </div>
             )
           })}
+          <button
+            className="stat-pct-add"
+            onClick={() => setCustomP(prev => [...prev, ''])}
+          >+ Add percentile</button>
         </div>
       )}
 

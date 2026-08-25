@@ -20,13 +20,19 @@ export function oneVarStats(data) {
   const sum = xs.reduce((s, x) => s + x, 0)
   const mean = sum / n
   const variance = xs.reduce((s, x) => s + (x - mean) ** 2, 0) / n
+  const q1 = percentile(sorted, 25)
+  const q3 = percentile(sorted, 75)
+  const sampleVariance = n > 1 ? variance * n / (n - 1) : NaN
   return {
-    ok: true, n, sum, mean,
+    ok: true, n,
+    sum, sumx2: xs.reduce((s, x) => s + x * x, 0),
+    mean,
     median: percentile(sorted, 50),
+    q1, q3, iqr: q3 - q1,
+    range: sorted[n - 1] - sorted[0],
     stddev: Math.sqrt(variance), variance,
+    sampleStddev: Math.sqrt(sampleVariance), sampleVariance,
     min: sorted[0], max: sorted[n - 1],
-    q1: percentile(sorted, 25),
-    q3: percentile(sorted, 75),
     sorted,
   }
 }
