@@ -121,16 +121,22 @@ Accessed via MODE menu (item 4).
 
 ## Phase 4 - Base-N and QoL `[in progress]`
 
-### Base-N panel `[done]`
+### Base-N mode `[done]`
 
 Accessed via the **BASE-N** key in the bottom mod row. Opens an overlay with two tabs.
 
-**Numbers tab:**
-- Base selector (DEC/HEX/OCT/BIN) acts like the DRG toggle: selecting a base changes the calculator mode
-- When a non-decimal base is active, the status bar shows HEX/OCT/BIN and integer results on the main screen are reformatted in that base
-- Expression input accepts any base-valid digits and operators: + - * / % AND OR XOR NOT & | ^ ~ << >> ( )
+**Numbers tab - base mode selector:**
+- Base selector (DEC/HEX/OCT/BIN) acts like the DRG toggle: selecting HEX/OCT/BIN switches the entire main screen and keypad to a dedicated base-N calculator
+- Clicking DEC returns to the scientific calculator
+
+**Dedicated base-N calculator (shown when HEX/OCT/BIN is active):**
+- Status bar with DEC/HEX/OCT/BIN toggle buttons and SHIFT/ALPHA indicators
+- Dedicated keypad: hex digit keys A-F (disabled when not HEX), digit keys 0-9 (some disabled per active base), arithmetic (+/-/*/%), bitwise AND/OR/XOR/NOT/<</>>
+- Plain text expression input; keyboard-typeable; Enter evaluates
+- Mixed-base prefix notation: `0b` binary, `0x`/`0h` hex, `0o` octal, `0d` decimal -- usable within any expression regardless of active base (e.g. `A + 0b10` in HEX = 12)
 - Numbers are arbitrary-precision BigInt - no overflow
-- Result is shown in all four bases; the active base row is highlighted
+- Result shown in all four bases simultaneously; active base row highlighted in amber
+- KMAP button in the keypad opens the K-map tab
 
 **K-map tab:**
 - Variable count: 2-6 variables use a visual Gray-code grid (5-var: 4x8, 6-var: 8x8); 7-8 variables use a flat scrollable minterm list

@@ -69,6 +69,41 @@ export function formatHex(n) { return (n >>> 0).toString(16).toUpperCase() }
 
 const MASK64 = (1n << 64n) - 1n
 
+// Read an integer literal starting at position i, honouring 0b/0x/0o/0d prefixes.
+// Returns { value: BigInt, end: number } or throws.
+function readNumber(expr, i, defaultBase) {
+  const c0 = expr[i].toLowerCase()
+  const c1 = expr[i + 1]?.toLowerCase()
+
+  // Prefix override: 0b, 0x / 0h, 0o, 0d
+  if (c0 === '0' && c1 && 'bxhod'.includes(c1)) {
+    const prefixBase = c1 === 'b' ? 2 : (c1 === 'x' || c1 === 'h') ? 16 : c1 === 'o' ? 8 : 10
+    let j = i + 2
+    const start = j
+    while (j < expr.length) {
+      const d = parseInt(expr[j], prefixBase)
+      if (isNaN(d) || d < 0) break
+      j++
+    }
+    if (j === start) throw new Error('Expected digits after base prefix')
+    return { value: parseBigInt(expr.slice(start, j), prefixBase), end: j }
+  }
+
+  // Default base digits
+  let j = i
+  while (j < expr.length) {
+    const d = parseInt(expr[j], defaultBase)
+    if (isNaN(d) || d < 0) break
+    j++
+  }
+  if (j === i) throw new Error("Invalid character '" + expr[i] + "' for base " + defaultBase)
+  return { value: parseBigInt(expr.slice(i, j), defaultBase), end: j }
+}
+
+function isHexStart(c, base) {
+  return !isNaN(parseInt(c, Math.max(base, 16)))
+}
+
 function tokenize(expr, base) {
   expr = expr
     .replace(/\bAND\b/gi, '&')
@@ -80,9 +115,11 @@ function tokenize(expr, base) {
   const tokens = []
   let i = 0
 
-  function isDigit(c) {
-    const d = parseInt(c, base)
-    return !isNaN(d) && d >= 0
+  function isDigitStart(c) {
+    // A digit start is a valid digit in the current base OR the start of a 0b/0x/0o/0d prefix
+    if (!isNaN(parseInt(c, base)) && parseInt(c, base) >= 0) return true
+    if (c === '0') return true  // could be a prefix
+    return false
   }
 
   while (i < expr.length) {
@@ -93,11 +130,10 @@ function tokenize(expr, base) {
     if ('+-*/%&|^~'.includes(c)) { tokens.push({ t: 'op', v: c }); i++; continue }
     if (c === '<' && expr[i + 1] === '<') { tokens.push({ t: 'op', v: '<<' }); i += 2; continue }
     if (c === '>' && expr[i + 1] === '>') { tokens.push({ t: 'op', v: '>>' }); i += 2; continue }
-    if (isDigit(c)) {
-      let j = i
-      while (j < expr.length && isDigit(expr[j])) j++
-      tokens.push({ t: 'num', v: parseBigInt(expr.slice(i, j), base) })
-      i = j
+    if (isDigitStart(c)) {
+      const { value, end } = readNumber(expr, i, base)
+      tokens.push({ t: 'num', v: value })
+      i = end
       continue
     }
     throw new Error("Invalid character '" + c + "' for base " + base)

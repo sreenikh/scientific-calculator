@@ -13,6 +13,7 @@ import EquationPanel from './components/EquationPanel'
 import StatPanel from './components/StatPanel'
 import DistributionPanel from './components/DistributionPanel'
 import BaseNPanel from './components/BaseNPanel'
+import BaseNCalculator from './components/BaseNCalculator'
 import { evaluateExpression, formatValue } from './engine/mathEngine'
 import { formatAllBases } from './engine/baseN'
 import './App.css'
@@ -164,37 +165,49 @@ export default function App() {
       </div>
 
       <div className="device">
-        <div className="screen-wrap">
-          <Screen
-            ref={screenRef}
-            onChange={handleChange}
-            resultDisplay={resultDisplay}
-            error={error}
-            angleMode={angleMode}
+        {baseMode !== 'dec' ? (
+          <BaseNCalculator
+            baseMode={baseMode}
+            onCycleBase={setBaseMode}
+            onOpenPanel={() => setPanel('basen')}
             shiftActive={shiftActive}
             alphaActive={alphaActive}
-            isComplex={isLastComplex}
-            isMatrix={isLastMatrix}
-            complexMode={complexMode}
-            baseMode={baseMode}
-            onToggleComplex={() => {
-              const newMode = complexMode === 'rect' ? 'polar' : 'rect'
-              setComplexMode(newMode)
-              if (lastComplexValue !== null) {
-                setResultDisplay(formatValue(lastComplexValue, angleMode, newMode))
-              }
-            }}
           />
-        </div>
+        ) : (
+          <>
+            <div className="screen-wrap">
+              <Screen
+                ref={screenRef}
+                onChange={handleChange}
+                resultDisplay={resultDisplay}
+                error={error}
+                angleMode={angleMode}
+                shiftActive={shiftActive}
+                alphaActive={alphaActive}
+                isComplex={isLastComplex}
+                isMatrix={isLastMatrix}
+                complexMode={complexMode}
+                baseMode={baseMode}
+                onToggleComplex={() => {
+                  const newMode = complexMode === 'rect' ? 'polar' : 'rect'
+                  setComplexMode(newMode)
+                  if (lastComplexValue !== null) {
+                    setResultDisplay(formatValue(lastComplexValue, angleMode, newMode))
+                  }
+                }}
+              />
+            </div>
 
-        <HistoryStrip entries={history} onRestore={restoreHistory} onClear={() => setHistory([])} />
+            <HistoryStrip entries={history} onRestore={restoreHistory} onClear={() => setHistory([])} />
 
-        <Keypad
-          shiftActive={shiftActive}
-          alphaActive={alphaActive}
-          onInsert={insert}
-          onAction={handleAction}
-        />
+            <Keypad
+              shiftActive={shiftActive}
+              alphaActive={alphaActive}
+              onInsert={insert}
+              onAction={handleAction}
+            />
+          </>
+        )}
 
         {panel === 'const'  && <ConstPanel onClose={() => setPanel(null)} onSelect={insertConstant} />}
         {panel === 'conv'   && <ConvPanel  onClose={() => setPanel(null)} />}

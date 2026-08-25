@@ -28,8 +28,8 @@ A browser-based graphing scientific calculator with textbook-style math input.
 - Matrix/Vector panel: named slots A-J, size picker 1-4 rows/cols; 1-row slots act as vectors
 - OPS panel: Math tab (abs, mod, floor, ceil, round, sign), Matrix tab (inv, det, trace, transpose, size), Vector tab (dot, cross, norm), Complex tab (polar, abs, arg, conj, re, im)
 - `%` key (ALPHA+×) inserts a percentage: `50%` evaluates to 0.5; `mod(a,b)` is the separate modulo operation
-- BASE-N panel: press BASE-N to open; Numbers tab has a base selector (DEC/HEX/OCT/BIN) that sets the calculator mode - selecting a non-decimal base shows it in the status bar and reformats integer results on the main screen; BigInt expression evaluator supports +/-/*/% and AND/OR/XOR/NOT/<</>>; result shown in all four bases
-- K-Map panel (BASE-N -> K-map tab): 2-8 variables; 2-6 vars use a Gray-code grid; 7-8 vars use a flat scrollable minterm list; cells cycle 0/1/X (don't care); Quine-McCluskey minimization to minimal SOP
+- BASE-N mode: press BASE-N to open the panel; Numbers tab has a base selector (DEC/HEX/OCT/BIN); selecting HEX/OCT/BIN replaces the main screen and keypad with a dedicated base-N calculator (Casio-style) - dedicated hex digit keys A-F, bitwise AND/OR/XOR/NOT/<</>> keys, disabled keys for invalid digits in the active base, result shown in all four bases simultaneously; clicking DEC returns to scientific mode; mixed-base prefixes supported: `0b` binary, `0x` hex, `0o` octal (e.g. `A + 0b10` in HEX = 12)
+- K-Map panel (BASE-N -> K-map tab, or KMAP button in base-N keypad): 2-8 variables; 2-6 vars use a Gray-code grid; 7-8 vars use a flat scrollable minterm list; cells cycle 0/1/X (don't care); Quine-McCluskey minimization to minimal SOP
 - Responsive layout: scales to any window size using dvh/vw units, no breakpoints
 
 ## Planned
@@ -54,7 +54,7 @@ Tests:
 npm test
 ```
 
-540 Vitest tests covering the expression engine, keypad contracts, statistics engine, distributions, and base-N/bitwise/K-map engine.
+548 Vitest tests covering the expression engine, keypad contracts, statistics engine, distributions, and base-N/bitwise/K-map engine.
 
 ---
 
@@ -106,5 +106,6 @@ src/
     StatPanel.jsx       - 1-variable stats and regression
     DistributionPanel.jsx  - normal and binomial distribution panel
     BaseNPanel.jsx         - base conversion (Numbers tab) and K-map solver (K-map tab)
+    BaseNCalculator.jsx    - dedicated base-N keypad (replaces main UI when HEX/OCT/BIN is active)
   App.jsx               - top-level state and wiring
 ```

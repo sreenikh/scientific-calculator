@@ -29,6 +29,9 @@ graph TD
     App --> OP["OperationsPanel.jsx\n(Matrix / Vector tabs)"]
     App --> EQ["EquationPanel.jsx\n(Polynomial roots + Linear system)"]
     App --> ST["StatPanel.jsx\n(1-var stats + regression)"]
+    App --> DI["DistributionPanel.jsx\n(Normal + Binomial)"]
+    App --> BNP["BaseNPanel.jsx\n(Numbers tab + K-map tab)"]
+    App --> BNC["BaseNCalculator.jsx\n(dedicated base-N keypad)"]
 
     Screen --> MF["&lt;math-field&gt;\n(MathLive web component)"]
 
@@ -40,7 +43,9 @@ graph TD
     CA --> N
 ```
 
-The overlay panels (ConstPanel, ConvPanel, SolvePanel, CalculusPanel, ModePanel, MatrixPanel, OperationsPanel, EquationPanel, StatPanel) are rendered inside `.device` and cover the full calculator body with `position: absolute; inset: 0`. Only one is open at a time via `panel` state in App.
+The overlay panels (ConstPanel, ConvPanel, SolvePanel, CalculusPanel, ModePanel, MatrixPanel, OperationsPanel, EquationPanel, StatPanel, DistributionPanel, BaseNPanel) are rendered inside `.device` and cover the full calculator body with `position: absolute; inset: 0`. Only one is open at a time via `panel` state in App.
+
+When `baseMode` is `'hex'`, `'oct'`, or `'bin'`, App renders `BaseNCalculator` in place of the normal `Screen + HistoryStrip + Keypad` stack. `BaseNPanel` remains accessible from both modes (via the BASE-N key in normal mode or the KMAP button in the base-N keypad).
 
 ---
 
@@ -200,6 +205,8 @@ The math input field is an exception. MathLive renders its content using its own
 
 `evaluateBaseExpr` supports: `+`, `-`, `*`, `/`, `%`, `AND`/`OR`/`XOR`/`NOT` (keywords or `&`/`|`/`^`/`~`), `<<`, `>>`, parentheses, unary minus. Numbers are BigInt so there is no word-size limit. `NOT` uses a 64-bit mask.
 
+Mixed-base prefix notation is supported within any expression regardless of the active base: `0b` (binary), `0x` or `0h` (hex), `0o` (octal), `0d` (decimal). For example, `A + 0b10` in a HEX-base context evaluates hex A (10) plus binary 2 = 12.
+
 Cells encode: 0 = minterm 0, 1 = minterm 1, 2 = don't care. `karnaughMinimize` returns `'0'` for no minterms and `'1'` when all cells are covered.
 
 For 2-6 variables the K-map tab uses `kmapDims`/`kmapHeaders`/`kmapMinterm` to render a visual Gray-code grid. For 7-8 variables there is no visual grid; the panel shows a flat scrollable minterm list of 128 or 256 cells.
@@ -210,7 +217,7 @@ The Numbers tab passes `baseMode` from App state (via `onSetBase` callback) so c
 
 ## Testing
 
-540 Vitest tests across five files, running in node environment.
+548 Vitest tests across five files, running in node environment.
 
 ```
 src/
@@ -241,7 +248,7 @@ Test categories in `mathEngine.test.js`:
 - formatAllBases: all four base representations, large number (2^63)
 - format functions: formatBin (nibble grouping), formatOct, formatDec, formatHex (legacy 32-bit)
 - bitwiseOp: AND/OR/XOR/NOT, left and logical right shift, unsigned 32-bit semantics (legacy)
-- evaluateBaseExpr: arithmetic (+/-/*//%)), bitwise (AND/OR/XOR/NOT/&/|/^/~/<</>>) in hex/binary/decimal, large numbers, error cases (invalid digit, division by zero)
+- evaluateBaseExpr: arithmetic (+/-/*//%)), bitwise (AND/OR/XOR/NOT/&/|/^/~/<</>>) in hex/binary/decimal, large numbers, error cases (invalid digit, division by zero), mixed-base prefixes (0b/0x/0o/0h/0d)
 - kmapMinterm: 2-var, 3-var, 5-var, 6-var Gray code ordering
 - kmapDims: 2-6 vars return grid dims; 7-8 return null (flat list)
 - karnaughMinimize: 2-var, 3-var, 5-var cases, all-zeros, all-ones, don't cares

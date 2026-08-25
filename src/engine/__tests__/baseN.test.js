@@ -132,6 +132,17 @@ describe('evaluateBaseExpr: large numbers', () => {
   })
 })
 
+describe('evaluateBaseExpr: mixed-base prefixes', () => {
+  it('0b10 in decimal context = 2',    () => expect(evaluateBaseExpr('0b10', 10)).toEqual({ ok: true, value: 2n }))
+  it('0xFF in decimal context = 255',  () => expect(evaluateBaseExpr('0xFF', 10)).toEqual({ ok: true, value: 255n }))
+  it('0o17 in decimal context = 15',   () => expect(evaluateBaseExpr('0o17', 10)).toEqual({ ok: true, value: 15n }))
+  it('0h1A in decimal context = 26',   () => expect(evaluateBaseExpr('0h1A', 10)).toEqual({ ok: true, value: 26n }))
+  it('0d42 in binary context = 42',    () => expect(evaluateBaseExpr('0d42', 2)).toEqual({ ok: true, value: 42n }))
+  it('A + 0b10 in hex = 12',           () => expect(evaluateBaseExpr('A + 0b10', 16)).toEqual({ ok: true, value: 12n }))
+  it('0xFF + 0b10 in decimal = 257',   () => expect(evaluateBaseExpr('0xFF + 0b10', 10)).toEqual({ ok: true, value: 257n }))
+  it('0x0 prefix with no digits errors', () => expect(evaluateBaseExpr('0x', 10).ok).toBe(false))
+})
+
 // ---------- kmapMinterm ----------
 
 describe('kmapMinterm: 2-var', () => {
