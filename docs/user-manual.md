@@ -159,13 +159,13 @@ Factorial: type `5` then press **x!** to get `5!`.
 
 ## Memory (STO / RCL)
 
-The calculator has 10 scalar memory slots: **A through J**.
+The calculator has 10 scalar memory slots: **K through T**. These are separate from matrix/vector variables (A-J) and from hex digits (A-F), so there is no conflict between modes.
 
 ### Storing a value
 
 1. Evaluate an expression to get a result.
 2. Press **SHIFT** then **AC** - the status bar shows **STO** in amber.
-3. Press a digit key **1-9** or **0** to store to slot A-J (1=A, 2=B, ..., 9=I, 0=J).
+3. Press a digit key **1-9** or **0** to store to slot K-T (1=K, 2=L, ..., 9=S, 0=T).
 
 The STO indicator clears and the slot letter appears in teal in the status bar.
 
@@ -173,23 +173,24 @@ Pressing any non-digit key while STO is active cancels the store and processes t
 
 ### Recalling a value
 
-Type the slot letter directly in any expression using the **ALPHA** layer:
+Press **ALPHA** then **AC** - the status bar shows **RCL** in teal. Then press a digit to insert the slot variable name into the expression:
 
 | Press | Inserts |
 |-------|---------|
-| ALPHA + 1 | A |
-| ALPHA + 2 | B |
+| RCL + 1 | K |
+| RCL + 2 | L |
 | ... | ... |
-| ALPHA + 0 | J |
+| RCL + 0 | T |
 
-Pressing **=** evaluates the expression with the stored value substituted.
+Pressing any non-digit key while RCL is active cancels and processes that key normally. Press **=** to evaluate the expression with the stored value substituted.
 
 **Example:**
-1. Evaluate `25 * 4` → result is `100`.
-2. Press SHIFT → AC → 1 → stores `100` to slot A.
-3. Type `sqrt(` → ALPHA+1 → `)` → press `=` → evaluates `sqrt(A)` → result is `10`.
+1. Evaluate `25 * 4` - result is `100`.
+2. Press SHIFT + AC + 1 - stores `100` to slot K.
+3. Press ALPHA + AC + 1 - inserts `K` into the expression.
+4. Build `sqrt(K)` and press `=` - result is `10`.
 
-**Note:** If the same slot holds both a memory scalar and a matrix (stored via the Matrix panel), the matrix takes precedence in expressions.
+**Note:** Matrix and memory variables share the evaluation scope. If a letter somehow ends up in both (not possible given the K-T vs A-J split), the matrix value takes precedence.
 
 ---
 

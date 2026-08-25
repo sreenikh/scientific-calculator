@@ -6,7 +6,7 @@ const ALL_VALID_ACTIONS = new Set([
   'toggleShift', 'toggleAlpha', 'openModeMenu', 'toggleAngle', 'cycleBase',
   'clear', 'del', 'evaluate',
   'openConst', 'openConv', 'openSolve', 'openDeriv', 'openInteg', 'openBaseN', 'openOps',
-  'activateSto',
+  'activateSto', 'activateRcl',
 ])
 
 describe('keypad structure', () => {
@@ -136,8 +136,9 @@ describe('keypad key contracts: modifier / action keys', () => {
   it('DRG    → toggleAngle',  () => expect(key('angle').action).toBe('toggleAngle'))
   it('DEL    → del',          () => expect(key('del').action).toBe('del'))
   it('AC     → clear',        () => expect(key('ac').action).toBe('clear'))
-  it('SHIFT+AC → activateSto', () => expect(key('ac').shift.action).toBe('activateSto'))
-  it('=      → evaluate',     () => expect(key('exe').action).toBe('evaluate'))
+  it('SHIFT+AC → activateSto',  () => expect(key('ac').shift.action).toBe('activateSto'))
+  it('ALPHA+AC → activateRcl',  () => expect(key('ac').alpha.action).toBe('activateRcl'))
+  it('=      → evaluate',       () => expect(key('exe').action).toBe('evaluate'))
   it('CONST  → openConst',    () => expect(key('const').action).toBe('openConst'))
   it('CONV   → openConv',     () => expect(key('conv').action).toBe('openConv'))
   it('SOLVE  → openSolve',    () => expect(key('solve').action).toBe('openSolve'))

@@ -124,6 +124,10 @@ Stored as plain 2D JS arrays in React state and injected into scope by `buildSco
 
 This means a slot set to 1x3 in the matrix panel becomes a 3-element vector in scope, while a 2x2 or 3x3 slot becomes a DenseMatrix.
 
+**Memory variables (K-T):**
+
+Ten scalar slots stored in React state and injected into the evaluation scope alongside matrix variables. Namespaced K-T to avoid collision with matrix variables A-J and hex digits A-F. Non-null slots are substituted as plain numeric values. STO mode (SHIFT+AC then digit 1-9/0) writes the current result; RCL mode (ALPHA+AC then digit) inserts the slot letter into the expression for evaluation.
+
 ---
 
 ## Complex number output

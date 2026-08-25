@@ -18,7 +18,8 @@ import { formatAllBases, validateBaseDigits } from './engine/baseN'
 import './App.css'
 
 const EMPTY_MATRIX_VARS = { A: null, B: null, C: null, D: null, E: null, F: null, G: null, H: null, I: null, J: null }
-const EMPTY_MEM_VARS    = { A: null, B: null, C: null, D: null, E: null, F: null, G: null, H: null, I: null, J: null }
+// Memory slots K-T: distinct from matrix vars A-J, hex digits A-F, and math.js built-ins.
+const EMPTY_MEM_VARS    = { K: null, L: null, M: null, N: null, O: null, P: null, Q: null, R: null, S: null, T: null }
 
 // Format a numeric result in the active base (integers only; floats stay decimal).
 function formatInBase(value, baseMode) {
@@ -49,6 +50,7 @@ export default function App() {
   const [matrixVars, setMatrixVars] = useState(EMPTY_MATRIX_VARS)
   const [memVars, setMemVars] = useState(EMPTY_MEM_VARS)
   const [stoActive, setStoActive] = useState(false)
+  const [rclActive, setRclActive] = useState(false)
   const [baseMode, setBaseMode] = useState('dec')  // 'dec'|'hex'|'oct'|'bin'
   const screenRef = useRef(null)
 
@@ -104,11 +106,13 @@ export default function App() {
         setShiftActive(s => !s)
         setAlphaActive(false)
         setStoActive(false)
+        setRclActive(false)
         break
       case 'toggleAlpha':
         setAlphaActive(a => !a)
         setShiftActive(false)
         setStoActive(false)
+        setRclActive(false)
         break
       case 'consumeShift':
         setShiftActive(false)
@@ -119,9 +123,18 @@ export default function App() {
       case 'activateSto':
         setStoActive(true)
         setShiftActive(false)
+        setRclActive(false)
         break
       case 'consumeSto':
         setStoActive(false)
+        break
+      case 'activateRcl':
+        setRclActive(true)
+        setAlphaActive(false)
+        setStoActive(false)
+        break
+      case 'consumeRcl':
+        setRclActive(false)
         break
       case 'toggleAngle':
         setAngleMode(m => m === 'deg' ? 'rad' : 'deg')
@@ -164,7 +177,7 @@ export default function App() {
       case 'openStats':    setPanel('stats');    break
       case 'openDist':     setPanel('dist');     break
       default:
-        if (/^storeMem_[A-J]$/.test(action)) {
+        if (/^storeMem_[K-T]$/.test(action)) {
           const letter = action[action.length - 1]
           setMemVars(mv => ({ ...mv, [letter]: ans }))
           setStoActive(false)
@@ -210,6 +223,7 @@ export default function App() {
               shiftActive={shiftActive}
               alphaActive={alphaActive}
               stoActive={stoActive}
+              rclActive={rclActive}
               memVars={memVars}
               isComplex={isLastComplex}
               isMatrix={isLastMatrix}
@@ -231,6 +245,7 @@ export default function App() {
             shiftActive={shiftActive}
             alphaActive={alphaActive}
             stoActive={stoActive}
+            rclActive={rclActive}
             onInsert={insert}
             onAction={handleAction}
           />

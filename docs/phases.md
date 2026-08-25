@@ -148,10 +148,10 @@ Accessed via MODE menu (item 4).
 
 ### Memory `[done]`
 
-- **STO**: SHIFT+AC enters STO mode (amber STO indicator in status bar); press digit 1-9 or 0 to store the current result to memory slot A-J; any non-digit key cancels STO mode and processes normally
-- **Recall**: ALPHA+digit inserts the slot variable name (A-J) into the expression; the stored scalar value is substituted on evaluation
-- Memory slots A-J are scalars; injected into the evaluation scope before matrix variables so a matrix stored to the same slot takes precedence
-- Status bar: set memory slots appear as small teal letters (e.g. A C) to the right of the ALPHA indicator
+- **STO**: SHIFT+AC enters STO mode (amber STO indicator in status bar); press digit 1-9 or 0 to store the current result to memory slot K-T; any non-digit key cancels STO mode and processes normally
+- **RCL**: ALPHA+AC enters RCL mode (teal RCL indicator in status bar); press digit 1-9 or 0 to insert the slot variable name (K-T) into the expression; any non-digit key cancels RCL mode and processes normally
+- Memory slots K-T are scalars distinct from matrix variables A-J and hex digits A-F; injected into the evaluation scope alongside matrix variables
+- Status bar: set memory slots appear as small teal letters (e.g. K M) to the right of the ALPHA indicator
 
 ### Format and display options
 

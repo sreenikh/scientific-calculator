@@ -1,16 +1,26 @@
 import { ROWS } from './keypadConfig.js'
 
-const DIGIT_TO_VAR = { '1':'A','2':'B','3':'C','4':'D','5':'E','6':'F','7':'G','8':'H','9':'I','0':'J' }
+const DIGIT_TO_MEM = { '1':'K','2':'L','3':'M','4':'N','5':'O','6':'P','7':'Q','8':'R','9':'S','0':'T' }
 
-export default function Keypad({ shiftActive, alphaActive, stoActive, onInsert, onAction }) {
+export default function Keypad({ shiftActive, alphaActive, stoActive, rclActive, onInsert, onAction }) {
   function press(key) {
-    // STO mode: digit keys store ans to memory variable; anything else cancels STO and falls through.
+    // STO mode: digit keys store ans to memory slot K-T; anything else cancels STO and falls through.
     if (stoActive) {
-      if (key.id in DIGIT_TO_VAR) {
-        onAction('storeMem_' + DIGIT_TO_VAR[key.id])
+      if (key.id in DIGIT_TO_MEM) {
+        onAction('storeMem_' + DIGIT_TO_MEM[key.id])
         return
       }
       onAction('consumeSto')
+      // Fall through so the key still does its normal thing.
+    }
+    // RCL mode: digit keys insert memory slot letter K-T into expression; anything else cancels.
+    if (rclActive) {
+      if (key.id in DIGIT_TO_MEM) {
+        onInsert(DIGIT_TO_MEM[key.id])
+        onAction('consumeRcl')
+        return
+      }
+      onAction('consumeRcl')
       // Fall through so the key still does its normal thing.
     }
 
@@ -35,6 +45,7 @@ export default function Keypad({ shiftActive, alphaActive, stoActive, onInsert, 
   }
 
   function labelFor(key) {
+    if ((stoActive || rclActive) && key.rcl) return key.rcl.label
     if (shiftActive && key.shift) return key.shift.label
     if (alphaActive && key.alpha) return key.alpha.label
     return key.label
