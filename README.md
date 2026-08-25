@@ -21,8 +21,9 @@ A browser-based graphing scientific calculator with textbook-style math input.
 - Calculus panel: numeric derivative (central difference) and definite integral (Simpson's rule)
 - Complex number display: rectangular (a+bi) or polar (r∠θ) with toggle on the result line
 - History strip: last 100 expressions with indexed entries; click any to restore; clear button
-- MODE menu: Equation mode and Matrix/Vector panel
+- MODE menu: Equation, Statistics, and Matrix/Vector panel
 - Equation mode: polynomial roots (degree 1-10) and linear system solver (2x2 to 5x5)
+- Statistics mode: 1-var (mean, median, quartiles, std dev, variance, min/max) and 2-var regression (linear, quadratic, exponential, power)
 - Matrix/Vector panel: named slots A-J, size picker 1-4 rows/cols; 1-row slots act as vectors
 - OPS panel: Matrix tab (inv, det, trace, transpose, size) and Vector tab (dot, cross, norm)
 - Responsive layout: scales to any window size using dvh/vw units, no breakpoints
@@ -30,7 +31,7 @@ A browser-based graphing scientific calculator with textbook-style math input.
 ## Planned
 
 - Phase 2: Graphing (canvas plotter, pan/zoom, trace, shaded integral regions)
-- Phase 3 remaining: Statistics, Distributions
+- Phase 3 remaining: Distributions
 - Phase 4: Base-N, STO/RCL memory, Format options, Table mode
 
 See [docs/phases.md](docs/phases.md) for the full roadmap.
@@ -50,7 +51,7 @@ Tests:
 npm test
 ```
 
-289 Vitest tests covering the expression engine and keypad contracts.
+331 Vitest tests covering the expression engine, keypad contracts, and statistics engine.
 
 ---
 
@@ -80,7 +81,8 @@ To check a deployment:
 src/
   engine/
     mathEngine.js       - math.js wrapper, angle-mode trig, normalizeExpression, formatValue
-    numeric.js          - root finding, numeric derivative/integral, poly solver
+    numeric.js          - root finding, numeric derivative/integral, poly solver, linear system solver
+    stats.js            - 1-variable stats and 2-variable regression (linear/quadratic/exp/power)
     units.js            - unit conversion data (16 categories)
     constants.js        - scientific constants library
   components/
@@ -96,5 +98,6 @@ src/
     MatrixPanel.jsx     - matrix/vector storage, slots A-J
     OperationsPanel.jsx - matrix and vector operations menu
     EquationPanel.jsx   - polynomial roots and linear system solver
+    StatPanel.jsx       - 1-variable stats and regression
   App.jsx               - top-level state and wiring
 ```

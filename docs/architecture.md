@@ -28,6 +28,7 @@ graph TD
     App --> MAT["MatrixPanel.jsx\n(slots A-J, 1-row = vector)"]
     App --> OP["OperationsPanel.jsx\n(Matrix / Vector tabs)"]
     App --> EQ["EquationPanel.jsx\n(Polynomial roots + Linear system)"]
+    App --> ST["StatPanel.jsx\n(1-var stats + regression)"]
 
     Screen --> MF["&lt;math-field&gt;\n(MathLive web component)"]
 
@@ -39,7 +40,7 @@ graph TD
     CA --> N
 ```
 
-The overlay panels (ConstPanel, ConvPanel, SolvePanel, CalculusPanel, ModePanel, MatrixPanel, OperationsPanel, EquationPanel) are rendered inside `.device` and cover the full calculator body with `position: absolute; inset: 0`. Only one is open at a time via `panel` state in App.
+The overlay panels (ConstPanel, ConvPanel, SolvePanel, CalculusPanel, ModePanel, MatrixPanel, OperationsPanel, EquationPanel, StatPanel) are rendered inside `.device` and cover the full calculator body with `position: absolute; inset: 0`. Only one is open at a time via `panel` state in App.
 
 ---
 
@@ -180,12 +181,13 @@ The math input field is an exception. MathLive renders its content using its own
 
 ## Testing
 
-289 Vitest tests across two files, running in node environment.
+331 Vitest tests across three files, running in node environment.
 
 ```
 src/
   components/__tests__/keypad.test.js    - structural integrity + key contract tests
-  engine/__tests__/mathEngine.test.js    - normalizeExpression + evaluateExpression
+  engine/__tests__/mathEngine.test.js    - normalizeExpression + evaluateExpression + polyRoots + solveLinearSystem
+  engine/__tests__/stats.test.js         - oneVarStats + twoVarStats (all four regression models)
 ```
 
 `keypadConfig.js` is extracted from `Keypad.jsx` so tests can import ROWS without JSX/React transforms.
@@ -196,3 +198,5 @@ Test categories in `mathEngine.test.js`:
 - evaluateExpression: arithmetic, powers/roots, trig (deg + rad), inverse trig, reciprocal trig, logs, combinatorics, Ans, constants, expected failures, full MathLive pipeline per button, complex numbers, matrix variables in scope, OPS matrix operations, OPS vector operations (inline and stored 1-row variables)
 - polyRoots: degree 1-6, real and complex roots, repeated roots
 - solveLinearSystem: 2x2 through 5x5, singular matrix error
+- oneVarStats: n/sum/mean/median/quartiles/stddev/variance/min/max, edge cases
+- twoVarStats: linear/quadratic/exponential/power regression, perfect fits, domain errors
