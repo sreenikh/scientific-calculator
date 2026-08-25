@@ -10,6 +10,7 @@ import ModePanel from './components/ModePanel'
 import MatrixPanel from './components/MatrixPanel'
 import OperationsPanel from './components/OperationsPanel'
 import EquationPanel from './components/EquationPanel'
+import StatPanel from './components/StatPanel'
 import { evaluateExpression, formatValue } from './engine/mathEngine'
 import './App.css'
 
@@ -114,6 +115,7 @@ export default function App() {
       case 'openMatrix':  setPanel('matrix');   break
       case 'openOps':     setPanel('ops');      break
       case 'openEquation': setPanel('equation'); break
+      case 'openStats':    setPanel('stats');    break
       default: break
     }
   }
@@ -186,6 +188,7 @@ export default function App() {
           <OperationsPanel onClose={() => setPanel(null)} onInsert={insert} />
         )}
         {panel === 'equation' && <EquationPanel onClose={() => setPanel(null)} />}
+        {panel === 'stats'    && <StatPanel    onClose={() => setPanel(null)} />}
         {panel === 'matrix' && (
           <MatrixPanel
             onClose={() => setPanel(null)}

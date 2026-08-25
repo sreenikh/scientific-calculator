@@ -85,11 +85,16 @@ Accessed via MODE menu (item 1).
 - Linear System tab: 2x2 through 5x5 size selector, augmented matrix [A|b] input, solution via Gaussian elimination with partial pivoting
 - Degree 1-2: closed-form formulas; degree 3+: companion-matrix eigenvalues via math.js `eigs`
 
-### Statistics mode `[planned]`
+### Statistics mode `[done]`
 
-- 1-variable: mean, median, std dev, variance, min/max, quartiles
-- 2-variable: linear/quadratic/exponential/power regression, r and r²
-- Data entry via a scrollable list editor
+Accessed via MODE menu (item 3).
+
+- 1-variable tab: enter x values; computes n, Σx, mean, median, Q1, Q3, population std dev and variance, min, max
+- 2-variable tab: enter (x, y) pairs; choose Linear, Quadratic, Exponential, or Power regression
+  - Linear/Exp/Power: returns a, b, r, r²
+  - Quadratic: returns a, b, c, r² (normal equations via 3x3 Gaussian elimination)
+  - Exponential and Power models linearize via log transform; require y > 0 (Power also requires x > 0)
+- Scrollable data list; rows added on demand; individual rows deletable
 
 ### Distribution mode `[planned]`
 

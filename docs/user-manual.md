@@ -176,7 +176,7 @@ Press **MODE** to open the mode menu.
 |---|------|-------------|
 | 1 | EQUATION | Polynomial roots (degree 1-10), linear systems (2x2 to 5x5) |
 | 2 | MATRIX / VECTOR | Opens the matrix/vector storage panel |
-| 3 | STATISTICS | Planned |
+| 3 | STATISTICS | 1-var stats; linear/quadratic/exponential/power regression |
 | 4 | DISTRIBUTION | Planned |
 
 ---
@@ -202,6 +202,46 @@ The leading coefficient (highest degree) cannot be zero. Degree 1 and 2 use clos
 3. Press **Solve**.
 
 The solution x₁, x₂, ... appears below. If the system has no unique solution (singular or dependent equations), an error message is shown instead.
+
+---
+
+## Statistics panel
+
+Open via **MODE -> 3 STATISTICS**.
+
+### 1-Variable tab
+
+Enter x values in the data list (one per row). Empty rows are ignored. Press **Compute** to get:
+
+| Result | Description |
+|--------|-------------|
+| n | Count of valid entries |
+| Σx | Sum |
+| x̅ | Mean |
+| Median | Middle value |
+| Q1 / Q3 | Lower / upper quartile |
+| s | Population standard deviation |
+| s² | Population variance |
+| Min / Max | Smallest / largest value |
+
+### 2-Variable tab
+
+Enter (x, y) pairs. Select a regression model, then press **Compute**.
+
+| Model | Equation | Notes |
+|-------|----------|-------|
+| Linear | y = a + bx | Always available |
+| Quadratic | y = a + bx + cx² | Needs 3+ points |
+| Exponential | y = a·e^(bx) | Requires all y > 0 |
+| Power | y = a·x^b | Requires all x > 0 and y > 0 |
+
+Results include the fitted equation, coefficients a, b (and c for quadratic), r (where applicable), and r².
+
+### Data entry
+
+- Use **+ Add rows** to extend the list.
+- Click the **x** button on any row to remove it.
+- Rows with blank or non-numeric values are silently ignored when computing.
 
 ---
 
