@@ -23,7 +23,7 @@ A browser-based graphing scientific calculator with textbook-style math input.
 - History strip: last 100 expressions with indexed entries; click any to restore; clear button
 - MODE menu: Equation, Statistics, and Matrix/Vector panel
 - Equation mode: polynomial roots (degree 1-10) and linear system solver (2x2 to 5x5)
-- Statistics mode: 1-var (n, mean, median, mode, quartiles, IQR, range, σ, σ², s, s², CV, SEM, skewness, kurtosis, min/max, fixed P10/25/50/75/90, custom percentile inputs) and 2-var regression (linear, quadratic, exponential, power)
+- Statistics mode: 1-var (n, mean, median, mode, quartiles, IQR, range, σ, σ², s, s², CV, SEM, skewness, kurtosis, min/max, fixed P10/25/50/75/90, custom percentile inputs), 2-var regression (linear, quadratic, exponential, power), and k-var multiple linear regression (2-5 predictors, R², adjusted R²)
 - Matrix/Vector panel: named slots A-J, size picker 1-4 rows/cols; 1-row slots act as vectors
 - OPS panel: Math tab (abs, mod, floor, ceil, round, sign), Matrix tab (inv, det, trace, transpose, size), Vector tab (dot, cross, norm), Complex tab (polar, abs, arg, conj, re, im)
 - `%` key (ALPHA+×) inserts a percentage: `50%` evaluates to 0.5; `mod(a,b)` is the separate modulo operation
@@ -52,7 +52,7 @@ Tests:
 npm test
 ```
 
-390 Vitest tests covering the expression engine, keypad contracts, and statistics engine.
+408 Vitest tests covering the expression engine, keypad contracts, and statistics engine.
 
 ---
 

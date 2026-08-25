@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { oneVarStats, twoVarStats, percentile, mode as computeMode } from '../engine/stats'
+import { oneVarStats, twoVarStats, multiVarStats, percentile, mode as computeMode } from '../engine/stats'
 import { math } from '../engine/mathEngine'
 
 const MODELS = [
@@ -24,6 +24,12 @@ function makeRows(n) {
   return Array.from({ length: n }, () => ({ x: '', y: '' }))
 }
 
+const SUB = ['₀', '₁', '₂', '₃', '₄', '₅']
+
+function makeKRows(k, count) {
+  return Array.from({ length: count }, () => Array(k + 1).fill(''))
+}
+
 export default function StatPanel({ onClose }) {
   const [tab,     setTab]     = useState('1var')
   const [model,   setModel]   = useState('linear')
@@ -31,9 +37,17 @@ export default function StatPanel({ onClose }) {
   const [result,  setResult]  = useState(null)
   const [error,   setError]   = useState(null)
   const [customP, setCustomP] = useState([])
+  const [kNum,    setKNum]    = useState(2)
+  const [kRows,   setKRows]   = useState(() => makeKRows(2, 6))
 
   function updateCell(i, field, val) {
     setRows(prev => prev.map((r, idx) => idx === i ? { ...r, [field]: val } : r))
+    setResult(null)
+    setError(null)
+  }
+
+  function updateKCell(rowIdx, colIdx, val) {
+    setKRows(prev => prev.map((r, i) => i === rowIdx ? r.map((v, j) => j === colIdx ? val : v) : r))
     setResult(null)
     setError(null)
   }
@@ -42,8 +56,23 @@ export default function StatPanel({ onClose }) {
     setRows(prev => [...prev, ...makeRows(4)])
   }
 
+  function addKRows() {
+    setKRows(prev => [...prev, ...makeKRows(kNum, 4)])
+  }
+
   function deleteRow(i) {
     setRows(prev => prev.length > 1 ? prev.filter((_, idx) => idx !== i) : prev)
+  }
+
+  function deleteKRow(i) {
+    setKRows(prev => prev.length > 1 ? prev.filter((_, idx) => idx !== i) : prev)
+  }
+
+  function changeK(k) {
+    setKNum(k)
+    setKRows(makeKRows(k, 6))
+    setResult(null)
+    setError(null)
   }
 
   function compute() {
@@ -54,11 +83,18 @@ export default function StatPanel({ onClose }) {
       const r = oneVarStats(xs)
       if (r.ok) setResult(r)
       else setError(r.error)
-    } else {
+    } else if (tab === '2var') {
       const pairs = rows
         .map(r => ({ x: parseFloat(r.x), y: parseFloat(r.y) }))
         .filter(p => !isNaN(p.x) && !isNaN(p.y))
       const r = twoVarStats(pairs.map(p => p.x), pairs.map(p => p.y), model)
+      if (r.ok) setResult(r)
+      else setError(r.error)
+    } else {
+      const data = kRows
+        .map(row => row.map(parseFloat))
+        .filter(row => row.every(v => !isNaN(v)))
+      const r = multiVarStats(data, kNum)
       if (r.ok) setResult(r)
       else setError(r.error)
     }
@@ -78,8 +114,9 @@ export default function StatPanel({ onClose }) {
       </div>
 
       <div className="ov-tabs">
-        <button className={tab === '1var' ? 'active' : ''} onClick={() => switchTab('1var')}>1-Variable</button>
-        <button className={tab === '2var' ? 'active' : ''} onClick={() => switchTab('2var')}>2-Variable</button>
+        <button className={tab === '1var' ? 'active' : ''} onClick={() => switchTab('1var')}>1-Var</button>
+        <button className={tab === '2var' ? 'active' : ''} onClick={() => switchTab('2var')}>2-Var</button>
+        <button className={tab === 'kvar' ? 'active' : ''} onClick={() => switchTab('kvar')}>k-Var</button>
       </div>
 
       {tab === '2var' && (
@@ -94,43 +131,93 @@ export default function StatPanel({ onClose }) {
         </div>
       )}
 
-      <div className="stat-data-header">
-        <span className="stat-hdr-num"></span>
-        <span className="stat-hdr-cell">x</span>
-        {tab === '2var' && <span className="stat-hdr-cell">y</span>}
-        <span className="stat-hdr-del"></span>
-      </div>
-
-      <div className="stat-data-list">
-        {rows.map((row, i) => (
-          <div key={i} className="stat-row">
-            <span className="stat-row-num">{i + 1}</span>
-            <input
-              className="stat-cell"
-              type="number"
-              value={row.x}
-              onChange={e => updateCell(i, 'x', e.target.value)}
-              placeholder="0"
-            />
-            {tab === '2var' && (
-              <input
-                className="stat-cell"
-                type="number"
-                value={row.y}
-                onChange={e => updateCell(i, 'y', e.target.value)}
-                placeholder="0"
-              />
-            )}
+      {tab === 'kvar' && (
+        <div className="stat-model-row">
+          {[2, 3, 4, 5].map(k => (
             <button
-              className="stat-row-del"
-              onClick={() => deleteRow(i)}
-              disabled={rows.length <= 1}
-            >x</button>
-          </div>
-        ))}
-      </div>
+              key={k}
+              className={'stat-model-btn' + (kNum === k ? ' active' : '')}
+              onClick={() => changeK(k)}
+            >{k} predictors</button>
+          ))}
+        </div>
+      )}
 
-      <button className="stat-add-btn" onClick={addRows}>+ Add rows</button>
+      {tab !== 'kvar' && (
+        <>
+          <div className="stat-data-header">
+            <span className="stat-hdr-num"></span>
+            <span className="stat-hdr-cell">x</span>
+            {tab === '2var' && <span className="stat-hdr-cell">y</span>}
+            <span className="stat-hdr-del"></span>
+          </div>
+          <div className="stat-data-list">
+            {rows.map((row, i) => (
+              <div key={i} className="stat-row">
+                <span className="stat-row-num">{i + 1}</span>
+                <input
+                  className="stat-cell"
+                  type="number"
+                  value={row.x}
+                  onChange={e => updateCell(i, 'x', e.target.value)}
+                  placeholder="0"
+                />
+                {tab === '2var' && (
+                  <input
+                    className="stat-cell"
+                    type="number"
+                    value={row.y}
+                    onChange={e => updateCell(i, 'y', e.target.value)}
+                    placeholder="0"
+                  />
+                )}
+                <button
+                  className="stat-row-del"
+                  onClick={() => deleteRow(i)}
+                  disabled={rows.length <= 1}
+                >x</button>
+              </div>
+            ))}
+          </div>
+          <button className="stat-add-btn" onClick={addRows}>+ Add rows</button>
+        </>
+      )}
+
+      {tab === 'kvar' && (
+        <>
+          <div className="stat-data-header">
+            <span className="stat-hdr-num"></span>
+            {Array.from({ length: kNum }, (_, j) => (
+              <span key={j} className="stat-hdr-cell">x{SUB[j + 1]}</span>
+            ))}
+            <span className="stat-hdr-cell">y</span>
+            <span className="stat-hdr-del"></span>
+          </div>
+          <div className="stat-data-list">
+            {kRows.map((row, i) => (
+              <div key={i} className="stat-row">
+                <span className="stat-row-num">{i + 1}</span>
+                {row.map((val, j) => (
+                  <input
+                    key={j}
+                    className="stat-cell"
+                    type="number"
+                    value={val}
+                    onChange={e => updateKCell(i, j, e.target.value)}
+                    placeholder="0"
+                  />
+                ))}
+                <button
+                  className="stat-row-del"
+                  onClick={() => deleteKRow(i)}
+                  disabled={kRows.length <= 1}
+                >x</button>
+              </div>
+            ))}
+          </div>
+          <button className="stat-add-btn" onClick={addKRows}>+ Add rows</button>
+        </>
+      )}
       <button className="stat-compute-btn" onClick={compute}>Compute</button>
 
       {error && <div className="eq-error">{error}</div>}
@@ -231,6 +318,31 @@ export default function StatPanel({ onClose }) {
           ))}
         </div>
       )}
+
+      {result && tab === 'kvar' && (
+        <div className="stat-results">
+          <div className="stat-result-eq">{kvarEquation(result)}</div>
+          {result.coeffs.map((v, i) => (
+            <div key={i} className="stat-result-row">
+              <span className="stat-result-label">b{SUB[i]}</span>
+              <span className="stat-result-leader" />
+              <span className="stat-result-val">{fmt(v)}</span>
+            </div>
+          ))}
+          {[['R²', result.r2], ['Adj. R²', result.adjR2]].map(([label, val]) => (
+            <div key={label} className="stat-result-row">
+              <span className="stat-result-label">{label}</span>
+              <span className="stat-result-leader" />
+              <span className="stat-result-val">{fmt(val)}</span>
+            </div>
+          ))}
+          <div className="stat-result-row">
+            <span className="stat-result-label">n</span>
+            <span className="stat-result-leader" />
+            <span className="stat-result-val">{result.n}</span>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -250,4 +362,11 @@ function modelRows(r) {
   if (r.r !== undefined)       rows.push(['r', r.r])
   rows.push(['r²', r.r2])
   return rows
+}
+
+function kvarEquation(r) {
+  const terms = r.coeffs.map((v, i) =>
+    i === 0 ? fmt(v) : `${fmt(v)}x${SUB[i]}`
+  )
+  return 'y = ' + terms.join(' + ')
 }

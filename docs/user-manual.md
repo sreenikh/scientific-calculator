@@ -249,6 +249,18 @@ Enter (x, y) pairs. Select a regression model, then press **Compute**.
 
 Results include the fitted equation, coefficients a, b (and c for quadratic), r (where applicable), and r².
 
+### k-Variable tab
+
+Multiple linear regression with 2 to 5 predictors: y = b₀ + b₁x₁ + b₂x₂ + ... + bₖxₖ
+
+1. Choose the number of predictors (2, 3, 4, or 5) using the buttons at the top.
+2. Enter one data point per row: fill in x₁, x₂, ..., xₖ, then y.
+3. Press **Compute**.
+
+Results show the fitted equation, each coefficient b₀ through bₖ, R², and adjusted R².
+
+At least k+2 data points are required. If predictors are collinear (one is a linear combination of others), the design matrix is singular and an error is returned.
+
 ### Data entry
 
 - Use **+ Add rows** to extend the list.

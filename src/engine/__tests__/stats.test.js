@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { oneVarStats, twoVarStats, percentile, mode } from '../stats.js'
+import { oneVarStats, twoVarStats, multiVarStats, percentile, mode } from '../stats.js'
 
 // ── 1-variable stats ────────────────────────────────────────────────────────
 
@@ -214,5 +214,64 @@ describe('twoVarStats: power regression', () => {
   })
   it('returns error when y <= 0', () => {
     expect(twoVarStats([1,2,3], [0,1,2], 'power').ok).toBe(false)
+  })
+})
+
+// ── multi-variable regression ────────────────────────────────────────────────
+
+describe('multiVarStats: k=2 perfect fit', () => {
+  // Perfect y = 1 + 2*x1 + 3*x2
+  const data = [
+    [1, 1, 6],
+    [2, 1, 8],
+    [1, 2, 9],
+    [2, 2, 11],
+    [3, 1, 10],
+    [3, 2, 13],
+  ]
+
+  it('returns ok: true', () => expect(multiVarStats(data, 2).ok).toBe(true))
+  it('b0 ≈ 1', () => expect(multiVarStats(data, 2).coeffs[0]).toBeCloseTo(1, 6))
+  it('b1 ≈ 2', () => expect(multiVarStats(data, 2).coeffs[1]).toBeCloseTo(2, 6))
+  it('b2 ≈ 3', () => expect(multiVarStats(data, 2).coeffs[2]).toBeCloseTo(3, 6))
+  it('r² = 1 for perfect fit', () => expect(multiVarStats(data, 2).r2).toBeCloseTo(1, 8))
+  it('adjR2 = 1 for perfect fit', () => expect(multiVarStats(data, 2).adjR2).toBeCloseTo(1, 6))
+  it('n = 6', () => expect(multiVarStats(data, 2).n).toBe(6))
+  it('k = 2', () => expect(multiVarStats(data, 2).k).toBe(2))
+})
+
+describe('multiVarStats: k=3', () => {
+  // Perfect y = 1 + x1 + 2*x2 + 3*x3
+  const data = Array.from({ length: 8 }, (_, i) => {
+    const x1 = (i % 2) + 1, x2 = Math.floor(i / 2) % 2 + 1, x3 = Math.floor(i / 4) + 1
+    return [x1, x2, x3, 1 + x1 + 2 * x2 + 3 * x3]
+  })
+
+  it('returns ok: true', () => expect(multiVarStats(data, 3).ok).toBe(true))
+  it('b0 ≈ 1', () => expect(multiVarStats(data, 3).coeffs[0]).toBeCloseTo(1, 5))
+  it('b1 ≈ 1', () => expect(multiVarStats(data, 3).coeffs[1]).toBeCloseTo(1, 5))
+  it('b2 ≈ 2', () => expect(multiVarStats(data, 3).coeffs[2]).toBeCloseTo(2, 5))
+  it('b3 ≈ 3', () => expect(multiVarStats(data, 3).coeffs[3]).toBeCloseTo(3, 5))
+  it('r² = 1', () => expect(multiVarStats(data, 3).r2).toBeCloseTo(1, 8))
+})
+
+describe('multiVarStats: edge cases', () => {
+  it('returns error when too few points for k=2', () => {
+    const data = [[1, 1, 2], [2, 2, 4]]   // needs >= 4 points
+    expect(multiVarStats(data, 2).ok).toBe(false)
+  })
+  it('error message mentions minimum required', () => {
+    expect(multiVarStats([[1,1,2]], 2).error).toContain('4')
+  })
+  it('rows with NaN are filtered out', () => {
+    const data = [
+      [1, 1, 6], [2, 1, 8], [1, 2, 9], [2, 2, 11], [NaN, 1, 10], [3, 2, 13],
+    ]
+    expect(multiVarStats(data, 2).n).toBe(5)
+  })
+  it('collinear predictors return error', () => {
+    // x2 = 2*x1 always: XtX is singular
+    const data = [[1,2,3],[2,4,5],[3,6,7],[4,8,9],[5,10,11]]
+    expect(multiVarStats(data, 2).ok).toBe(false)
   })
 })
