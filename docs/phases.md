@@ -9,6 +9,8 @@
 - MathLive uncontrolled math field with cursor-aware LaTeX insertion
 - Keypad with three layers: primary / SHIFT / ALPHA
   - Trig: sin/cos/tan + inverses + reciprocals (sec/csc/cot)
+- Hyperbolic trig: sinh/cosh/tanh (dedicated row); inverses asinh/acosh/atanh via SHIFT layer
+- Direct e and π keys on the hyperbolic row
   - Log/exp: log (log10), ln, logbase, 10^x, e^x
   - Roots and powers: sqrt, nth root, x², x³, x^y
   - Combinatorics: nCr, nPr, x!

@@ -18,6 +18,13 @@ export const ROWS = [
     { id: 'ln',  label: 'ln',  insert: '\\ln(',    shift: { label: 'eˣ',    insert: 'e^{#0}'     } },
   ],
   [
+    { id: 'sinh', label: 'sinh', insert: '\\sinh(',  shift: { label: 'sinh⁻¹', insert: '\\operatorname{asinh}(' } },
+    { id: 'cosh', label: 'cosh', insert: '\\cosh(',  shift: { label: 'cosh⁻¹', insert: '\\operatorname{acosh}(' } },
+    { id: 'tanh', label: 'tanh', insert: '\\tanh(',  shift: { label: 'tanh⁻¹', insert: '\\operatorname{atanh}(' } },
+    { id: 'eul',  label: 'e',    insert: 'e' },
+    { id: 'cpi',  label: 'π',    insert: '\\pi' },
+  ],
+  [
     { id: 'x2',     label: 'x²', insert: '^2',          shift: { label: 'x³', insert: '^3' } },
     { id: 'sqrt',   label: '√',  insert: '\\sqrt{#0}',  shift: { label: 'ˣ√y', insert: '\\sqrt[#0]{#0}' } },
     { id: 'pow',    label: 'xʸ', insert: '^{#0}' },

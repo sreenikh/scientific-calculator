@@ -99,9 +99,21 @@ Variables A-J are evaluated from stored values in the Matrix/Vector panel. Typin
 | cos | cos( | cos^-1( | sec( |
 | tan | tan( | tan^-1( | cot( |
 
+### Hyperbolic trig
+
+| Press | Inserts | SHIFT |
+|-------|---------|-------|
+| sinh | sinh( | sinh^-1 (asinh) |
+| cosh | cosh( | cosh^-1 (acosh) |
+| tanh | tanh( | tanh^-1 (atanh) |
+| e | Euler's number (2.718...) | - |
+| π | Pi (3.14159...) | - |
+
 Close the parenthesis after entering the argument, or use the **)** key.
 
 **Angle mode matters.** `sin(30)` in DEG mode = 0.5. In RAD mode it gives sin(30 radians). Toggle with the **DRG** key.
+
+Hyperbolic functions are not angle-mode-sensitive: `sinh(1)` always returns 1.1752...
 
 ### Logarithms and exponentials
 

@@ -10,6 +10,8 @@ A browser-based graphing scientific calculator with textbook-style math input.
 
 - Textbook-style math input via MathLive (fractions stack, roots draw a vinculum, exponents sit above baseline)
 - Degree/radian-aware trig: sin/cos/tan, inverses, and reciprocals (sec/csc/cot)
+- Hyperbolic trig: sinh, cosh, tanh (primary row); inverses asinh, acosh, atanh via SHIFT
+- Constants e and π as dedicated keypad keys
 - Logarithms: log base 10, natural log, log to any base
 - Roots and powers: sqrt, nth root, x², x³, x^y
 - Combinatorics: nCr, nPr, factorial
@@ -55,7 +57,7 @@ Tests:
 npm test
 ```
 
-548 Vitest tests covering the expression engine, keypad contracts, statistics engine, distributions, and base-N/bitwise/K-map engine.
+568 Vitest tests covering the expression engine, keypad contracts, statistics engine, distributions, and base-N/bitwise/K-map engine.
 
 ---
 

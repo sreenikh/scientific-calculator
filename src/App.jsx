@@ -111,7 +111,14 @@ export default function App() {
         break
       case 'cycleBase': {
         const order = ['dec', 'hex', 'oct', 'bin']
-        setBaseMode(m => order[(order.indexOf(m) + 1) % order.length])
+        const newBase = order[(order.indexOf(baseMode) + 1) % order.length]
+        setBaseMode(newBase)
+        if (newBase === 'dec') {
+          if (!isLastMatrix) setResultDisplay(formatValue(ans, angleMode, complexMode))
+        } else {
+          const based = formatInBase(ans, newBase)
+          if (based !== null) setResultDisplay(based)
+        }
         break
       }
       case 'clear':

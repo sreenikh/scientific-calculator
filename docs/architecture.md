@@ -216,7 +216,7 @@ The Numbers tab passes `baseMode` from App state (via `onSetBase` callback) so c
 
 ## Testing
 
-548 Vitest tests across five files, running in node environment.
+568 Vitest tests across five files, running in node environment.
 
 ```
 src/
@@ -248,6 +248,8 @@ Test categories in `mathEngine.test.js`:
 - format functions: formatBin (nibble grouping), formatOct, formatDec, formatHex (legacy 32-bit)
 - bitwiseOp: AND/OR/XOR/NOT, left and logical right shift, unsigned 32-bit semantics (legacy)
 - evaluateBaseExpr: arithmetic (+/-/*//%)), bitwise (AND/OR/XOR/NOT/&/|/^/~/<</>>) in hex/binary/decimal, large numbers, error cases (invalid digit, division by zero), mixed-base prefixes (0b/0x/0o/0h/0d)
+- normalizeExpression - hyperbolic inverse bridge: a s i n h/a c o s h/a t a n h -> asinh/acosh/atanh
+- evaluateExpression - hyperbolic functions: sinh/cosh/tanh at 0 and 1, roundtrip inverses asinh/acosh/atanh
 - kmapMinterm: 2-var, 3-var, 5-var, 6-var Gray code ordering
 - kmapDims: 2-6 vars return grid dims; 7-8 return null (flat list)
 - karnaughMinimize: 2-var, 3-var, 5-var cases, all-zeros, all-ones, don't cares
