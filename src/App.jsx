@@ -12,10 +12,23 @@ import OperationsPanel from './components/OperationsPanel'
 import EquationPanel from './components/EquationPanel'
 import StatPanel from './components/StatPanel'
 import DistributionPanel from './components/DistributionPanel'
+import BaseNPanel from './components/BaseNPanel'
 import { evaluateExpression, formatValue } from './engine/mathEngine'
+import { formatAllBases, validateBaseDigits } from './engine/baseN'
 import './App.css'
 
 const EMPTY_MATRIX_VARS = { A: null, B: null, C: null, D: null, E: null, F: null, G: null, H: null, I: null, J: null }
+
+// Format a numeric result in the active base (integers only; floats stay decimal).
+function formatInBase(value, baseMode) {
+  if (baseMode === 'dec') return null
+  if (typeof value !== 'number' || !Number.isFinite(value)) return null
+  const rounded = Math.round(value)
+  if (Math.abs(value - rounded) > 1e-9) return null
+  if (Math.abs(rounded) > Number.MAX_SAFE_INTEGER) return null
+  const bases = formatAllBases(BigInt(rounded))
+  return bases[baseMode]
+}
 
 export default function App() {
   const [latex, setLatex] = useState('')
@@ -33,6 +46,7 @@ export default function App() {
   const [isLastMatrix, setIsLastMatrix] = useState(false)
   const [lastComplexValue, setLastComplexValue] = useState(null)
   const [matrixVars, setMatrixVars] = useState(EMPTY_MATRIX_VARS)
+  const [baseMode, setBaseMode] = useState('dec')  // 'dec'|'hex'|'oct'|'bin'
   const screenRef = useRef(null)
 
   const handleChange = useCallback((newLatex, newAscii) => {
@@ -47,22 +61,26 @@ export default function App() {
 
   function evaluate() {
     const exprToUse = asciiMath || latex
-    // Inject stored matrices (plain 2D arrays) alongside Ans into scope.
-    // buildScope converts them to math.js matrices automatically.
+    const baseErr = validateBaseDigits(exprToUse, baseMode)
+    if (baseErr) { setError(baseErr); return }
     const vars = { Ans: ans }
     for (const [k, v] of Object.entries(matrixVars)) {
       if (v !== null) vars[k] = v
     }
     const result = evaluateExpression(exprToUse, { angleMode, vars, complexMode })
     if (result.ok) {
-      setResultDisplay(result.display)
+      // If a non-decimal base is active and the result is an integer, reformat it.
+      const baseFormatted = formatInBase(result.value, baseMode)
+      const display = baseFormatted !== null ? baseFormatted : result.display
+
+      setResultDisplay(display)
       setError(null)
       setIsLastComplex(result.isComplex)
       setIsLastMatrix(result.isMatrix)
       setLastComplexValue(result.isComplex ? result.value : null)
       setAns(result.value)
       setHistory(h => {
-        const entry = { expr: exprToUse, latex, display: result.isMatrix ? `[matrix]` : result.display }
+        const entry = { expr: exprToUse, latex, display: result.isMatrix ? `[matrix]` : display }
         const next = [...h, entry]
         return next.length > 100 ? next.slice(-100) : next
       })
@@ -93,6 +111,18 @@ export default function App() {
       case 'toggleAngle':
         setAngleMode(m => m === 'deg' ? 'rad' : 'deg')
         break
+      case 'cycleBase': {
+        const order = ['dec', 'hex', 'oct', 'bin']
+        const newBase = order[(order.indexOf(baseMode) + 1) % order.length]
+        setBaseMode(newBase)
+        if (newBase === 'dec') {
+          if (!isLastMatrix) setResultDisplay(formatValue(ans, angleMode, complexMode))
+        } else {
+          const based = formatInBase(ans, newBase)
+          if (based !== null) setResultDisplay(based)
+        }
+        break
+      }
       case 'clear':
         screenRef.current?.clear()
         setResultDisplay('0')
@@ -148,36 +178,39 @@ export default function App() {
       </div>
 
       <div className="device">
-        <div className="screen-wrap">
-          <Screen
-            ref={screenRef}
-            onChange={handleChange}
-            resultDisplay={resultDisplay}
-            error={error}
-            angleMode={angleMode}
+        <>
+          <div className="screen-wrap">
+            <Screen
+              ref={screenRef}
+              onChange={handleChange}
+              resultDisplay={resultDisplay}
+              error={error}
+              angleMode={angleMode}
+              shiftActive={shiftActive}
+              alphaActive={alphaActive}
+              isComplex={isLastComplex}
+              isMatrix={isLastMatrix}
+              complexMode={complexMode}
+              baseMode={baseMode}
+              onToggleComplex={() => {
+                const newMode = complexMode === 'rect' ? 'polar' : 'rect'
+                setComplexMode(newMode)
+                if (lastComplexValue !== null) {
+                  setResultDisplay(formatValue(lastComplexValue, angleMode, newMode))
+                }
+              }}
+            />
+          </div>
+
+          <HistoryStrip entries={history} onRestore={restoreHistory} onClear={() => setHistory([])} />
+
+          <Keypad
             shiftActive={shiftActive}
             alphaActive={alphaActive}
-            isComplex={isLastComplex}
-            isMatrix={isLastMatrix}
-            complexMode={complexMode}
-            onToggleComplex={() => {
-              const newMode = complexMode === 'rect' ? 'polar' : 'rect'
-              setComplexMode(newMode)
-              if (lastComplexValue !== null) {
-                setResultDisplay(formatValue(lastComplexValue, angleMode, newMode))
-              }
-            }}
+            onInsert={insert}
+            onAction={handleAction}
           />
-        </div>
-
-        <HistoryStrip entries={history} onRestore={restoreHistory} onClear={() => setHistory([])} />
-
-        <Keypad
-          shiftActive={shiftActive}
-          alphaActive={alphaActive}
-          onInsert={insert}
-          onAction={handleAction}
-        />
+        </>
 
         {panel === 'const'  && <ConstPanel onClose={() => setPanel(null)} onSelect={insertConstant} />}
         {panel === 'conv'   && <ConvPanel  onClose={() => setPanel(null)} />}
@@ -192,6 +225,13 @@ export default function App() {
         {panel === 'equation' && <EquationPanel onClose={() => setPanel(null)} />}
         {panel === 'stats'    && <StatPanel    onClose={() => setPanel(null)} />}
         {panel === 'dist'     && <DistributionPanel onClose={() => setPanel(null)} />}
+        {panel === 'basen'    && (
+          <BaseNPanel
+            onClose={() => setPanel(null)}
+            baseMode={baseMode}
+            onSetBase={setBaseMode}
+          />
+        )}
         {panel === 'matrix' && (
           <MatrixPanel
             onClose={() => setPanel(null)}

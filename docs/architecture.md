@@ -29,6 +29,8 @@ graph TD
     App --> OP["OperationsPanel.jsx\n(Matrix / Vector tabs)"]
     App --> EQ["EquationPanel.jsx\n(Polynomial roots + Linear system)"]
     App --> ST["StatPanel.jsx\n(1-var stats + regression)"]
+    App --> DI["DistributionPanel.jsx\n(Normal + Binomial)"]
+    App --> BNP["BaseNPanel.jsx\n(Numbers tab + K-map tab)"]
 
     Screen --> MF["&lt;math-field&gt;\n(MathLive web component)"]
 
@@ -40,7 +42,9 @@ graph TD
     CA --> N
 ```
 
-The overlay panels (ConstPanel, ConvPanel, SolvePanel, CalculusPanel, ModePanel, MatrixPanel, OperationsPanel, EquationPanel, StatPanel) are rendered inside `.device` and cover the full calculator body with `position: absolute; inset: 0`. Only one is open at a time via `panel` state in App.
+The overlay panels (ConstPanel, ConvPanel, SolvePanel, CalculusPanel, ModePanel, MatrixPanel, OperationsPanel, EquationPanel, StatPanel, DistributionPanel, BaseNPanel) are rendered inside `.device` and cover the full calculator body with `position: absolute; inset: 0`. Only one is open at a time via `panel` state in App.
+
+The BASE button (top modifier row) cycles `baseMode` through `dec -> hex -> oct -> bin -> dec` via the `cycleBase` action, the same pattern as DRG cycling `angleMode`. When `baseMode` is non-decimal the status bar shows the active base and `formatInBase()` in App reformats integer results. `BaseNPanel` is an additional overlay for base-N expression evaluation and K-map minimization.
 
 ---
 
@@ -179,9 +183,41 @@ The math input field is an exception. MathLive renders its content using its own
 
 ---
 
+## Base-N engine
+
+`engine/baseN.js` provides:
+
+| Export | Description |
+|--------|-------------|
+| `parseBase(str, base)` | Parse a string in the given base to a BigInt, or null if invalid |
+| `evaluateBaseExpr(expr, base)` | Evaluate an expression string in the given base; returns `{ ok, value }` (BigInt) |
+| `formatAllBases(n)` | Format a BigInt as `{ bin, oct, dec, hex }` strings |
+| `formatBin(n)` | Legacy 32-bit nibble-grouped binary string |
+| `bitwiseOp(op, a, b)` | Legacy 32-bit AND/OR/XOR/NOT/LSH/RSH |
+| `kmapDims(vars)` | Grid dimensions for 2-6-variable K-map; null for 7-8 (flat list) |
+| `kmapHeaders(vars)` | Row/col labels and Gray-code header values |
+| `kmapMinterm(vars, row, col)` | Minterm index at a grid position using Gray code (2-6 vars) |
+| `findPrimeImplicants(numVars, minterms, dontCares)` | Quine-McCluskey prime implicant list |
+| `findMinimalCover(numVars, minterms, primes)` | Essential primes + greedy cover |
+| `formatImplicant(prime, numVars)` | SOP term string, e.g. `"AB'"` |
+| `karnaughMinimize(vars, cells)` | Full minimization: cells array (0/1/2) -> minimal SOP string |
+| `validateBaseDigits(expr, baseMode)` | Returns an error string if the expression contains digits invalid for the active base (e.g. `'5'` in BIN), or null if valid |
+
+`evaluateBaseExpr` supports: `+`, `-`, `*`, `/`, `%`, `AND`/`OR`/`XOR`/`NOT` (keywords or `&`/`|`/`^`/`~`), `<<`, `>>`, parentheses, unary minus. Numbers are BigInt so there is no word-size limit. `NOT` uses a 64-bit mask.
+
+Mixed-base prefix notation is supported within any expression regardless of the active base: `0b` (binary), `0x` or `0h` (hex), `0o` (octal), `0d` (decimal). For example, `A + 0b10` in a HEX-base context evaluates hex A (10) plus binary 2 = 12.
+
+Cells encode: 0 = minterm 0, 1 = minterm 1, 2 = don't care. `karnaughMinimize` returns `'0'` for no minterms and `'1'` when all cells are covered.
+
+For 2-6 variables the K-map tab uses `kmapDims`/`kmapHeaders`/`kmapMinterm` to render a visual Gray-code grid. For 7-8 variables there is no visual grid; the panel shows a flat scrollable minterm list of 128 or 256 cells.
+
+The Numbers tab passes `baseMode` from App state (via `onSetBase` callback) so choosing a base inside the panel also changes the global mode. App.jsx's `formatInBase` converts integer results to the selected base for the main result line. The status bar shows HEX/OCT/BIN when non-decimal.
+
+---
+
 ## Testing
 
-441 Vitest tests across four files, running in node environment.
+578 Vitest tests across five files, running in node environment.
 
 ```
 src/
@@ -189,6 +225,7 @@ src/
   engine/__tests__/mathEngine.test.js       - normalizeExpression + evaluateExpression + polyRoots + solveLinearSystem
   engine/__tests__/stats.test.js            - oneVarStats + twoVarStats (all four regression models) + multiVarStats
   engine/__tests__/distributions.test.js    - normalPdf + normalCdf + normalInv + binomialPdf + binomialCdf
+  engine/__tests__/baseN.test.js            - parseBase + format functions + bitwiseOp + kmapMinterm + karnaughMinimize + formatImplicant
 ```
 
 `keypadConfig.js` is extracted from `Keypad.jsx` so tests can import ROWS without JSX/React transforms.
@@ -207,3 +244,15 @@ Test categories in `mathEngine.test.js`:
 - multiVarStats: k=2 and k=3 perfect fits, coefficient recovery, R², collinearity error, insufficient data error
 - normalPdf/normalCdf/normalInv: standard normal values, symmetry, monotonicity, roundtrip, edge cases
 - binomialPdf/binomialCdf: known probabilities, sum-to-one, large n, edge cases (p=0/1, k out of range)
+- parseBase: decimal/binary/hex BigInt parsing, invalid input rejection
+- formatAllBases: all four base representations, large number (2^63)
+- format functions: formatBin (nibble grouping), formatOct, formatDec, formatHex (legacy 32-bit)
+- bitwiseOp: AND/OR/XOR/NOT, left and logical right shift, unsigned 32-bit semantics (legacy)
+- evaluateBaseExpr: arithmetic (+/-/*//%)), bitwise (AND/OR/XOR/NOT/&/|/^/~/<</>>) in hex/binary/decimal, large numbers, error cases (invalid digit, division by zero), mixed-base prefixes (0b/0x/0o/0h/0d)
+- validateBaseDigits: BIN rejects 2-9, OCT rejects 8-9, DEC/HEX always null; reports base name and offending digit in error string
+- normalizeExpression - hyperbolic inverse bridge: a s i n h/a c o s h/a t a n h -> asinh/acosh/atanh
+- evaluateExpression - hyperbolic functions: sinh/cosh/tanh at 0 and 1, roundtrip inverses asinh/acosh/atanh
+- kmapMinterm: 2-var, 3-var, 5-var, 6-var Gray code ordering
+- kmapDims: 2-6 vars return grid dims; 7-8 return null (flat list)
+- karnaughMinimize: 2-var, 3-var, 5-var cases, all-zeros, all-ones, don't cares
+- formatImplicant: complemented and uncomplemented terms, all-masked = '1'

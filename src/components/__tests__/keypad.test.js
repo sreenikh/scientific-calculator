@@ -3,7 +3,7 @@ import { ROWS } from '../keypadConfig.js'
 
 const ALL_KEYS  = ROWS.flat()
 const ALL_VALID_ACTIONS = new Set([
-  'toggleShift', 'toggleAlpha', 'openModeMenu', 'toggleAngle',
+  'toggleShift', 'toggleAlpha', 'openModeMenu', 'toggleAngle', 'cycleBase',
   'clear', 'del', 'evaluate',
   'openConst', 'openConv', 'openSolve', 'openDeriv', 'openInteg', 'openBaseN', 'openOps',
 ])
@@ -57,6 +57,17 @@ describe('keypad structure', () => {
 })
 
 function key(id)  { return ALL_KEYS.find((k) => k.id === id) }
+
+describe('keypad key contracts: hyperbolic trig', () => {
+  it('sinh  → \\sinh(',              () => expect(key('sinh').insert).toBe('\\sinh('))
+  it('cosh  → \\cosh(',              () => expect(key('cosh').insert).toBe('\\cosh('))
+  it('tanh  → \\tanh(',              () => expect(key('tanh').insert).toBe('\\tanh('))
+  it('sinh⁻¹ (shift) → operatorname asinh', () => expect(key('sinh').shift.insert).toBe('\\operatorname{asinh}('))
+  it('cosh⁻¹ (shift) → operatorname acosh', () => expect(key('cosh').shift.insert).toBe('\\operatorname{acosh}('))
+  it('tanh⁻¹ (shift) → operatorname atanh', () => expect(key('tanh').shift.insert).toBe('\\operatorname{atanh}('))
+  it('e key inserts e',   () => expect(key('eul').insert).toBe('e'))
+  it('pi key inserts \\pi', () => expect(key('cpi').insert).toBe('\\pi'))
+})
 
 describe('keypad key contracts: trig', () => {
   it('sin  → \\sin(',       () => expect(key('sin').insert).toBe('\\sin('))

@@ -99,9 +99,21 @@ Variables A-J are evaluated from stored values in the Matrix/Vector panel. Typin
 | cos | cos( | cos^-1( | sec( |
 | tan | tan( | tan^-1( | cot( |
 
+### Hyperbolic trig
+
+| Press | Inserts | SHIFT |
+|-------|---------|-------|
+| sinh | sinh( | sinh^-1 (asinh) |
+| cosh | cosh( | cosh^-1 (acosh) |
+| tanh | tanh( | tanh^-1 (atanh) |
+| e | Euler's number (2.718...) | - |
+| π | Pi (3.14159...) | - |
+
 Close the parenthesis after entering the argument, or use the **)** key.
 
 **Angle mode matters.** `sin(30)` in DEG mode = 0.5. In RAD mode it gives sin(30 radians). Toggle with the **DRG** key.
+
+Hyperbolic functions are not angle-mode-sensitive: `sinh(1)` always returns 1.1752...
 
 ### Logarithms and exponentials
 
@@ -178,6 +190,7 @@ Press **MODE** to open the mode menu.
 | 2 | MATRIX / VECTOR | Opens the matrix/vector storage panel |
 | 3 | STATISTICS | 1-var stats; linear/quadratic/exponential/power regression |
 | 4 | DISTRIBUTION | Normal (pdf/cdf/inv) and Binomial (pdf/cdf) |
+
 
 ---
 
@@ -390,6 +403,78 @@ Vectors can be stored as 1-row slots (e.g. slot C at 1x3) or entered inline as `
 
 ---
 
+## BASE key
+
+Press **BASE** (top modifier row, next to DRG) to cycle through base modes: DEC -> HEX -> OCT -> BIN -> DEC.
+
+- The status bar updates immediately: **HEX**, **OCT**, or **BIN** appears next to DEG/RAD when a non-decimal base is active.
+- The current result is reformatted in the new base as soon as you press BASE - no need to press = again.
+- The screen, math field, and keypad are unchanged - everything works exactly as in decimal mode.
+- Press BASE again to cycle to the next base.
+
+**Digit validation:** when a non-decimal base is active, pressing = validates the expression before evaluating:
+
+| Mode | Invalid digits |
+|------|----------------|
+| BIN | 2 3 4 5 6 7 8 9 |
+| OCT | 8 9 |
+| HEX | none (0-9 are all valid hex digits) |
+
+Typing `5 + 6` in BIN mode and pressing = shows an error: `'5' is not a valid digit in BIN mode`.
+
+---
+
+## BASE-N panel
+
+Press **BASE-N** (bottom mod row) to open the Base-N panel. It has two tabs: Numbers and K-map.
+
+### Numbers tab
+
+The **base selector** (DEC / HEX / OCT / BIN) at the top switches the global base mode, same as the BASE button.
+
+**Expression evaluator:** type any integer expression in the input field and press **Evaluate** or Enter.
+
+| Operator | Description |
+|----------|-------------|
+| + - * / | Arithmetic (integer division truncates) |
+| % | Remainder |
+| AND or & | Bitwise AND |
+| OR or \| | Bitwise OR |
+| XOR or ^ | Bitwise XOR |
+| NOT or ~ | Bitwise complement (64-bit) |
+| << >> | Left / logical right shift |
+| ( ) | Grouping |
+
+The result is shown in all four bases. The row matching the active base is highlighted:
+
+```
+BIN   1 1111 1111
+OCT   377
+DEC   255
+HEX   FF     <- highlighted when HEX is active
+```
+
+Numbers are arbitrary-precision (BigInt) - no overflow.
+
+### K-map tab - Karnaugh map minimization
+
+1. Choose the number of variables (2-8) using the buttons at the top.
+2. Click cells to cycle their value: **0** (output = 0), **1** (output = 1), **X** (don't care).
+3. Press **Minimize**.
+
+For 2-6 variables a Gray-code grid is shown. For 7-8 variables a flat scrollable minterm list is used (128 or 256 cells).
+
+The result is a minimal sum-of-products (SOP) expression. Variables are named A-H. Complemented literals use an apostrophe: `A'`, `BC'`, etc.
+
+**Examples:**
+- 2-var: m1 and m3 set to 1 -> `B`
+- 3-var: m0-m3 set to 1 -> `A'`
+- All cells 1 -> `1`
+- No cells 1 -> `0`
+- Don't-care (X) cells can be used by the minimizer but are not required to be covered
+
+---
+
 ## CONST panel
 
 Press **CONST** to open the constants library.
@@ -465,5 +550,6 @@ Returns a numeric approximation using Simpson's rule with 200 subintervals.
 | cross() requires 3-component vectors | cross called on 2D or other non-3D vectors | Store or enter vectors as 1x3 |
 | Matrix must be square | det or inv called on a non-square matrix | Use a 2x2, 3x3, etc. slot |
 | Math error: division by zero | Expression divides by zero | Check the denominator |
+| 'X' is not a valid digit in BIN/OCT mode | Expression contains a digit outside the active base | Use only 0-1 in BIN, 0-7 in OCT |
 
 **Result shows `-inf`** - the input is outside the function's domain (e.g. `log(0)`). This is a math domain issue, not a calculator bug.

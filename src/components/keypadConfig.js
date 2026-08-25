@@ -8,6 +8,7 @@ export const ROWS = [
     { id: 'alpha', label: 'ALPHA', action: 'toggleAlpha', mod: true },
     { id: 'mode',  label: 'MODE',  action: 'openModeMenu', mod: true },
     { id: 'angle', label: 'DRG',   action: 'toggleAngle',  mod: true },
+    { id: 'base',  label: 'BASE',  action: 'cycleBase',    mod: true },
   ],
   [
     { id: 'sin', label: 'sin', insert: '\\sin(',   shift: { label: 'sin⁻¹', insert: '\\arcsin(' }, alpha: { label: 'csc', insert: '\\csc(' } },
@@ -15,6 +16,13 @@ export const ROWS = [
     { id: 'tan', label: 'tan', insert: '\\tan(',   shift: { label: 'tan⁻¹', insert: '\\arctan(' }, alpha: { label: 'cot', insert: '\\cot(' } },
     { id: 'log', label: 'log', insert: '\\log(',   shift: { label: '10ˣ',   insert: '10^{#0}'    }, alpha: { label: 'logₐ', insert: '\\log_{#0}(' } },
     { id: 'ln',  label: 'ln',  insert: '\\ln(',    shift: { label: 'eˣ',    insert: 'e^{#0}'     } },
+  ],
+  [
+    { id: 'sinh', label: 'sinh', insert: '\\sinh(',  shift: { label: 'sinh⁻¹', insert: '\\operatorname{asinh}(' } },
+    { id: 'cosh', label: 'cosh', insert: '\\cosh(',  shift: { label: 'cosh⁻¹', insert: '\\operatorname{acosh}(' } },
+    { id: 'tanh', label: 'tanh', insert: '\\tanh(',  shift: { label: 'tanh⁻¹', insert: '\\operatorname{atanh}(' } },
+    { id: 'eul',  label: 'e',    insert: 'e' },
+    { id: 'cpi',  label: 'π',    insert: '\\pi' },
   ],
   [
     { id: 'x2',     label: 'x²', insert: '^2',          shift: { label: 'x³', insert: '^3' } },

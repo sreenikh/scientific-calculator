@@ -10,6 +10,8 @@ A browser-based graphing scientific calculator with textbook-style math input.
 
 - Textbook-style math input via MathLive (fractions stack, roots draw a vinculum, exponents sit above baseline)
 - Degree/radian-aware trig: sin/cos/tan, inverses, and reciprocals (sec/csc/cot)
+- Hyperbolic trig: sinh, cosh, tanh (primary row); inverses asinh, acosh, atanh via SHIFT
+- Constants e and π as dedicated keypad keys
 - Logarithms: log base 10, natural log, log to any base
 - Roots and powers: sqrt, nth root, x², x³, x^y
 - Combinatorics: nCr, nPr, factorial
@@ -28,13 +30,15 @@ A browser-based graphing scientific calculator with textbook-style math input.
 - Matrix/Vector panel: named slots A-J, size picker 1-4 rows/cols; 1-row slots act as vectors
 - OPS panel: Math tab (abs, mod, floor, ceil, round, sign), Matrix tab (inv, det, trace, transpose, size), Vector tab (dot, cross, norm), Complex tab (polar, abs, arg, conj, re, im)
 - `%` key (ALPHA+×) inserts a percentage: `50%` evaluates to 0.5; `mod(a,b)` is the separate modulo operation
+- BASE button (top modifier row, next to DRG): cycles DEC/HEX/OCT/BIN just like DRG cycles DEG/RAD; status bar shows active base; integer results reformatted automatically; main screen and keypad unchanged
+- BASE-N panel: Numbers tab has a base selector and BigInt expression evaluator (+/-/*/% AND/OR/XOR/NOT/<</>>), result shown in all four bases; K-map tab for Karnaugh map minimization
+- K-Map (BASE-N -> K-map tab): 2-8 variables; 2-6 vars use a Gray-code grid; 7-8 vars use a flat scrollable minterm list; cells cycle 0/1/X (don't care); Quine-McCluskey minimization to minimal SOP
 - Responsive layout: scales to any window size using dvh/vw units, no breakpoints
 
 ## Planned
 
 - Phase 2: Graphing (canvas plotter, pan/zoom, trace, shaded integral regions)
-- Phase 3 remaining: Distributions
-- Phase 4: Base-N, STO/RCL memory, Format options, Table mode
+- Phase 4 remaining: STO/RCL memory, Format options, Table mode
 
 See [docs/phases.md](docs/phases.md) for the full roadmap.
 
@@ -53,7 +57,7 @@ Tests:
 npm test
 ```
 
-441 Vitest tests covering the expression engine, keypad contracts, statistics engine, and distributions.
+578 Vitest tests covering the expression engine, keypad contracts, statistics engine, distributions, and base-N/bitwise/K-map engine.
 
 ---
 
@@ -85,6 +89,8 @@ src/
     mathEngine.js       - math.js wrapper, angle-mode trig, normalizeExpression, formatValue
     numeric.js          - root finding, numeric derivative/integral, poly solver, linear system solver
     stats.js            - 1-variable stats and 2-variable regression (linear/quadratic/exp/power)
+    distributions.js    - normal (pdf/cdf/inv) and binomial (pdf/cdf) distributions
+    baseN.js            - base conversion, bitwise ops, K-map / Quine-McCluskey solver
     units.js            - unit conversion data (16 categories)
     constants.js        - scientific constants library
   components/
@@ -101,5 +107,7 @@ src/
     OperationsPanel.jsx - matrix and vector operations menu
     EquationPanel.jsx   - polynomial roots and linear system solver
     StatPanel.jsx       - 1-variable stats and regression
+    DistributionPanel.jsx  - normal and binomial distribution panel
+    BaseNPanel.jsx         - base conversion (Numbers tab) and K-map solver (K-map tab)
   App.jsx               - top-level state and wiring
 ```

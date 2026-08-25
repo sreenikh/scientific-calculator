@@ -9,6 +9,8 @@
 - MathLive uncontrolled math field with cursor-aware LaTeX insertion
 - Keypad with three layers: primary / SHIFT / ALPHA
   - Trig: sin/cos/tan + inverses + reciprocals (sec/csc/cot)
+- Hyperbolic trig: sinh/cosh/tanh (dedicated row); inverses asinh/acosh/atanh via SHIFT layer
+- Direct e and π keys on the hyperbolic row
   - Log/exp: log (log10), ln, logbase, 10^x, e^x
   - Roots and powers: sqrt, nth root, x², x³, x^y
   - Combinatorics: nCr, nPr, x!
@@ -119,13 +121,30 @@ Accessed via MODE menu (item 4).
 
 ---
 
-## Phase 4 - Base-N and QoL `[planned]`
+## Phase 4 - Base-N and QoL `[in progress]`
 
-### Base-N calculator
+### Base-N mode `[done]`
 
-- UI for the BASE-N button (keypad placeholder already exists)
-- Input and display in decimal / binary / octal / hex
-- Bitwise operations: AND, OR, XOR, NOT, shift
+**BASE button** (top modifier row, alongside SHIFT / ALPHA / MODE / DRG):
+- Cycles DEC -> HEX -> OCT -> BIN -> DEC, exactly like DRG cycles DEG/RAD
+- Status bar shows the active base when non-decimal; integer results are reformatted immediately when cycling
+- The main screen, MathLive field, and keypad remain unchanged
+- Digit validation: BIN rejects digits 2-9; OCT rejects 8-9; invalid input shows an error instead of evaluating
+
+**BASE-N panel** (bottom mod row key) - overlay with two tabs:
+
+*Numbers tab:*
+- Base selector (DEC/HEX/OCT/BIN) provides the same mode switch as the BASE button
+- Plain-text expression evaluator with +/-/*/% and AND/OR/XOR/NOT/<</>>
+- Numbers are arbitrary-precision BigInt - no overflow
+- Result shown in all four bases simultaneously; active base highlighted
+
+*K-map tab:*
+- Variable count: 2-6 variables use a visual Gray-code grid (5-var: 4x8, 6-var: 8x8); 7-8 variables use a flat scrollable minterm list
+- Cells cycle 0 -> 1 -> X (don't care) on click
+- Minimize runs Quine-McCluskey: essential primes + greedy cover
+- Result: minimal SOP in A/B/C/D/E/F/G/H with complements as A'/B'
+- Clear button resets all cells
 
 ### Memory
 

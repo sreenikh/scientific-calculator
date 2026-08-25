@@ -496,6 +496,24 @@ describe('normalizeExpression: math operatorname bridge', () => {
   it('50% + 20%  -> 50/100 + 20/100', () => expect(normalizeExpression('50% + 20%')).toBe('50/100 + 20/100'))
 })
 
+describe('normalizeExpression: hyperbolic inverse operatorname bridge', () => {
+  it('a s i n h ( -> asinh(', () => expect(normalizeExpression('a s i n h (')).toBe('asinh('))
+  it('a c o s h ( -> acosh(', () => expect(normalizeExpression('a c o s h (')).toBe('acosh('))
+  it('a t a n h ( -> atanh(', () => expect(normalizeExpression('a t a n h (')).toBe('atanh('))
+})
+
+describe('evaluateExpression: hyperbolic functions', () => {
+  it('sinh(0) = 0',                  () => expect(evaluateExpression('sinh(0)').value).toBeCloseTo(0, 10))
+  it('cosh(0) = 1',                  () => expect(evaluateExpression('cosh(0)').value).toBeCloseTo(1, 10))
+  it('tanh(0) = 0',                  () => expect(evaluateExpression('tanh(0)').value).toBeCloseTo(0, 10))
+  it('sinh(1) ~ 1.1752',             () => expect(evaluateExpression('sinh(1)').value).toBeCloseTo(1.1752011936438, 6))
+  it('cosh(1) ~ 1.5430',             () => expect(evaluateExpression('cosh(1)').value).toBeCloseTo(1.5430806348152, 6))
+  it('tanh(1) ~ 0.7616',             () => expect(evaluateExpression('tanh(1)').value).toBeCloseTo(0.7615941559558, 6))
+  it('asinh(sinh(1)) roundtrips',    () => expect(evaluateExpression('asinh(sinh(1))').value).toBeCloseTo(1, 9))
+  it('acosh(cosh(1)) roundtrips',    () => expect(evaluateExpression('acosh(cosh(1))').value).toBeCloseTo(1, 9))
+  it('atanh(tanh(0.5)) roundtrips',  () => expect(evaluateExpression('atanh(tanh(0.5))').value).toBeCloseTo(0.5, 9))
+})
+
 describe('evaluateExpression: OPS Math tab functions', () => {
   it('abs(-7) = 7',          () => expect(evaluateExpression('abs(-7)').value).toBeCloseTo(7, 10))
   it('abs(3+4i) = 5',        () => expect(evaluateExpression('abs(3+4i)').value).toBeCloseTo(5, 10))
