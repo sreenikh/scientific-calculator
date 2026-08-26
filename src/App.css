@@ -561,17 +561,66 @@ table.iter th:first-child, table.iter td:first-child { text-align: left; color: 
   border-radius: 4px; font-family: inherit; font-size: 1.2dvh; padding: 0.35dvh 0.5vw;
 }
 .graph-fn-input:focus { outline: none; border-color: var(--teal); }
+.graph-fn-hidden { opacity: 0.4; }
+.graph-fn-eye {
+  background: none; border: 1px solid #3A3F4E; color: var(--steel);
+  border-radius: 3px; font-size: 0.9dvh; padding: 0.2dvh 0.35vw;
+  cursor: pointer; flex-shrink: 0; line-height: 1;
+}
+.graph-fn-eye.active { border-color: var(--teal); color: var(--teal); }
+.graph-fn-remove {
+  background: none; border: 1px solid #3A3F4E; color: var(--steel);
+  border-radius: 3px; font-size: 1.2dvh; padding: 0.2dvh 0.4vw;
+  cursor: pointer; flex-shrink: 0; line-height: 1;
+}
+.graph-fn-remove:hover { border-color: #E06C75; color: #E06C75; }
+.graph-fn-add {
+  background: none; border: 1px dashed #3A3F4E; color: var(--steel);
+  border-radius: 4px; font-family: inherit; font-size: 1.1dvh;
+  padding: 0.3dvh 0; cursor: pointer; width: 100%; margin-top: 0.2dvh;
+}
+.graph-fn-add:hover { border-color: var(--teal); color: var(--teal); }
+.graph-fn-tip {
+  margin: 0.3dvh 0 0; font-size: 1.0dvh; color: #455069; font-style: italic; line-height: 1.3;
+}
 .graph-win {
   display: flex; align-items: center; gap: 0.4vw; flex-wrap: wrap; margin-bottom: 0.6dvh;
 }
 .graph-win-field { display: flex; align-items: center; gap: 0.25vw; font-size: 1.1dvh; color: var(--steel); }
 .graph-win-field span { flex-shrink: 0; }
 .graph-win-field .tbl-num { width: 4vw; }
+.graph-view-toggle {
+  display: flex; border: 1px solid #3A3F4E; border-radius: 4px; overflow: hidden; flex-shrink: 0;
+}
+.graph-view-btn {
+  background: none; border: none; color: var(--steel); font-family: inherit;
+  font-size: 1.0dvh; padding: 0.3dvh 0.5vw; cursor: pointer;
+}
+.graph-view-btn.active { background: var(--teal); color: #0C231C; font-weight: 700; }
+.graph-canvas-wrapper {
+  position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column;
+}
 .graph-canvas {
-  flex: 1;
-  min-height: 0;
-  width: 100%;
-  border-radius: 6px;
-  display: block;
-  background: #0F1117;
+  flex: 1; min-height: 0; width: 100%; border-radius: 6px; display: block; background: #0F1117;
+}
+.graph-crosshair-overlay {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; border-radius: inherit;
+}
+.graph-crosshair-hint {
+  font-size: 1.0dvh; color: #555B6E; white-space: nowrap; align-self: center; flex-shrink: 0;
+}
+.graph-split-grid {
+  flex: 1; min-height: 0; display: grid; gap: 4px; overflow-y: auto;
+  grid-auto-rows: 20dvh;
+}
+.graph-subplot { position: relative; display: flex; flex-direction: column; }
+.graph-subplot-canvas-wrapper {
+  position: relative; flex: 1; min-height: 0;
+}
+.graph-subplot-canvas { width: 100%; height: 100%; display: block; border-radius: 4px; background: #0F1117; }
+.graph-subplot-label {
+  position: absolute; top: 4px; left: 6px; font-size: 1.0dvh;
+  font-family: 'JetBrains Mono', monospace; z-index: 1; pointer-events: none;
+  text-shadow: 0 0 6px #000;
 }

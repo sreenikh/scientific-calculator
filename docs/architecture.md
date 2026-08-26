@@ -181,6 +181,7 @@ The math input field is an exception. MathLive renders its content using its own
 | Export | Description |
 |--------|-------------|
 | `compileFn(expr, varName, angleMode)` | Parses and compiles a math.js expression into a callable `f(x)`; varName defaults to `'x'`, angleMode to `'rad'` |
+| `compileImplicitFn(expr, angleMode)` | Compiles an implicit equation `LHS = RHS` into `F(x,y) = LHS − RHS`; uses a mutable shared scope for performance across the 300×300 marching-squares grid |
 | `derivativeAt(fn, x)` | Central difference, h = 1e-5 |
 | `integrate(fn, a, b)` | Composite Simpson's rule, n = 200 |
 | `newtonRaphson(fn, x0)` | Newton-Raphson root finder, max 50 iterations |
@@ -197,9 +198,15 @@ The math input field is an exception. MathLive renders its content using its own
 
 ## Graph panel
 
-`GraphPanel` renders a DPR-aware `<canvas>` inside a flex-column overlay. Layout: header + function input + window fields, then the canvas takes all remaining height via `flex: 1`.
+`GraphPanel` renders a DPR-aware `<canvas>` inside a flex-column overlay. Layout: header + function input rows + window fields, then the canvas wrapper (`flex: 1`) holds a base canvas (the graph) and an overlay canvas (the crosshair), both stacked via `position: absolute`.
 
-Drawing (`drawGraph`): clears the canvas, draws grid lines at Xscl/Yscl intervals, draws axes, draws tick marks with numeric labels, then plots each function by sampling at 2 points per pixel. Consecutive samples that differ by more than 2x the canvas height in pixel Y are treated as a discontinuity and the pen is lifted.
+**Explicit curves** (`parseExpr` returns `implicit: false`): sampled at 2 points per pixel across the x range; large vertical pixel jumps lift the pen to handle discontinuities like `tan(x)` and `1/x`.
+
+**Implicit curves** (`parseExpr` returns `implicit: true`): plotted by `drawImplicitCurve` using marching squares on a 300×300 grid. Each cell checks its four corners for sign changes in F(x,y) and linearly interpolates crossing points. The saddle case (4 crossings) connects opposite pairs.
+
+**Crosshair**: drawn on the overlay canvas by `drawCrosshair`. On every `mousemove`, the x coordinate is converted to math space and stored as `crosshairX` state. For explicit curves, y = fn(mathX) is computed directly. For implicit curves, `findImplicitYs` sweeps 300 y samples looking for sign changes and linearly interpolates each zero. Each intersection gets a dot, a dashed horizontal line, and a `(x, y)` label. Click toggles the lock state; when locked the line turns amber and hover events are ignored.
+
+**1:1 button**: reads the base canvas `clientWidth` / `clientHeight` and adjusts `winStr.ymin` / `winStr.ymax` so that `(xmax−xmin)/W = (ymax−ymin)/H`, keeping the y-center fixed. The reactive `useEffect([plot])` then replots automatically.
 
 Coordinate transforms (`toPixelX`, `toPixelY`) are exported pure functions, tested directly in the test suite without any canvas mock.
 
@@ -239,7 +246,7 @@ The Numbers tab passes `baseMode` from App state (via `onSetBase` callback) so c
 
 ## Testing
 
-578 Vitest tests across five files, running in node environment.
+636 Vitest tests across five files, running in node environment.
 
 ```
 src/
@@ -248,6 +255,7 @@ src/
   engine/__tests__/stats.test.js            - oneVarStats + twoVarStats (all four regression models) + multiVarStats
   engine/__tests__/distributions.test.js    - normalPdf + normalCdf + normalInv + binomialPdf + binomialCdf
   engine/__tests__/baseN.test.js            - parseBase + format functions + bitwiseOp + kmapMinterm + karnaughMinimize + formatImplicant
+  (mathEngine.test.js also covers compileImplicitFn: circle/ellipse/hyperbola on-curve/inside/outside, mutable scope isolation, angle-mode trig)
 ```
 
 `keypadConfig.js` is extracted from `Keypad.jsx` so tests can import ROWS without JSX/React transforms.

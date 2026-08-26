@@ -33,6 +33,19 @@ export function compileFn(exprString, varName = 'x', angleMode = 'rad') {
   return (xVal) => code.evaluate({ ...base, [varName]: xVal })
 }
 
+// Compiles an implicit equation "LHS = RHS" into F(x,y) = LHS - RHS.
+// If no = sign, treats the whole expression as F(x,y) = 0.
+export function compileImplicitFn(exprString, angleMode = 'rad') {
+  const raw = exprString.trim()
+  const eqIdx = raw.indexOf('=')
+  const combined = eqIdx >= 0
+    ? `(${raw.slice(0, eqIdx).trim()}) - (${raw.slice(eqIdx + 1).trim()})`
+    : raw
+  const code = math.parse(normalizeExpression(combined)).compile()
+  const scope = { ...angleScopeFor(angleMode), x: 0, y: 0 }
+  return (x, y) => { scope.x = x; scope.y = y; return code.evaluate(scope) }
+}
+
 export function derivativeAt(fn, x, h = 1e-5) {
   return (fn(x + h) - fn(x - h)) / (2 * h)
 }

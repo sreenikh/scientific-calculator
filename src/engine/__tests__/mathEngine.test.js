@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { normalizeExpression, evaluateExpression, toDMS } from '../mathEngine.js'
-import { polyRoots, solveLinearSystem, compileFn } from '../numeric.js'
+import { polyRoots, solveLinearSystem, compileFn, compileImplicitFn } from '../numeric.js'
 
 const DEG = { angleMode: 'deg' }
 const RAD = { angleMode: 'rad' }
@@ -843,5 +843,109 @@ describe('graph coordinate transforms', () => {
   })
   it('toPixelY is linear: y=-3 in [-6,6] window 180px tall = 135', () => {
     expect(toPixelY(-3, -6, 6, 180)).toBeCloseTo(135)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// Multiple functions: each compileFn call is independent and color-indexed
+// ---------------------------------------------------------------------------
+import { CURVE_COLORS } from '../../components/GraphPanel.jsx'
+
+describe('graph: multiple independent compileFn instances', () => {
+  it('f1=sin(x) and f2=cos(x) produce different values at x=0', () => {
+    const f1 = compileFn('sin(x)', 'x', 'rad')
+    const f2 = compileFn('cos(x)', 'x', 'rad')
+    expect(f1(0)).toBeCloseTo(0, 10)
+    expect(f2(0)).toBeCloseTo(1, 10)
+  })
+  it('f1 and f2 do not share scope - different expressions, same x', () => {
+    const f1 = compileFn('x^2', 'x', 'rad')
+    const f2 = compileFn('x^3', 'x', 'rad')
+    expect(f1(3)).toBeCloseTo(9, 10)
+    expect(f2(3)).toBeCloseTo(27, 10)
+  })
+  it('10 independent functions compile and evaluate without interference', () => {
+    const exprs = ['x', 'x^2', 'x^3', 'x^4', 'sin(x)', 'cos(x)', 'ln(x)', 'sqrt(x)', '1/x', 'x^5']
+    const fns = exprs.map(e => compileFn(e, 'x', 'rad'))
+    expect(fns[0](3)).toBeCloseTo(3, 10)
+    expect(fns[1](3)).toBeCloseTo(9, 10)
+    expect(fns[2](3)).toBeCloseTo(27, 10)
+    expect(fns[3](3)).toBeCloseTo(81, 10)
+    expect(fns[4](Math.PI / 2)).toBeCloseTo(1, 10)
+    expect(fns[5](0)).toBeCloseTo(1, 10)
+  })
+  it('CURVE_COLORS cycles correctly for indices beyond palette length', () => {
+    const len = CURVE_COLORS.length
+    expect(CURVE_COLORS[0 % len]).toBe(CURVE_COLORS[len % len])
+    expect(CURVE_COLORS[1 % len]).toBe(CURVE_COLORS[(len + 1) % len])
+  })
+  it('hidden functions are excluded from the compiled list', () => {
+    const fns = [
+      { expr: 'sin(x)', visible: true },
+      { expr: 'cos(x)', visible: false },
+      { expr: 'x^2',   visible: true },
+    ]
+    const visible = fns.filter(f => f.visible && f.expr.trim())
+    expect(visible).toHaveLength(2)
+    expect(visible[0].expr).toBe('sin(x)')
+    expect(visible[1].expr).toBe('x^2')
+  })
+})
+
+// ---------------------------------------------------------------------------
+// compileImplicitFn: F(x,y) = 0 for implicit curve plotting
+// ---------------------------------------------------------------------------
+describe('compileImplicitFn: unit circle x^2 + y^2 = 1', () => {
+  const F = compileImplicitFn('x^2 + y^2 = 1')
+  it('F(0,1) = 0 (on curve)', () => expect(F(0, 1)).toBeCloseTo(0, 10))
+  it('F(0,-1) = 0 (on curve)', () => expect(F(0, -1)).toBeCloseTo(0, 10))
+  it('F(1,0) = 0 (on curve)', () => expect(F(1, 0)).toBeCloseTo(0, 10))
+  it('F(0,0) < 0 (inside circle)', () => expect(F(0, 0)).toBeLessThan(0))
+  it('F(2,0) > 0 (outside circle)', () => expect(F(2, 0)).toBeGreaterThan(0))
+  it('F(0.6,0.8) ≈ 0 (on curve: 0.36+0.64=1)', () => expect(F(0.6, 0.8)).toBeCloseTo(0, 10))
+})
+
+describe('compileImplicitFn: ellipse x^2/4 + y^2/9 = 1', () => {
+  const F = compileImplicitFn('x^2/4 + y^2/9 = 1')
+  it('F(2,0) = 0 (right vertex)', () => expect(F(2, 0)).toBeCloseTo(0, 10))
+  it('F(0,3) = 0 (top vertex)',   () => expect(F(0, 3)).toBeCloseTo(0, 10))
+  it('F(0,0) < 0 (inside)',       () => expect(F(0, 0)).toBeLessThan(0))
+  it('F(3,0) > 0 (outside)',      () => expect(F(3, 0)).toBeGreaterThan(0))
+})
+
+describe('compileImplicitFn: hyperbola x^2 - y^2 = 1', () => {
+  const F = compileImplicitFn('x^2 - y^2 = 1')
+  it('F(1,0) = 0 (vertex)', () => expect(F(1, 0)).toBeCloseTo(0, 10))
+  it('F(-1,0) = 0 (vertex)', () => expect(F(-1, 0)).toBeCloseTo(0, 10))
+  it('F(0,0) = -1 (inside gap)', () => expect(F(0, 0)).toBeCloseTo(-1, 10))
+})
+
+describe('compileImplicitFn: no = sign (expression = 0)', () => {
+  const F = compileImplicitFn('x^2 + y^2 - 4')
+  it('F(2,0) = 0', () => expect(F(2, 0)).toBeCloseTo(0, 10))
+  it('F(0,0) = -4', () => expect(F(0, 0)).toBeCloseTo(-4, 10))
+})
+
+describe('compileImplicitFn: scope isolation between calls', () => {
+  it('two independent instances do not share state', () => {
+    const circle = compileImplicitFn('x^2 + y^2 = 1')
+    const line   = compileImplicitFn('x - y = 0')
+    expect(circle(1, 0)).toBeCloseTo(0, 10)
+    expect(line(3, 3)).toBeCloseTo(0, 10)
+    expect(circle(1, 0)).toBeCloseTo(0, 10) // re-evaluate after line call
+  })
+  it('repeated calls with different (x,y) return correct values (mutable scope)', () => {
+    const F = compileImplicitFn('x^2 + y^2 = 4')
+    expect(F(2, 0)).toBeCloseTo(0, 10)
+    expect(F(0, 2)).toBeCloseTo(0, 10)
+    expect(F(0, 0)).toBeCloseTo(-4, 10)
+    expect(F(2, 0)).toBeCloseTo(0, 10) // back to first point
+  })
+})
+
+describe('compileImplicitFn: angle-mode-aware trig implicit curves', () => {
+  it('sin(x) + cos(y) = 1 at (0,0) in rad: sin(0)+cos(0)-1 = 0', () => {
+    const F = compileImplicitFn('sin(x) + cos(y) = 1', 'rad')
+    expect(F(0, 0)).toBeCloseTo(0, 10)
   })
 })

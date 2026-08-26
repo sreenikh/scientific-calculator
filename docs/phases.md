@@ -42,11 +42,36 @@
 - DPR-aware canvas for crisp rendering on retina displays
 - Enter key or "plot" button triggers redraw; auto-plots sin(x) on open
 
+### Multiple functions `[done]`
+
+- Unlimited functions (10-color palette, cycles for more); add/remove rows freely
+- Show/hide toggle per function (filled/hollow dot); hidden functions are excluded from the plot
+- Combined mode: all visible functions on one canvas
+- Split mode: one canvas per visible function in a 2-column grid, each labeled with its color; scrollable when many functions are active
+
+### Implicit curves `[done]`
+
+- Expressions containing `y` or `=` are auto-detected as implicit (e.g. `x^2 + y^2 = 4`, `x^2/4 + y^2/9 = 1`)
+- Plotted using marching squares on a 300×300 grid; handles circles, ellipses, hyperbolas, and arbitrary F(x,y)=0 forms
+- `y = f(x)` form is recognized and converted to an explicit curve automatically
+- `compileImplicitFn` in `numeric.js` handles LHS−RHS compilation with a mutable scope for performance
+
+### Crosshair inspection `[done]`
+
+- Hover over the graph to show a dashed vertical line at x = cursor position
+- For each explicit curve: dot + dashed horizontal line + `(x, y)` label in the curve color
+- For implicit curves: y-range sweep (300 samples, linear interpolation) finds all intersections; each is marked with dot + horizontal line + label
+- Click to lock crosshair in place (turns amber); click again to release
+- In split view, the crosshair x is shared across all subplots simultaneously
+
+### Axis scaling `[done]`
+
+- **1:1 button**: adjusts Ymin/Ymax so one math unit = same pixel count in both axes; prevents circles from appearing elliptical on non-square canvases
+
 ### Planned
 
 - Pan and zoom with mouse / touch
 - Trace mode: cursor snaps to curve, shows (x, y) coordinates
-- Multiple functions on one graph, color-coded
 - Shaded region between bounds for definite integrals
 - Intersection and zero finder (reuses numeric.js root finders)
 
