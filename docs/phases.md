@@ -153,12 +153,10 @@ Accessed via MODE menu (item 4).
 - Memory slots K-T are scalars distinct from matrix variables A-J and hex digits A-F; injected into the evaluation scope alongside matrix variables
 - Status bar: set memory slots appear as small teal letters (e.g. K M) to the right of the ALPHA indicator
 
-### Format and display options
+### Format and display options `[done]`
 
-- Math/Line display toggle (MathLive already supports both)
-- DMS entry and conversion (degrees/minutes/seconds)
-- Fraction to decimal toggle
-- Recurring decimal detection and display
+- **Math/Line toggle**: MATH button in the display row switches the MathLive input field between textbook (math) mode and linear text (line) mode; active mode shown on the button; button is always visible
+- **DMS**: `fromDMS(d, m, s)` converts degrees/minutes/seconds to decimal degrees; available in OPS panel (Convert tab); DMS toggle button on the result line converts the last numeric result to D degrees M' S" format; toggle only appears when the last result is a real number
 
 ### Table mode
 

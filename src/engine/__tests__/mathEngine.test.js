@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { normalizeExpression, evaluateExpression } from '../mathEngine.js'
+import { normalizeExpression, evaluateExpression, toDMS } from '../mathEngine.js'
 import { polyRoots, solveLinearSystem } from '../numeric.js'
 
 const DEG = { angleMode: 'deg' }
@@ -713,5 +713,76 @@ describe('solveLinearSystem: 4x4 and 5x5', () => {
     const r = solveLinearSystem(I5, [10,20,30,40,50])
     expect(r.ok).toBe(true)
     r.solution.forEach((v, i) => expect(v).toBeCloseTo((i + 1) * 10, 10))
+  })
+})
+
+describe('toDMS: decimal degrees to D°M\'S" string', () => {
+  it('whole degrees: 45 -> 45°0\'0"',           () => expect(toDMS(45)).toBe('45°0\'0"'))
+  it('degrees + minutes: 45.5 -> 45°30\'0"',    () => expect(toDMS(45.5)).toBe('45°30\'0"'))
+  it('full DMS: 12.5125 -> 12°30\'45"',         () => expect(toDMS(12.5125)).toBe('12°30\'45"'))
+  it('negative: -30.5 -> -30°30\'0"',           () => expect(toDMS(-30.5)).toBe('-30°30\'0"'))
+  it('zero: 0 -> 0°0\'0"',                      () => expect(toDMS(0)).toBe('0°0\'0"'))
+  it('float carry: 90.85 -> 90°51\'0" not 90°50\'60"', () => expect(toDMS(90.85)).toBe('90°51\'0"'))
+  it('float carry: 1/60 -> 0°1\'0"',            () => expect(toDMS(1/60)).toBe('0°1\'0"'))
+})
+
+describe('normalizeExpression: DMS bridges', () => {
+  it('f r o m D M S ( -> fromDMS(', () => expect(normalizeExpression('f r o m D M S (')).toBe('fromDMS('))
+  it('t o D M S ( -> toDMS(',       () => expect(normalizeExpression('t o D M S (')).toBe('toDMS('))
+})
+
+describe('evaluateExpression: fromDMS', () => {
+  it('fromDMS(45, 30, 0) = 45.5', () => {
+    const r = evaluateExpression('fromDMS(45, 30, 0)')
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(45.5, 10)
+  })
+  it('fromDMS(12, 30, 45) ~ 12.5125', () => {
+    const r = evaluateExpression('fromDMS(12, 30, 45)')
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(12.5125, 6)
+  })
+  it('fromDMS with 2 args uses 0 seconds', () => {
+    const r = evaluateExpression('fromDMS(10, 15)')
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(10.25, 10)
+  })
+  it('fromDMS with 1 arg returns integer degrees', () => {
+    const r = evaluateExpression('fromDMS(90)')
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(90, 10)
+  })
+  it('fromDMS negative: fromDMS(-30, 30, 0) = -30.5', () => {
+    const r = evaluateExpression('fromDMS(-30, 30, 0)')
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(-30.5, 10)
+  })
+  it('fromDMS(toDMS(x)) roundtrip recovers original value', () => {
+    const r = evaluateExpression('fromDMS(toDMS(90.8655453321))')
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(90.8655453321, 4)
+  })
+  it('fromDMS accepts a DMS string directly', () => {
+    const r = evaluateExpression('fromDMS(toDMS(45.5))')
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(45.5, 10)
+  })
+})
+
+describe('evaluateExpression: toDMS', () => {
+  it('toDMS(45.5) display is 45°30\'0" with no quotes or backslash', () => {
+    const r = evaluateExpression('toDMS(45.5)')
+    expect(r.ok).toBe(true)
+    expect(r.display).toBe('45°30\'0"')
+  })
+  it('toDMS(0) display is 0°0\'0"', () => {
+    const r = evaluateExpression('toDMS(0)')
+    expect(r.ok).toBe(true)
+    expect(r.display).toBe('0°0\'0"')
+  })
+  it('toDMS(90.85) display is 90°51\'0" not 90°50\'60"', () => {
+    const r = evaluateExpression('toDMS(90.85)')
+    expect(r.ok).toBe(true)
+    expect(r.display).toBe('90°51\'0"')
   })
 })

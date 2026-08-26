@@ -24,7 +24,10 @@ DEG  RAD  SHIFT  ALPHA        <- status bar
 - **SHIFT** - lights up amber when SHIFT is active (next key uses its orange label).
 - **ALPHA** - lights up teal when ALPHA is active (next key uses its teal label).
 - The result line shows the last evaluated answer, or an error message in red.
-- When the last result is a complex number, a **RECT / POLAR** toggle button appears to the left of the result.
+- A column of toggle buttons sits to the left of the result:
+  - **MATH / LINE** - always visible; switches the input field between textbook layout (fractions stack, roots draw a vinculum) and linear text entry. Press to toggle; active mode is shown on the button.
+  - **DMS** - appears when the last result is a real number; press to reformat it as D degrees M' S" (e.g. `45.5` shows as `45°30'0"`). Press again to return to decimal.
+  - **RECT / POLAR** - appears when the last result is a complex number; toggles between rectangular (`a+bi`) and polar (`r∠θ`) display.
 
 ---
 
@@ -393,6 +396,22 @@ Type `inv(A)`, `A*B`, `det(A)`, `transpose(B)`, `A-B`, `2*C` directly in the mai
 ## OPS panel
 
 Press **OPS** to open the operations menu. Click an operation to insert it into the math field, then fill in the arguments and press **=**.
+
+### Convert tab
+
+| Operation | Description |
+|-----------|-------------|
+| fromDMS | Degrees/minutes/seconds to decimal degrees: `fromDMS(d, m, s)` |
+| toDMS | Decimal degrees to D°M'S" string: `toDMS(x)` |
+
+**Key sequences:**
+
+1. `fromDMS(45, 30, 0)` - press `=` - result is `45.5`
+2. `fromDMS(12, 30, 45)` - press `=` - result is approximately `12.5125`
+3. `toDMS(45.5)` - press `=` - result is `45°30'0"`
+4. `sin(fromDMS(30, 0, 0))` in DEG mode - press `=` - result is `0.5`
+
+The **DMS** toggle on the result line is a shortcut for the common case: evaluate any expression that returns a real number, then press **DMS** to reformat the result without re-entering it.
 
 ### Math tab
 

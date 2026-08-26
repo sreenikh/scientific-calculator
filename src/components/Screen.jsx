@@ -9,7 +9,8 @@ MathfieldElement.soundsDirectory = null
 const Screen = forwardRef(function Screen(
   { onChange, resultDisplay, error, angleMode, shiftActive, alphaActive,
     stoActive, rclActive, memVars,
-    isComplex, isMatrix, complexMode, onToggleComplex, baseMode },
+    isComplex, isMatrix, complexMode, onToggleComplex, baseMode,
+    displayMode, dmsMode, isLastNumeric, onToggleDisplayMode, onToggleDms },
   ref
 ) {
   const fieldRef = useRef(null)
@@ -54,9 +55,15 @@ const Screen = forwardRef(function Screen(
       field.setValue(latex, { silenceNotifications: true })
       onChange(field.getValue('latex'), field.getValue('ascii-math'))
     },
+    setDisplayMode(mode) {
+      const field = fieldRef.current
+      if (!field) return
+      field.defaultMode = mode === 'line' ? 'text' : 'math'
+    },
   }))
 
-  const showToggle = isComplex && !error
+  const showComplexToggle = isComplex && !error
+  const showDmsToggle = isLastNumeric && !error && !isComplex && !isMatrix
   const multiLine = isMatrix && !error
   const setMemLetters = memVars
     ? Object.entries(memVars).filter(([, v]) => v !== null).map(([k]) => k)
@@ -86,11 +93,21 @@ const Screen = forwardRef(function Screen(
       ></math-field>
 
       <div className="display-row">
-        {showToggle && (
-          <button className="complex-toggle" onClick={onToggleComplex}>
-            {complexMode === 'rect' ? 'RECT' : 'POLAR'}
+        <div className="display-toggles">
+          <button className={`disp-toggle${displayMode === 'line' ? ' active' : ''}`} onClick={onToggleDisplayMode}>
+            {displayMode === 'math' ? 'MATH' : 'LINE'}
           </button>
-        )}
+          {showDmsToggle && (
+            <button className={`disp-toggle${dmsMode ? ' active' : ''}`} onClick={onToggleDms}>
+              DMS
+            </button>
+          )}
+          {showComplexToggle && (
+            <button className="disp-toggle" onClick={onToggleComplex}>
+              {complexMode === 'rect' ? 'RECT' : 'POLAR'}
+            </button>
+          )}
+        </div>
         <div className={
           'display-line' +
           (error ? ' has-error' : '') +

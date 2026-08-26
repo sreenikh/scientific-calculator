@@ -43,6 +43,20 @@ function buildScope(angleMode, vars) {
     logb: (x, b) => Math.log(x) / Math.log(b),
     nPr: (n, r) => math.permutations(n, r),
     nCr: (n, r) => math.combinations(n, r),
+    fromDMS: (d, m = 0, s = 0) => {
+      if (typeof d === 'string') {
+        // Accept a toDMS() string: "90°51'55.9632" or "-30°30'0""
+        const neg = d.startsWith('-')
+        const clean = d.replace(/^-/, '')
+        const match = clean.match(/^(\d+)[°](\d+)'([\d.]+)"?$/)
+        if (!match) throw new Error('fromDMS: invalid DMS string')
+        const [, dd, mm, ss] = match.map(Number)
+        return (neg ? -1 : 1) * (dd + mm / 60 + ss / 3600)
+      }
+      const sign = d < 0 ? -1 : 1
+      return sign * (Math.abs(d) + m / 60 + s / 3600)
+    },
+    toDMS: (deg) => toDMS(deg),
     polar: (r, theta) => math.complex(r * Math.cos(toRad(theta)), r * Math.sin(toRad(theta))),
     arg:   (z) => toOut(math.arg(z)),
     ...processedVars,
@@ -83,6 +97,8 @@ export function normalizeExpression(raw) {
     .replace(/\ba s i n h \(/g, 'asinh(')
     .replace(/\ba c o s h \(/g, 'acosh(')
     .replace(/\ba t a n h \(/g, 'atanh(')
+    .replace(/\bf r o m D M S \(/g, 'fromDMS(')
+    .replace(/\bt o D M S \(/g, 'toDMS(')
     .replace(/%/g, '/100')
     .replace(/\bA n s\b/g, 'Ans')
     .trim()
@@ -152,6 +168,8 @@ export function formatValue(value, angleMode = 'deg', complexMode = 'rect') {
       return arr.map(v => math.format(v, { precision: 8 })).join('\n')
     }
 
+    if (type === 'string') return value
+
     if (typeof value === 'number') {
       if (Number.isNaN(value)) return 'undefined'
       if (!isFinite(value)) return value > 0 ? '∞' : '-∞'
@@ -162,6 +180,20 @@ export function formatValue(value, angleMode = 'deg', complexMode = 'rect') {
   } catch {
     return String(value)
   }
+}
+
+// Converts a decimal-degrees value to a D°M'S" string.
+export function toDMS(decimalDeg) {
+  const sign = decimalDeg < 0 ? '-' : ''
+  // Round to 4 decimal places of seconds precision before decomposing to prevent
+  // float drift (e.g. 0.85 * 60 = 50.999... causing 50'60" instead of 51'0").
+  let totalSec = Math.round(Math.abs(decimalDeg) * 3600 * 10000) / 10000
+  const d = Math.floor(totalSec / 3600)
+  totalSec -= d * 3600
+  const m = Math.floor(totalSec / 60)
+  const s = Math.round((totalSec - m * 60) * 10000) / 10000
+  const sStr = Number.isInteger(s) ? String(s) : String(s).replace(/\.?0+$/, '')
+  return `${sign}${d}°${m}'${sStr}"`
 }
 
 function humanizeError(err) {

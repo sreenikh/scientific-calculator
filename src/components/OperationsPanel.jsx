@@ -1,6 +1,10 @@
 import { useState } from 'react'
 
 const OPERATIONS = {
+  Convert: [
+    { label: 'fromDMS', desc: 'Degrees/min/sec to decimal: fromDMS(d, m, s)', insert: '\\operatorname{fromDMS}(' },
+    { label: 'toDMS',   desc: 'Decimal degrees to D degrees M\' S": toDMS(x)',  insert: '\\operatorname{toDMS}('   },
+  ],
   Math: [
     { label: 'abs',   desc: 'Absolute value (real numbers); complex magnitude',     insert: '\\operatorname{abs}('   },
     { label: 'mod',   desc: 'Modulo: remainder after division — mod(a, b)',          insert: '\\operatorname{mod}('   },
