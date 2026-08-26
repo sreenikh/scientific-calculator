@@ -26,7 +26,7 @@ graph TD
     App --> CA["CalculusPanel.jsx"]
     App --> MP["ModePanel.jsx"]
     App --> MAT["MatrixPanel.jsx\n(slots A-J, 1-row = vector)"]
-    App --> OP["OperationsPanel.jsx\n(Matrix / Vector tabs)"]
+    App --> OP["OperationsPanel.jsx\n(Convert / Math / Matrix / Vector / Complex tabs)"]
     App --> EQ["EquationPanel.jsx\n(Polynomial roots + Linear system)"]
     App --> ST["StatPanel.jsx\n(1-var stats + regression)"]
     App --> DI["DistributionPanel.jsx\n(Normal + Binomial)"]
@@ -82,8 +82,9 @@ flowchart TD
     S3 --> S4["n C r (n,r) / n P r (n,r)  ->  nCr(n,r) / nPr(n,r)"]
     S4 --> S5["i n v ( / d e t ( / t r a c e ( / ...  ->  inv( / det( / ..."]
     S5 --> S6["d o t ( / c r o s s ( / n o r m ( / s i z e (  ->  dot( / ..."]
-    S6 --> S7["A n s  ->  Ans"]
-    S7 --> G{"Placeholder\nguards"}
+    S6 --> S7["f r o m D M S ( / t o D M S (  ->  fromDMS( / toDMS("]
+    S7 --> S8["A n s  ->  Ans"]
+    S8 --> G{"Placeholder\nguards"}
     G -->|"root(())(...)  root(3)()..."| Err["user-facing\nerror message"]
     G -->|"log _((()))..."| Err
     G -->|clean| Eval["math.evaluate(expr, scope)"]
@@ -139,6 +140,10 @@ Ten scalar slots stored in React state and injected into the evaluation scope al
 - anything else - number, formatted with `math.format(n, { precision: 10 })`
 
 `isComplex` and `isMatrix` flags are returned alongside the display string so the UI can show the RECT/POLAR toggle or apply the `.is-matrix` CSS class.
+
+**DMS display:** `toDMS(decimalDeg)` in `mathEngine.js` formats a decimal-degrees value as `D°M'S"`. App state tracks `dmsMode` and `lastNumericValue`; toggling DMS reformats the result display without re-evaluating. The DMS toggle button appears only when the last result is a real (non-complex, non-matrix) number.
+
+**Math/Line display toggle:** `displayMode` state (`'math'` or `'line'`) is passed to Screen; toggling calls `field.defaultMode = 'text'` or `'math'` on the MathLive element via the imperative ref. The MATH/LINE button is always visible in the display row.
 
 ---
 
@@ -236,8 +241,9 @@ src/
 
 Test categories in `mathEngine.test.js`:
 
-- normalizeExpression: character subs, nth-root bridge, log-base bridge, nPr/nCr bridge, matrix operatorname bridge (inv/det/trace/transpose/size/dot/cross/norm), complex operatorname bridge (polar/abs/arg/conj/re/im), math operatorname bridge (mod/floor/ceil/round/sign), % percentage, Ans bridge
-- evaluateExpression: arithmetic, powers/roots, trig (deg + rad), inverse trig, reciprocal trig, logs, combinatorics, Ans, constants, expected failures, full MathLive pipeline per button, complex numbers, matrix variables in scope, OPS matrix operations, OPS vector operations (inline and stored 1-row variables), OPS Math tab functions (abs/mod/floor/ceil/round/sign/%)
+- normalizeExpression: character subs, nth-root bridge, log-base bridge, nPr/nCr bridge, matrix operatorname bridge (inv/det/trace/transpose/size/dot/cross/norm), complex operatorname bridge (polar/abs/arg/conj/re/im), math operatorname bridge (mod/floor/ceil/round/sign), DMS bridges (fromDMS/toDMS), % percentage, Ans bridge
+- evaluateExpression: arithmetic, powers/roots, trig (deg + rad), inverse trig, reciprocal trig, logs, combinatorics, Ans, constants, expected failures, full MathLive pipeline per button, complex numbers, matrix variables in scope, OPS matrix operations, OPS vector operations (inline and stored 1-row variables), OPS Math tab functions (abs/mod/floor/ceil/round/sign/%), OPS Convert tab (fromDMS, toDMS)
+- toDMS: decimal degrees to D degrees M' S" formatting, negative values, roundtrip with fromDMS
 - keypad contracts: structural integrity, key contracts per function group including ALPHA+x = %
 - polyRoots: degree 1-6, real and complex roots, repeated roots
 - solveLinearSystem: 2x2 through 5x5, singular matrix error
