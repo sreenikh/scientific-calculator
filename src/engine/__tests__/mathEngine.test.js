@@ -845,3 +845,30 @@ describe('graph coordinate transforms', () => {
     expect(toPixelY(-3, -6, 6, 180)).toBeCloseTo(135)
   })
 })
+
+// ---------------------------------------------------------------------------
+// Multiple functions: each compileFn call is independent and color-indexed
+// ---------------------------------------------------------------------------
+describe('graph: multiple independent compileFn instances', () => {
+  it('f1=sin(x) and f2=cos(x) produce different values at x=0', () => {
+    const f1 = compileFn('sin(x)', 'x', 'rad')
+    const f2 = compileFn('cos(x)', 'x', 'rad')
+    expect(f1(0)).toBeCloseTo(0, 10)
+    expect(f2(0)).toBeCloseTo(1, 10)
+  })
+  it('f1 and f2 do not share scope - different expressions, same x', () => {
+    const f1 = compileFn('x^2', 'x', 'rad')
+    const f2 = compileFn('x^3', 'x', 'rad')
+    expect(f1(3)).toBeCloseTo(9, 10)
+    expect(f2(3)).toBeCloseTo(27, 10)
+  })
+  it('up to 5 independent functions can be compiled without interference', () => {
+    const exprs = ['x', 'x^2', 'x^3', 'sin(x)', 'cos(x)']
+    const fns = exprs.map(e => compileFn(e, 'x', 'rad'))
+    expect(fns[0](2)).toBeCloseTo(2, 10)
+    expect(fns[1](2)).toBeCloseTo(4, 10)
+    expect(fns[2](2)).toBeCloseTo(8, 10)
+    expect(fns[3](Math.PI / 2)).toBeCloseTo(1, 10)
+    expect(fns[4](0)).toBeCloseTo(1, 10)
+  })
+})

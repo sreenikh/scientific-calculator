@@ -181,8 +181,21 @@ export default function GraphPanel({ onClose, angleMode = 'deg' }) {
               onChange={e => setFExprs(prev => prev.map((f, j) => j === i ? e.target.value : f))}
               onKeyDown={e => e.key === 'Enter' && plot()}
             />
+            {fExprs.length > 1 && (
+              <button
+                className="graph-fn-remove"
+                onClick={() => setFExprs(prev => prev.filter((_, j) => j !== i))}
+                aria-label="Remove function"
+              >×</button>
+            )}
           </div>
         ))}
+        {fExprs.length < CURVE_COLORS.length && (
+          <button
+            className="graph-fn-add"
+            onClick={() => setFExprs(prev => [...prev, ''])}
+          >+ add function</button>
+        )}
       </div>
 
       <div className="graph-win">

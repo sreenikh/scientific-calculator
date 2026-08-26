@@ -561,6 +561,18 @@ table.iter th:first-child, table.iter td:first-child { text-align: left; color: 
   border-radius: 4px; font-family: inherit; font-size: 1.2dvh; padding: 0.35dvh 0.5vw;
 }
 .graph-fn-input:focus { outline: none; border-color: var(--teal); }
+.graph-fn-remove {
+  background: none; border: 1px solid #3A3F4E; color: var(--steel);
+  border-radius: 3px; font-size: 1.2dvh; padding: 0.2dvh 0.4vw;
+  cursor: pointer; flex-shrink: 0; line-height: 1;
+}
+.graph-fn-remove:hover { border-color: #E06C75; color: #E06C75; }
+.graph-fn-add {
+  background: none; border: 1px dashed #3A3F4E; color: var(--steel);
+  border-radius: 4px; font-family: inherit; font-size: 1.1dvh;
+  padding: 0.3dvh 0; cursor: pointer; width: 100%; margin-top: 0.2dvh;
+}
+.graph-fn-add:hover { border-color: var(--teal); color: var(--teal); }
 .graph-win {
   display: flex; align-items: center; gap: 0.4vw; flex-wrap: wrap; margin-bottom: 0.6dvh;
 }

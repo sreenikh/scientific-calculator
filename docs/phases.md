@@ -42,11 +42,15 @@
 - DPR-aware canvas for crisp rendering on retina displays
 - Enter key or "plot" button triggers redraw; auto-plots sin(x) on open
 
+### Multiple functions `[done]`
+
+- Up to 5 functions on one graph, each in a distinct color (teal, red, amber, blue, purple)
+- Add/remove function rows with + and x buttons; last row cannot be removed
+
 ### Planned
 
 - Pan and zoom with mouse / touch
 - Trace mode: cursor snaps to curve, shows (x, y) coordinates
-- Multiple functions on one graph, color-coded
 - Shaded region between bounds for definite integrals
 - Intersection and zero finder (reuses numeric.js root finders)
 

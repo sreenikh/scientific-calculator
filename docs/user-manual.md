@@ -465,9 +465,15 @@ Press **GRAPH** (bottom mod row, rightmost key) to open the graph panel.
 
 The panel plots y = f(x) on a canvas. It opens with f(x) = sin(x) and standard window settings already plotted.
 
-### Function input
+### Function inputs
 
-Type any expression in x into the f(x) field. The same syntax used in the main calculator works here (e.g. `sin(x)`, `x^3 - 2x`, `1/x`). Press **Enter** or the **plot** button to redraw.
+Up to five functions can be plotted simultaneously. Each is drawn in a distinct color (teal, red, amber, blue, purple).
+
+- Press **+ add function** below the input list to add another function.
+- Press **×** on a row to remove that function. The last remaining function cannot be removed.
+- Press **Enter** in any input or click **plot** to redraw all active functions.
+
+The same expression syntax used in the main calculator works here (e.g. `sin(x)`, `x^3 - 2x`, `1/x`).
 
 ### Window settings
 
