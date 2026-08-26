@@ -47,6 +47,7 @@ function buildScope(angleMode, vars) {
       const sign = d < 0 ? -1 : 1
       return sign * (Math.abs(d) + m / 60 + s / 3600)
     },
+    toDMS: (deg) => toDMS(deg),
     polar: (r, theta) => math.complex(r * Math.cos(toRad(theta)), r * Math.sin(toRad(theta))),
     arg:   (z) => toOut(math.arg(z)),
     ...processedVars,
@@ -88,6 +89,7 @@ export function normalizeExpression(raw) {
     .replace(/\ba c o s h \(/g, 'acosh(')
     .replace(/\ba t a n h \(/g, 'atanh(')
     .replace(/\bf r o m D M S \(/g, 'fromDMS(')
+    .replace(/\bt o D M S \(/g, 'toDMS(')
     .replace(/%/g, '/100')
     .replace(/\bA n s\b/g, 'Ans')
     .trim()

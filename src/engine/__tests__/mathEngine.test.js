@@ -724,8 +724,9 @@ describe('toDMS: decimal degrees to D°M\'S" string', () => {
   it('zero: 0 -> 0°0\'0"',                   () => expect(toDMS(0)).toBe('0°0\'0"'))
 })
 
-describe('normalizeExpression: fromDMS bridge', () => {
+describe('normalizeExpression: DMS bridges', () => {
   it('f r o m D M S ( -> fromDMS(', () => expect(normalizeExpression('f r o m D M S (')).toBe('fromDMS('))
+  it('t o D M S ( -> toDMS(',       () => expect(normalizeExpression('t o D M S (')).toBe('toDMS('))
 })
 
 describe('evaluateExpression: fromDMS', () => {
@@ -753,5 +754,18 @@ describe('evaluateExpression: fromDMS', () => {
     const r = evaluateExpression('fromDMS(-30, 30, 0)')
     expect(r.ok).toBe(true)
     expect(r.value).toBeCloseTo(-30.5, 10)
+  })
+})
+
+describe('evaluateExpression: toDMS', () => {
+  it('toDMS(45.5) returns D degrees M\' S" string', () => {
+    const r = evaluateExpression('toDMS(45.5)')
+    expect(r.ok).toBe(true)
+    expect(String(r.value)).toBe('45°30\'0"')
+  })
+  it('toDMS(0) = 0°0\'0"', () => {
+    const r = evaluateExpression('toDMS(0)')
+    expect(r.ok).toBe(true)
+    expect(String(r.value)).toBe('0°0\'0"')
   })
 })
