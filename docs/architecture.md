@@ -31,6 +31,7 @@ graph TD
     App --> ST["StatPanel.jsx\n(1-var stats + regression)"]
     App --> DI["DistributionPanel.jsx\n(Normal + Binomial)"]
     App --> BNP["BaseNPanel.jsx\n(Numbers tab + K-map tab)"]
+    App --> TP["TablePanel.jsx\n(f(x) + optional g(x) table)"]
 
     Screen --> MF["&lt;math-field&gt;\n(MathLive web component)"]
 

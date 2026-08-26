@@ -36,12 +36,12 @@ A browser-based graphing scientific calculator with textbook-style math input.
 - K-Map (BASE-N -> K-map tab): 2-8 variables; 2-6 vars use a Gray-code grid; 7-8 vars use a flat scrollable minterm list; cells cycle 0/1/X (don't care); Quine-McCluskey minimization to minimal SOP
 - Math/Line display toggle: MATH button in the result area switches the MathLive input between textbook layout and linear text; active mode highlighted
 - DMS conversion: `fromDMS(d, m, s)` converts degrees/minutes/seconds to decimal degrees (OPS panel, Convert tab); DMS button on the result line converts any real numeric result to D°M'S" format
+- Table mode: evaluate f(x) and optional g(x) over a range with configurable step; up to 500 rows; scrollable with sticky headers; accessible via MODE -> 5 TABLE
 - Responsive layout: scales to any window size using dvh/vw units, no breakpoints
 
 ## Planned
 
 - Phase 2: Graphing (canvas plotter, pan/zoom, trace, shaded integral regions)
-- Phase 4 remaining: Table mode
 
 See [docs/phases.md](docs/phases.md) for the full roadmap.
 

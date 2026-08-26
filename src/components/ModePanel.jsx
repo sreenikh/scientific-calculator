@@ -3,6 +3,7 @@ const MODES = [
   { num: 2, label: 'MATRIX / VECTOR', desc: 'Define A-J; 1-row = vector, else matrix', action: 'openMatrix' },
   { num: 3, label: 'STATISTICS',   desc: '1-var stats; linear/quad/exp/power regression', action: 'openStats' },
   { num: 4, label: 'DISTRIBUTION', desc: 'Normal (pdf/cdf/inv) and Binomial (pdf/cdf)', action: 'openDist' },
+  { num: 5, label: 'TABLE',        desc: 'Evaluate f(x) and optional g(x) over a range', action: 'openTable' },
 ]
 
 export default function ModePanel({ onClose, onMode }) {
