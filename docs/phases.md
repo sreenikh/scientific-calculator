@@ -28,17 +28,27 @@
 
 ---
 
-## Phase 2 - Graphing `[planned]`
+## Phase 2 - Graphing `[in progress]`
 
 **Goal:** Plot and explore functions visually.
 
-- Canvas-based function plotter (y = f(x))
+### Basic plot + window settings `[done]`
+
+- Canvas-based function plotter (y = f(x)) accessed via the GRAPH key (bottom row)
+- Window settings: Xmin/Xmax/Ymin/Ymax/Xscl/Yscl with Casio-style defaults (-10/10/-6.2/6.2/1/1)
+- Grid lines at scale intervals, axes, tick marks with numeric labels
+- Discontinuity detection: large pixel jumps lift the pen (handles tan, 1/x, etc.)
+- DEG/RAD badge in header; angle mode passed to compileFn for correct sin/cos/tan
+- DPR-aware canvas for crisp rendering on retina displays
+- Enter key or "plot" button triggers redraw; auto-plots sin(x) on open
+
+### Planned
+
 - Pan and zoom with mouse / touch
 - Trace mode: cursor snaps to curve, shows (x, y) coordinates
 - Multiple functions on one graph, color-coded
 - Shaded region between bounds for definite integrals
 - Intersection and zero finder (reuses numeric.js root finders)
-- Window settings: Xmin/Xmax/Ymin/Ymax/Xscl/Yscl
 
 ---
 

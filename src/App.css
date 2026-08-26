@@ -194,7 +194,7 @@ body {
   gap: 0.5vw;
 }
 .krow:first-child { grid-template-columns: repeat(5, 1fr); }
-.krow:last-child  { grid-template-columns: repeat(5, 1fr); }
+.krow:last-child  { grid-template-columns: repeat(6, 1fr); }
 
 button.key {
   position: relative;
@@ -546,3 +546,32 @@ table.iter th:first-child, table.iter td:first-child { text-align: left; color: 
 .tbl-val:hover { color: var(--teal); }
 .tbl-copied { color: var(--amber) !important; }
 
+/* Graph panel */
+.graph-overlay {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  gap: 0;
+}
+.graph-fns { display: flex; flex-direction: column; gap: 0.4dvh; margin-bottom: 0.6dvh; }
+.graph-fn-row { display: flex; align-items: center; gap: 0.5vw; }
+.graph-fn-label { font-size: 1.2dvh; font-weight: 700; min-width: 3.5vw; flex-shrink: 0; }
+.graph-fn-input {
+  flex: 1; background: #20232B; border: 1px solid #3A3F4E; color: #EDEAE0;
+  border-radius: 4px; font-family: inherit; font-size: 1.2dvh; padding: 0.35dvh 0.5vw;
+}
+.graph-fn-input:focus { outline: none; border-color: var(--teal); }
+.graph-win {
+  display: flex; align-items: center; gap: 0.4vw; flex-wrap: wrap; margin-bottom: 0.6dvh;
+}
+.graph-win-field { display: flex; align-items: center; gap: 0.25vw; font-size: 1.1dvh; color: var(--steel); }
+.graph-win-field span { flex-shrink: 0; }
+.graph-win-field .tbl-num { width: 4vw; }
+.graph-canvas {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  border-radius: 6px;
+  display: block;
+  background: #0F1117;
+}

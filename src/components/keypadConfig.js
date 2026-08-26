@@ -71,5 +71,6 @@ export const ROWS = [
     { id: 'solve', label: 'SOLVE',  action: 'openSolve', mod: true },
     { id: 'basen', label: 'BASE-N', action: 'openBaseN', mod: true },
     { id: 'ops',   label: 'OPS',    action: 'openOps',   mod: true },
+    { id: 'graph', label: 'GRAPH',  action: 'openGraph', mod: true },
   ],
 ]

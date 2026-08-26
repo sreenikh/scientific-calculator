@@ -5,7 +5,7 @@ const ALL_KEYS  = ROWS.flat()
 const ALL_VALID_ACTIONS = new Set([
   'toggleShift', 'toggleAlpha', 'openModeMenu', 'toggleAngle', 'cycleBase',
   'clear', 'del', 'evaluate',
-  'openConst', 'openConv', 'openSolve', 'openDeriv', 'openInteg', 'openBaseN', 'openOps',
+  'openConst', 'openConv', 'openSolve', 'openDeriv', 'openInteg', 'openBaseN', 'openOps', 'openGraph',
   'activateSto', 'activateRcl',
 ])
 
