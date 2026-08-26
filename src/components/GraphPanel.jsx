@@ -1,7 +1,10 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { compileFn } from '../engine/numeric'
 
-const CURVE_COLORS = ['#2CC7A0', '#E06C75', '#E5C07B', '#61AFEF', '#C678DD']
+export const CURVE_COLORS = [
+  '#2CC7A0', '#E06C75', '#E5C07B', '#61AFEF', '#C678DD',
+  '#56B6C2', '#D19A66', '#98C379', '#BE5046', '#528BFF',
+]
 
 export function toPixelX(mathX, xmin, xmax, W) {
   return (mathX - xmin) / (xmax - xmin) * W
@@ -23,11 +26,9 @@ function drawGraph(canvas, fns, win) {
   const px = (x) => toPixelX(x, win.xmin, win.xmax, W)
   const py = (y) => toPixelY(y, win.ymin, win.ymax, H)
 
-  // background
   ctx.fillStyle = '#0F1117'
   ctx.fillRect(0, 0, W, H)
 
-  // grid lines
   ctx.strokeStyle = '#1C2030'
   ctx.lineWidth = 1
   const xGridStart = Math.ceil(win.xmin / win.xscl) * win.xscl
@@ -41,7 +42,6 @@ function drawGraph(canvas, fns, win) {
     ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(W, gy); ctx.stroke()
   }
 
-  // axes
   ctx.strokeStyle = '#3A3F52'
   ctx.lineWidth = 1.5
   if (win.ymin <= 0 && win.ymax >= 0) {
@@ -53,7 +53,6 @@ function drawGraph(canvas, fns, win) {
     ctx.beginPath(); ctx.moveTo(ax, 0); ctx.lineTo(ax, H); ctx.stroke()
   }
 
-  // tick marks and labels
   const fontSize = Math.max(9, Math.round(W * 0.022))
   ctx.font = `${fontSize}px "JetBrains Mono", monospace`
   ctx.fillStyle = '#555B6E'
@@ -80,10 +79,8 @@ function drawGraph(canvas, fns, win) {
     ctx.fillText(lbl, Math.max(axisX - 5, fontSize * 2), gy + fontSize * 0.35)
   }
 
-  // curves
   const SAMPLES = W * 2
   const MAX_JUMP = H * 2
-
   fns.forEach(({ fn, color }) => {
     ctx.strokeStyle = color
     ctx.lineWidth = 2
@@ -94,11 +91,7 @@ function drawGraph(canvas, fns, win) {
       const mathX = win.xmin + (i / SAMPLES) * (win.xmax - win.xmin)
       let mathY
       try { mathY = fn(mathX) } catch { mathY = NaN }
-      if (!isFinite(mathY) || isNaN(mathY)) {
-        penDown = false
-        prevPixY = null
-        continue
-      }
+      if (!isFinite(mathY) || isNaN(mathY)) { penDown = false; prevPixY = null; continue }
       const pixX = px(mathX)
       const pixY = py(mathY)
       if (!penDown || (prevPixY !== null && Math.abs(pixY - prevPixY) > MAX_JUMP)) {
@@ -126,35 +119,54 @@ function parseWin(s) {
 }
 
 export default function GraphPanel({ onClose, angleMode = 'deg' }) {
-  const [fExprs, setFExprs] = useState(['sin(x)'])
+  const [fns, setFns] = useState([{ expr: 'sin(x)', visible: true }])
   const [winStr, setWinStr] = useState({
     xmin: '-10', xmax: '10', ymin: '-6.2', ymax: '6.2', xscl: '1', yscl: '1',
   })
+  const [splitMode, setSplitMode] = useState(false)
   const [error, setError] = useState(null)
-  const canvasRef = useRef(null)
+  const canvasRefs = useRef([])
+
+  // Visible, non-empty entries with their original index preserved for color/label
+  const visibleFns = fns
+    .map((f, i) => ({ ...f, idx: i }))
+    .filter(f => f.visible && f.expr.trim())
 
   const plot = useCallback(() => {
     setError(null)
     const win = parseWin(winStr)
     if (!win) { setError('Invalid window settings'); return }
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const fns = []
-    for (let i = 0; i < fExprs.length; i++) {
-      const expr = fExprs[i].trim()
-      if (!expr) continue
+
+    const compiled = []
+    for (const { expr, idx } of fns.map((f, i) => ({ ...f, idx: i })).filter(f => f.visible && f.expr.trim())) {
       try {
-        fns.push({ fn: compileFn(expr, 'x', angleMode), color: CURVE_COLORS[i % CURVE_COLORS.length] })
+        compiled.push({
+          fn: compileFn(expr.trim(), 'x', angleMode),
+          color: CURVE_COLORS[idx % CURVE_COLORS.length],
+        })
       } catch {
-        setError(`f${i + 1}(x): invalid expression`)
+        setError(`f${idx + 1}(x): invalid expression`)
         return
       }
     }
-    if (fns.length === 0) { setError('Enter at least one function'); return }
-    drawGraph(canvas, fns, win)
-  }, [fExprs, winStr, angleMode])
+
+    if (compiled.length === 0) { setError('No visible functions to plot'); return }
+
+    if (splitMode) {
+      compiled.forEach((entry, i) => {
+        const canvas = canvasRefs.current[i]
+        if (canvas) drawGraph(canvas, [entry], win)
+      })
+    } else {
+      const canvas = canvasRefs.current[0]
+      if (canvas) drawGraph(canvas, compiled, win)
+    }
+  }, [fns, winStr, angleMode, splitMode])
 
   useEffect(() => { plot() }, [plot])
+
+  const updateFn = (i, patch) =>
+    setFns(prev => prev.map((f, j) => j === i ? { ...f, ...patch } : f))
 
   const WIN_FIELDS = [
     ['xmin', 'Xmin'], ['xmax', 'Xmax'], ['ymin', 'Ymin'],
@@ -170,32 +182,38 @@ export default function GraphPanel({ onClose, angleMode = 'deg' }) {
       </div>
 
       <div className="graph-fns">
-        {fExprs.map((expr, i) => (
-          <div key={i} className="graph-fn-row">
-            <span className="graph-fn-label" style={{ color: CURVE_COLORS[i % CURVE_COLORS.length] }}>
+        {fns.map(({ expr, visible }, i) => (
+          <div key={i} className={`graph-fn-row${visible ? '' : ' graph-fn-hidden'}`}>
+            <span
+              className="graph-fn-label"
+              style={{ color: visible ? CURVE_COLORS[i % CURVE_COLORS.length] : '#555B6E' }}
+            >
               f{i + 1}(x)
             </span>
             <input
               className="graph-fn-input"
               value={expr}
-              onChange={e => setFExprs(prev => prev.map((f, j) => j === i ? e.target.value : f))}
+              onChange={e => updateFn(i, { expr: e.target.value })}
               onKeyDown={e => e.key === 'Enter' && plot()}
             />
-            {fExprs.length > 1 && (
+            <button
+              className={`graph-fn-eye${visible ? ' active' : ''}`}
+              onClick={() => updateFn(i, { visible: !visible })}
+              title={visible ? 'Hide' : 'Show'}
+            >{visible ? '●' : '○'}</button>
+            {fns.length > 1 && (
               <button
                 className="graph-fn-remove"
-                onClick={() => setFExprs(prev => prev.filter((_, j) => j !== i))}
+                onClick={() => setFns(prev => prev.filter((_, j) => j !== i))}
                 aria-label="Remove function"
               >×</button>
             )}
           </div>
         ))}
-        {fExprs.length < CURVE_COLORS.length && (
-          <button
-            className="graph-fn-add"
-            onClick={() => setFExprs(prev => [...prev, ''])}
-          >+ add function</button>
-        )}
+        <button
+          className="graph-fn-add"
+          onClick={() => setFns(prev => [...prev, { expr: '', visible: true }])}
+        >+ add function</button>
       </div>
 
       <div className="graph-win">
@@ -210,12 +228,39 @@ export default function GraphPanel({ onClose, angleMode = 'deg' }) {
             />
           </label>
         ))}
+        <div className="graph-view-toggle">
+          <button
+            className={`graph-view-btn${!splitMode ? ' active' : ''}`}
+            onClick={() => setSplitMode(false)}
+          >combined</button>
+          <button
+            className={`graph-view-btn${splitMode ? ' active' : ''}`}
+            onClick={() => setSplitMode(true)}
+          >split</button>
+        </div>
         <button className="ov-close tbl-go" onClick={plot}>plot</button>
       </div>
 
       {error && <div className="ov-note tbl-error">{error}</div>}
 
-      <canvas ref={canvasRef} className="graph-canvas" />
+      {splitMode ? (
+        <div
+          className="graph-split-grid"
+          style={{ gridTemplateColumns: visibleFns.length === 1 ? '1fr' : 'repeat(2, 1fr)' }}
+        >
+          {visibleFns.map(({ idx }, i) => (
+            <div key={idx} className="graph-subplot">
+              <span
+                className="graph-subplot-label"
+                style={{ color: CURVE_COLORS[idx % CURVE_COLORS.length] }}
+              >f{idx + 1}(x)</span>
+              <canvas ref={el => { canvasRefs.current[i] = el }} className="graph-subplot-canvas" />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <canvas ref={el => { canvasRefs.current[0] = el }} className="graph-canvas" />
+      )}
     </div>
   )
 }

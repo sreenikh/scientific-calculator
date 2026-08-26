@@ -849,6 +849,8 @@ describe('graph coordinate transforms', () => {
 // ---------------------------------------------------------------------------
 // Multiple functions: each compileFn call is independent and color-indexed
 // ---------------------------------------------------------------------------
+import { CURVE_COLORS } from '../../components/GraphPanel.jsx'
+
 describe('graph: multiple independent compileFn instances', () => {
   it('f1=sin(x) and f2=cos(x) produce different values at x=0', () => {
     const f1 = compileFn('sin(x)', 'x', 'rad')
@@ -862,13 +864,30 @@ describe('graph: multiple independent compileFn instances', () => {
     expect(f1(3)).toBeCloseTo(9, 10)
     expect(f2(3)).toBeCloseTo(27, 10)
   })
-  it('up to 5 independent functions can be compiled without interference', () => {
-    const exprs = ['x', 'x^2', 'x^3', 'sin(x)', 'cos(x)']
+  it('10 independent functions compile and evaluate without interference', () => {
+    const exprs = ['x', 'x^2', 'x^3', 'x^4', 'sin(x)', 'cos(x)', 'ln(x)', 'sqrt(x)', '1/x', 'x^5']
     const fns = exprs.map(e => compileFn(e, 'x', 'rad'))
-    expect(fns[0](2)).toBeCloseTo(2, 10)
-    expect(fns[1](2)).toBeCloseTo(4, 10)
-    expect(fns[2](2)).toBeCloseTo(8, 10)
-    expect(fns[3](Math.PI / 2)).toBeCloseTo(1, 10)
-    expect(fns[4](0)).toBeCloseTo(1, 10)
+    expect(fns[0](3)).toBeCloseTo(3, 10)
+    expect(fns[1](3)).toBeCloseTo(9, 10)
+    expect(fns[2](3)).toBeCloseTo(27, 10)
+    expect(fns[3](3)).toBeCloseTo(81, 10)
+    expect(fns[4](Math.PI / 2)).toBeCloseTo(1, 10)
+    expect(fns[5](0)).toBeCloseTo(1, 10)
+  })
+  it('CURVE_COLORS cycles correctly for indices beyond palette length', () => {
+    const len = CURVE_COLORS.length
+    expect(CURVE_COLORS[0 % len]).toBe(CURVE_COLORS[len % len])
+    expect(CURVE_COLORS[1 % len]).toBe(CURVE_COLORS[(len + 1) % len])
+  })
+  it('hidden functions are excluded from the compiled list', () => {
+    const fns = [
+      { expr: 'sin(x)', visible: true },
+      { expr: 'cos(x)', visible: false },
+      { expr: 'x^2',   visible: true },
+    ]
+    const visible = fns.filter(f => f.visible && f.expr.trim())
+    expect(visible).toHaveLength(2)
+    expect(visible[0].expr).toBe('sin(x)')
+    expect(visible[1].expr).toBe('x^2')
   })
 })

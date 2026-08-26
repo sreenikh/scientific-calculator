@@ -44,8 +44,10 @@
 
 ### Multiple functions `[done]`
 
-- Up to 5 functions on one graph, each in a distinct color (teal, red, amber, blue, purple)
-- Add/remove function rows with + and x buttons; last row cannot be removed
+- Unlimited functions (10-color palette, cycles for more); add/remove rows freely
+- Show/hide toggle per function (filled/hollow dot); hidden functions are excluded from the plot
+- Combined mode: all visible functions on one canvas
+- Split mode: one canvas per visible function in a 2-column grid, each labeled with its color; scrollable when many functions are active
 
 ### Planned
 

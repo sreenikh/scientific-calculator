@@ -467,13 +467,21 @@ The panel plots y = f(x) on a canvas. It opens with f(x) = sin(x) and standard w
 
 ### Function inputs
 
-Up to five functions can be plotted simultaneously. Each is drawn in a distinct color (teal, red, amber, blue, purple).
+Any number of functions can be plotted. A 10-color palette (teal, red, amber, blue, purple, cyan, orange, green, dark red, indigo) repeats for additional functions.
 
-- Press **+ add function** below the input list to add another function.
-- Press **×** on a row to remove that function. The last remaining function cannot be removed.
-- Press **Enter** in any input or click **plot** to redraw all active functions.
+- Press **+ add function** to add another input row.
+- Press **×** on a row to remove that function. The last remaining row cannot be removed.
+- Press **●/○** on a row to show or hide that curve without removing it. Hidden functions are dimmed and excluded from the plot.
+- Press **Enter** in any input or click **plot** to redraw.
 
 The same expression syntax used in the main calculator works here (e.g. `sin(x)`, `x^3 - 2x`, `1/x`).
+
+### Combined vs. split view
+
+The **combined / split** toggle (in the window settings row) controls how functions are displayed:
+
+- **combined** (default): all visible functions share one canvas, overlaid.
+- **split**: each visible function gets its own subplot in a 2-column grid. Subplots share the same window settings. Scroll down if there are more subplots than fit on screen.
 
 ### Window settings
 
