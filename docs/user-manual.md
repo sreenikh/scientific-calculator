@@ -478,6 +478,19 @@ Any number of functions can be plotted. A 10-color palette (teal, red, amber, bl
 
 **Implicit equations** contain y or an `=` sign (e.g. `x^2 + y^2 = 4`, `x^2/4 + y^2/9 = 1`). The label changes to `f(x,y)`. The curve is plotted using marching squares. `y = sin(x)` is treated as explicit (the RHS is extracted automatically).
 
+### Zoom and pan
+
+| Gesture | Action |
+|---------|--------|
+| Scroll wheel | Zoom in/out centered on cursor |
+| Trackpad two-finger swipe | Pan (left/right/up/down) |
+| Trackpad pinch | Zoom in/out centered on pinch midpoint |
+| Click and drag | Pan |
+| Touch one-finger drag | Pan |
+| Touch two-finger pinch | Zoom |
+
+Grid lines and axis labels rescale automatically (`niceStep`) so they stay readable at any zoom level. Implicit curves render at reduced resolution during the gesture and sharpen when you release.
+
 ### Crosshair inspection
 
 Move the mouse over the graph to show a crosshair at the cursor x position:
@@ -486,6 +499,28 @@ Move the mouse over the graph to show a crosshair at the cursor x position:
 - For each explicit curve at that x: a dot appears at (x, y) with a dashed horizontal line and a `(x, y)` label in the curve color.
 - For each implicit curve: the plotter sweeps the y range to find all intersection points and marks each one the same way.
 - **Click** to lock the crosshair in place (line turns amber). Click again to release and resume hover tracking. In split view, the locked line appears on all subplots at the same x.
+
+### Trace mode
+
+Press **T** (keyboard) or the **TRACE** button to enter trace mode. A cursor snaps to the first visible curve (explicit or implicit).
+
+| Key | Action |
+|-----|--------|
+| ← → | Step left/right along the curve (or forward/backward along an implicit contour) |
+| ↑ ↓ | Switch to the previous/next visible curve |
+| Escape or T | Exit trace mode |
+
+The coordinate badge at the top of the graph shows `x=... y=...` for the current trace point. Moving the mouse also repositions the trace cursor. For implicit curves (`[impl]` tag appears in the badge), the cursor walks the zero-contour using tangent steps.
+
+Zoom and pan are disabled while trace mode is active. Trace is cleared on any replot.
+
+**Example - trace a circle:**
+
+```
+Expression: x^2 + y^2 = 4
+Press T to enter trace, then use ← → to walk around the circle.
+↑ ↓ switches to any other plotted curves.
+```
 
 ### Combined vs. split view
 
@@ -508,6 +543,10 @@ The **combined / split** toggle (in the window settings row) controls how functi
 All six fields are editable. Press **Enter** in any field or click **plot** to apply the new window.
 
 The **1:1** button (next to the split toggle) adjusts Ymin/Ymax so that one math unit covers the same number of pixels in both axes. Use this to make circles appear circular rather than elliptical when the canvas is not square.
+
+The **RESET** button restores the default window (Xmin -10, Xmax 10, Ymin -6.2, Ymax 6.2, Xscl 1, Yscl 1). Use it when zoom or pan has moved the view to an unrecognizable location.
+
+The **FIT** button searches for where the plotted curves actually exist and adjusts the window to show them. It samples explicit curves and scans for sign changes on implicit curves, progressively expanding the search area (±5, ±15, ±50, ±150) until at least 8 points are found, then adds 15% padding. Use it when the current window shows nothing because the curves lie outside the visible area.
 
 **Example - zoom in on sin(x) near the origin:**
 

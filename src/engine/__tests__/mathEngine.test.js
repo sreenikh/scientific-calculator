@@ -817,7 +817,7 @@ describe('compileFn: angle mode awareness', () => {
 // ---------------------------------------------------------------------------
 // GraphPanel coordinate transforms
 // ---------------------------------------------------------------------------
-import { toPixelX, toPixelY } from '../../components/GraphPanel.jsx'
+import { toPixelX, toPixelY, niceStep, projectOntoCurve, implicitStep, findPlotBounds } from '../../components/GraphPanel.jsx'
 
 describe('graph coordinate transforms', () => {
   it('toPixelX: xmin maps to 0', () => {
@@ -893,6 +893,23 @@ describe('graph: multiple independent compileFn instances', () => {
 })
 
 // ---------------------------------------------------------------------------
+// niceStep: auto grid-step for zoom/pan
+// ---------------------------------------------------------------------------
+describe('niceStep: auto tick step computation', () => {
+  it('range 20 → step 2 (20/8=2.5, nearest nice = 2)', () => expect(niceStep(20)).toBeCloseTo(2))
+  it('range 10 → step 1', () => expect(niceStep(10)).toBeCloseTo(1))
+  it('range 100 → step 10', () => expect(niceStep(100)).toBeCloseTo(10))
+  it('range 1 → step 0.1', () => expect(niceStep(1)).toBeCloseTo(0.1))
+  it('range 0.1 → step 0.01', () => expect(niceStep(0.1)).toBeCloseTo(0.01))
+  it('range 50 → step 5', () => expect(niceStep(50)).toBeCloseTo(5))
+  it('range 0 returns 1 (guard)', () => expect(niceStep(0)).toBe(1))
+  it('always returns a positive value', () => {
+    [0.001, 0.1, 1, 10, 100, 1000, 1e6].forEach(r => expect(niceStep(r)).toBeGreaterThan(0))
+  })
+  it('zoom in to range 0.02: step is 0.002', () => expect(niceStep(0.02)).toBeCloseTo(0.002))
+})
+
+// ---------------------------------------------------------------------------
 // compileImplicitFn: F(x,y) = 0 for implicit curve plotting
 // ---------------------------------------------------------------------------
 describe('compileImplicitFn: unit circle x^2 + y^2 = 1', () => {
@@ -947,5 +964,96 @@ describe('compileImplicitFn: angle-mode-aware trig implicit curves', () => {
   it('sin(x) + cos(y) = 1 at (0,0) in rad: sin(0)+cos(0)-1 = 0', () => {
     const F = compileImplicitFn('sin(x) + cos(y) = 1', 'rad')
     expect(F(0, 0)).toBeCloseTo(0, 10)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// projectOntoCurve: Newton projection onto F(x,y) = 0
+// ---------------------------------------------------------------------------
+describe('projectOntoCurve: unit circle x^2 + y^2 - 1 = 0', () => {
+  const F = (x, y) => x * x + y * y - 1
+  it('point already on curve returns itself', () => {
+    const r = projectOntoCurve(F, 1, 0)
+    expect(r).not.toBeNull()
+    expect(F(r.x, r.y)).toBeCloseTo(0, 6)
+  })
+  it('point inside circle converges onto curve', () => {
+    const r = projectOntoCurve(F, 0.5, 0)
+    expect(r).not.toBeNull()
+    expect(F(r.x, r.y)).toBeCloseTo(0, 6)
+    expect(Math.hypot(r.x, r.y)).toBeCloseTo(1, 5)
+  })
+  it('point outside circle converges onto curve', () => {
+    const r = projectOntoCurve(F, 2, 0)
+    expect(r).not.toBeNull()
+    expect(F(r.x, r.y)).toBeCloseTo(0, 6)
+  })
+  it('ellipse x^2/4 + y^2/9 = 1 projects correctly', () => {
+    const E = (x, y) => x * x / 4 + y * y / 9 - 1
+    const r = projectOntoCurve(E, 1, 1)
+    expect(r).not.toBeNull()
+    expect(E(r.x, r.y)).toBeCloseTo(0, 6)
+  })
+  it('returns null when gradient is zero everywhere (unreachable curve)', () => {
+    const noCurve = () => 1
+    const r = projectOntoCurve(noCurve, 1, 1)
+    expect(r).toBeNull()
+  })
+})
+
+// ---------------------------------------------------------------------------
+// implicitStep: one step along the zero-contour of F(x,y) = 0
+// ---------------------------------------------------------------------------
+describe('implicitStep: tracing along unit circle', () => {
+  const F = (x, y) => x * x + y * y - 1
+  it('step forward from (1,0) stays on unit circle', () => {
+    const next = implicitStep(F, 1, 0, 0.1, 1)
+    expect(next).not.toBeNull()
+    expect(F(next.x, next.y)).toBeCloseTo(0, 5)
+  })
+  it('step backward from (1,0) stays on unit circle', () => {
+    const next = implicitStep(F, 1, 0, 0.1, -1)
+    expect(next).not.toBeNull()
+    expect(F(next.x, next.y)).toBeCloseTo(0, 5)
+  })
+  it('forward and backward steps land on different points', () => {
+    const fwd = implicitStep(F, 1, 0, 0.1, 1)
+    const bwd = implicitStep(F, 1, 0, 0.1, -1)
+    expect(fwd).not.toBeNull(); expect(bwd).not.toBeNull()
+    expect(Math.hypot(fwd.x - bwd.x, fwd.y - bwd.y)).toBeGreaterThan(0.01)
+  })
+  it('chained steps remain on curve', () => {
+    let p = { x: 1, y: 0 }
+    for (let i = 0; i < 10; i++) { p = implicitStep(F, p.x, p.y, 0.1, 1); expect(F(p.x, p.y)).toBeCloseTo(0, 4) }
+  })
+})
+
+// ---------------------------------------------------------------------------
+// findPlotBounds: window fitting for visible curves
+// ---------------------------------------------------------------------------
+describe('findPlotBounds: explicit sin(x) curve', () => {
+  it('finds bounds for a sin(x) curve within ±5', () => {
+    const compiled = [{ isImplicit: false, fn: (x) => Math.sin(x) }]
+    const b = findPlotBounds(compiled)
+    expect(b).not.toBeNull()
+    expect(b.xmin).toBeLessThan(0); expect(b.xmax).toBeGreaterThan(0)
+    expect(b.ymin).toBeLessThan(0); expect(b.ymax).toBeGreaterThan(0)
+  })
+  it('returns null for empty compiled list', () => {
+    expect(findPlotBounds([])).toBeNull()
+  })
+  it('finds bounds for a unit circle implicit curve', () => {
+    const F = (x, y) => x * x + y * y - 1
+    const compiled = [{ isImplicit: true, implicitFn: F }]
+    const b = findPlotBounds(compiled)
+    expect(b).not.toBeNull()
+    expect(b.xmin).toBeLessThan(-0.5); expect(b.xmax).toBeGreaterThan(0.5)
+    expect(b.ymin).toBeLessThan(-0.5); expect(b.ymax).toBeGreaterThan(0.5)
+  })
+  it('returned xscl/yscl are positive', () => {
+    const compiled = [{ isImplicit: false, fn: (x) => x * x }]
+    const b = findPlotBounds(compiled)
+    expect(b).not.toBeNull()
+    expect(b.xscl).toBeGreaterThan(0); expect(b.yscl).toBeGreaterThan(0)
   })
 })
