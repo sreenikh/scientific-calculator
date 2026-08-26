@@ -39,9 +39,11 @@ A browser-based graphing scientific calculator with textbook-style math input.
 - Table mode: evaluate f(x) and optional g(x) over a range with configurable step; up to 500 rows; scrollable with sticky headers; accessible via MODE -> 5 TABLE
 - Responsive layout: scales to any window size using dvh/vw units, no breakpoints
 
+- Graph panel: explicit y = f(x) curves and implicit F(x,y) = 0 curves (circles, ellipses, hyperbolas via marching squares); combined or split-subplot view; hover crosshair with full (x, y) labels on all curves; click to lock/unlock crosshair; 1:1 aspect-ratio button
+
 ## Planned
 
-- Phase 2: Graphing (canvas plotter, pan/zoom, trace, shaded integral regions)
+- Zoom, pan, and trace for the graph panel
 
 See [docs/phases.md](docs/phases.md) for the full roadmap.
 

@@ -594,14 +594,27 @@ table.iter th:first-child, table.iter td:first-child { text-align: left; color: 
   font-size: 1.0dvh; padding: 0.3dvh 0.5vw; cursor: pointer;
 }
 .graph-view-btn.active { background: var(--teal); color: #0C231C; font-weight: 700; }
+.graph-canvas-wrapper {
+  position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column;
+}
 .graph-canvas {
   flex: 1; min-height: 0; width: 100%; border-radius: 6px; display: block; background: #0F1117;
+}
+.graph-crosshair-overlay {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; border-radius: inherit;
+}
+.graph-crosshair-hint {
+  font-size: 1.0dvh; color: #555B6E; white-space: nowrap; align-self: center; flex-shrink: 0;
 }
 .graph-split-grid {
   flex: 1; min-height: 0; display: grid; gap: 4px; overflow-y: auto;
   grid-auto-rows: 20dvh;
 }
-.graph-subplot { position: relative; }
+.graph-subplot { position: relative; display: flex; flex-direction: column; }
+.graph-subplot-canvas-wrapper {
+  position: relative; flex: 1; min-height: 0;
+}
 .graph-subplot-canvas { width: 100%; height: 100%; display: block; border-radius: 4px; background: #0F1117; }
 .graph-subplot-label {
   position: absolute; top: 4px; left: 6px; font-size: 1.0dvh;

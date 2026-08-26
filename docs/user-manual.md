@@ -463,7 +463,7 @@ Vectors can be stored as 1-row slots (e.g. slot C at 1x3) or entered inline as `
 
 Press **GRAPH** (bottom mod row, rightmost key) to open the graph panel.
 
-The panel plots y = f(x) on a canvas. It opens with f(x) = sin(x) and standard window settings already plotted.
+The panel plots explicit functions y = f(x) and implicit curves F(x,y) = 0 on a canvas. It opens with f(x) = sin(x) and standard window settings already plotted.
 
 ### Function inputs
 
@@ -474,7 +474,18 @@ Any number of functions can be plotted. A 10-color palette (teal, red, amber, bl
 - Press **●/○** on a row to show or hide that curve without removing it. Hidden functions are dimmed and excluded from the plot.
 - Press **Enter** in any input or click **plot** to redraw.
 
-The same expression syntax used in the main calculator works here (e.g. `sin(x)`, `x^3 - 2x`, `1/x`).
+**Explicit functions** use x as the variable (e.g. `sin(x)`, `x^3 - 2x`, `1/x`). The label shows `f(x)`.
+
+**Implicit equations** contain y or an `=` sign (e.g. `x^2 + y^2 = 4`, `x^2/4 + y^2/9 = 1`). The label changes to `f(x,y)`. The curve is plotted using marching squares. `y = sin(x)` is treated as explicit (the RHS is extracted automatically).
+
+### Crosshair inspection
+
+Move the mouse over the graph to show a crosshair at the cursor x position:
+
+- A dashed vertical line spans the full height at x = cursor.
+- For each explicit curve at that x: a dot appears at (x, y) with a dashed horizontal line and a `(x, y)` label in the curve color.
+- For each implicit curve: the plotter sweeps the y range to find all intersection points and marks each one the same way.
+- **Click** to lock the crosshair in place (line turns amber). Click again to release and resume hover tracking. In split view, the locked line appears on all subplots at the same x.
 
 ### Combined vs. split view
 
@@ -496,12 +507,21 @@ The **combined / split** toggle (in the window settings row) controls how functi
 
 All six fields are editable. Press **Enter** in any field or click **plot** to apply the new window.
 
+The **1:1** button (next to the split toggle) adjusts Ymin/Ymax so that one math unit covers the same number of pixels in both axes. Use this to make circles appear circular rather than elliptical when the canvas is not square.
+
 **Example - zoom in on sin(x) near the origin:**
 
 ```
 Xmin: -3.14    Xmax: 3.14
 Ymin: -1.2     Ymax: 1.2
 Xscl: 1        Yscl: 0.5
+```
+
+**Example - unit circle:**
+
+```
+Expression: x^2 + y^2 = 1
+Xmin: -2  Xmax: 2  then click 1:1 to equalize y scale
 ```
 
 ### Angle mode
