@@ -180,7 +180,7 @@ The math input field is an exception. MathLive renders its content using its own
 
 | Export | Description |
 |--------|-------------|
-| `compileFn(expr)` | Parses and compiles a math.js expression into a callable `f(x)` |
+| `compileFn(expr, varName, angleMode)` | Parses and compiles a math.js expression into a callable `f(x)`; varName defaults to `'x'`, angleMode to `'rad'` |
 | `derivativeAt(fn, x)` | Central difference, h = 1e-5 |
 | `integrate(fn, a, b)` | Composite Simpson's rule, n = 200 |
 | `newtonRaphson(fn, x0)` | Newton-Raphson root finder, max 50 iterations |
@@ -190,6 +190,18 @@ The math input field is an exception. MathLive renders its content using its own
 | `solveLinearSystem(A, b)` | Gaussian elimination with partial pivoting; supports 2x2 through 5x5 |
 
 `polyRoots` and `solveLinearSystem` are used by `EquationPanel` for the Equation mode accessible from the MODE menu.
+
+`compileFn` is also used by `GraphPanel` (GRAPH key) and `TablePanel` (MODE -> 5) to evaluate user expressions at many x values. Both pass the active `angleMode` so trig functions respect DEG/RAD.
+
+---
+
+## Graph panel
+
+`GraphPanel` renders a DPR-aware `<canvas>` inside a flex-column overlay. Layout: header + function input + window fields, then the canvas takes all remaining height via `flex: 1`.
+
+Drawing (`drawGraph`): clears the canvas, draws grid lines at Xscl/Yscl intervals, draws axes, draws tick marks with numeric labels, then plots each function by sampling at 2 points per pixel. Consecutive samples that differ by more than 2x the canvas height in pixel Y are treated as a discontinuity and the pen is lifted.
+
+Coordinate transforms (`toPixelX`, `toPixelY`) are exported pure functions, tested directly in the test suite without any canvas mock.
 
 ---
 
