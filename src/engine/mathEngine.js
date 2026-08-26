@@ -44,6 +44,15 @@ function buildScope(angleMode, vars) {
     nPr: (n, r) => math.permutations(n, r),
     nCr: (n, r) => math.combinations(n, r),
     fromDMS: (d, m = 0, s = 0) => {
+      if (typeof d === 'string') {
+        // Accept a toDMS() string: "90°51'55.9632" or "-30°30'0""
+        const neg = d.startsWith('-')
+        const clean = d.replace(/^-/, '')
+        const match = clean.match(/^(\d+)[°](\d+)'([\d.]+)"?$/)
+        if (!match) throw new Error('fromDMS: invalid DMS string')
+        const [, dd, mm, ss] = match.map(Number)
+        return (neg ? -1 : 1) * (dd + mm / 60 + ss / 3600)
+      }
       const sign = d < 0 ? -1 : 1
       return sign * (Math.abs(d) + m / 60 + s / 3600)
     },

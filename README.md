@@ -60,7 +60,7 @@ Tests:
 npm test
 ```
 
-597 Vitest tests covering the expression engine, keypad contracts, statistics engine, distributions, and base-N/bitwise/K-map engine.
+599 Vitest tests covering the expression engine, keypad contracts, statistics engine, distributions, and base-N/bitwise/K-map engine.
 
 ---
 

@@ -757,6 +757,16 @@ describe('evaluateExpression: fromDMS', () => {
     expect(r.ok).toBe(true)
     expect(r.value).toBeCloseTo(-30.5, 10)
   })
+  it('fromDMS(toDMS(x)) roundtrip recovers original value', () => {
+    const r = evaluateExpression('fromDMS(toDMS(90.8655453321))')
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(90.8655453321, 4)
+  })
+  it('fromDMS accepts a DMS string directly', () => {
+    const r = evaluateExpression('fromDMS(toDMS(45.5))')
+    expect(r.ok).toBe(true)
+    expect(r.value).toBeCloseTo(45.5, 10)
+  })
 })
 
 describe('evaluateExpression: toDMS', () => {
