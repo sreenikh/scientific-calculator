@@ -13,6 +13,7 @@ import EquationPanel from './components/EquationPanel'
 import StatPanel from './components/StatPanel'
 import DistributionPanel from './components/DistributionPanel'
 import BaseNPanel from './components/BaseNPanel'
+import TablePanel from './components/TablePanel'
 import { evaluateExpression, formatValue, toDMS } from './engine/mathEngine'
 import { formatAllBases, validateBaseDigits } from './engine/baseN'
 import './App.css'
@@ -201,6 +202,7 @@ export default function App() {
       case 'openEquation': setPanel('equation'); break
       case 'openStats':    setPanel('stats');    break
       case 'openDist':     setPanel('dist');     break
+      case 'openTable':    setPanel('table');    break
       default:
         if (/^storeMem_[K-T]$/.test(action)) {
           const letter = action[action.length - 1]
@@ -294,6 +296,7 @@ export default function App() {
         {panel === 'equation' && <EquationPanel onClose={() => setPanel(null)} />}
         {panel === 'stats'    && <StatPanel    onClose={() => setPanel(null)} />}
         {panel === 'dist'     && <DistributionPanel onClose={() => setPanel(null)} />}
+        {panel === 'table'    && <TablePanel   onClose={() => setPanel(null)} angleMode={angleMode} onInsert={insert} />}
         {panel === 'basen'    && (
           <BaseNPanel
             onClose={() => setPanel(null)}

@@ -1,11 +1,36 @@
 import { math, normalizeExpression } from './mathEngine'
 
+function angleScopeFor(angleMode) {
+  const toRad = (x) => angleMode === 'deg' ? x * Math.PI / 180 : x
+  const toOut = (r) => angleMode === 'deg' ? r * 180 / Math.PI : r
+  return {
+    sin: (x) => Math.sin(toRad(x)),
+    cos: (x) => Math.cos(toRad(x)),
+    tan: (x) => Math.tan(toRad(x)),
+    sec: (x) => 1 / Math.cos(toRad(x)),
+    csc: (x) => 1 / Math.sin(toRad(x)),
+    cot: (x) => 1 / Math.tan(toRad(x)),
+    asin: (x) => toOut(Math.asin(x)),
+    acos: (x) => toOut(Math.acos(x)),
+    atan: (x) => toOut(Math.atan(x)),
+    arcsin: (x) => toOut(Math.asin(x)),
+    arccos: (x) => toOut(Math.acos(x)),
+    arctan: (x) => toOut(Math.atan(x)),
+    sinh: Math.sinh, cosh: Math.cosh, tanh: Math.tanh,
+    asinh: Math.asinh, acosh: Math.acosh, atanh: Math.atanh,
+    log: (x) => Math.log10(x),
+    ln:  (x) => Math.log(x),
+    logb: (x, b) => Math.log(x) / Math.log(b),
+  }
+}
+
 // Compiles "x^3 - 2x" into a callable f(x). Throws if the expression is invalid.
-export function compileFn(exprString, varName = 'x') {
+export function compileFn(exprString, varName = 'x', angleMode = 'rad') {
   const expr = normalizeExpression(exprString)
   const node = math.parse(expr)
   const code = node.compile()
-  return (xVal) => code.evaluate({ [varName]: xVal })
+  const base = angleScopeFor(angleMode)
+  return (xVal) => code.evaluate({ ...base, [varName]: xVal })
 }
 
 export function derivativeAt(fn, x, h = 1e-5) {

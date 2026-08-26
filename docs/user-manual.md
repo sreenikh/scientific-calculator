@@ -459,6 +459,29 @@ Vectors can be stored as 1-row slots (e.g. slot C at 1x3) or entered inline as `
 
 ---
 
+## Table mode
+
+Open via **MODE -> 5 TABLE**.
+
+Enter an expression for f(x), an optional second expression for g(x), and a start, end, and step value. Press **go** to generate the table.
+
+| Field | Description |
+|-------|-------------|
+| f(x)  | Required. Any expression in x. |
+| g(x)  | Optional second function. Leave blank for a single-column table. |
+| Start | First x value (inclusive). |
+| End   | Last x value (inclusive within floating-point tolerance). |
+| Step  | Increment between rows. Must be positive. |
+
+Up to 500 rows are generated. The table scrolls vertically with sticky column headers.
+
+**Examples:**
+
+- f(x) = `x^2`, start = `-5`, end = `5`, step = `1` - 11 rows of perfect squares
+- f(x) = `sin(x)`, g(x) = `cos(x)`, start = `0`, end = `360`, step = `30` - trig values in DEG mode (note: the table uses math.js directly, so use `sin(x * pi / 180)` for degree input, or switch to RAD mode before opening)
+
+---
+
 ## BASE key
 
 Press **BASE** (top modifier row, next to DRG) to cycle through base modes: DEC -> HEX -> OCT -> BIN -> DEC.

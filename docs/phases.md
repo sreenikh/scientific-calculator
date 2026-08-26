@@ -158,11 +158,14 @@ Accessed via MODE menu (item 4).
 - **Math/Line toggle**: MATH button in the display row switches the MathLive input field between textbook (math) mode and linear text (line) mode; active mode shown on the button; button is always visible
 - **DMS**: `fromDMS(d, m, s)` converts degrees/minutes/seconds to decimal degrees; available in OPS panel (Convert tab); DMS toggle button on the result line converts the last numeric result to D degrees M' S" format; toggle only appears when the last result is a real number
 
-### Table mode
+### Table mode `[done]`
 
-- Evaluate f(x) over a range with configurable step
-- Display as scrollable table
-- Optional second function g(x) side by side
+Accessed via **MODE -> 5 TABLE**.
+
+- Enter f(x) and an optional g(x); set start, end, and step
+- Generates up to 500 rows; step-accumulation uses integer rounding to avoid float drift
+- Scrollable table with sticky headers; x column left-aligned, f(x)/g(x) right-aligned
+- Hover highlight per row for readability
 
 ---
 
