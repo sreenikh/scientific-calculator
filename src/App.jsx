@@ -296,7 +296,7 @@ export default function App() {
         {panel === 'equation' && <EquationPanel onClose={() => setPanel(null)} />}
         {panel === 'stats'    && <StatPanel    onClose={() => setPanel(null)} />}
         {panel === 'dist'     && <DistributionPanel onClose={() => setPanel(null)} />}
-        {panel === 'table'    && <TablePanel   onClose={() => setPanel(null)} />}
+        {panel === 'table'    && <TablePanel   onClose={() => setPanel(null)} angleMode={angleMode} onInsert={insert} />}
         {panel === 'basen'    && (
           <BaseNPanel
             onClose={() => setPanel(null)}

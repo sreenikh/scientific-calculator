@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { normalizeExpression, evaluateExpression, toDMS } from '../mathEngine.js'
-import { polyRoots, solveLinearSystem } from '../numeric.js'
+import { polyRoots, solveLinearSystem, compileFn } from '../numeric.js'
 
 const DEG = { angleMode: 'deg' }
 const RAD = { angleMode: 'rad' }
@@ -784,5 +784,32 @@ describe('evaluateExpression: toDMS', () => {
     const r = evaluateExpression('toDMS(90.85)')
     expect(r.ok).toBe(true)
     expect(r.display).toBe('90°51\'0"')
+  })
+})
+
+describe('compileFn: angle mode awareness', () => {
+  it('sin(90) in DEG mode = 1', () => {
+    const fn = compileFn('sin(x)', 'x', 'deg')
+    expect(fn(90)).toBeCloseTo(1, 10)
+  })
+  it('sin(pi/2) in RAD mode = 1', () => {
+    const fn = compileFn('sin(x)', 'x', 'rad')
+    expect(fn(Math.PI / 2)).toBeCloseTo(1, 10)
+  })
+  it('cos(0) same in both modes', () => {
+    expect(compileFn('cos(x)', 'x', 'deg')(0)).toBeCloseTo(1, 10)
+    expect(compileFn('cos(x)', 'x', 'rad')(0)).toBeCloseTo(1, 10)
+  })
+  it('asin(1) in DEG mode = 90', () => {
+    const fn = compileFn('asin(x)', 'x', 'deg')
+    expect(fn(1)).toBeCloseTo(90, 8)
+  })
+  it('asin(1) in RAD mode = pi/2', () => {
+    const fn = compileFn('asin(x)', 'x', 'rad')
+    expect(fn(1)).toBeCloseTo(Math.PI / 2, 10)
+  })
+  it('default angleMode is rad (backward compat)', () => {
+    const fn = compileFn('sin(x)')
+    expect(fn(Math.PI / 2)).toBeCloseTo(1, 10)
   })
 })
