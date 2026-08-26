@@ -68,12 +68,29 @@
 
 - **1:1 button**: adjusts Ymin/Ymax so one math unit = same pixel count in both axes; prevents circles from appearing elliptical on non-square canvases
 
+### Zoom and pan `[done]`
+
+- **Scroll / Ctrl+scroll**: zoom in and out centered on cursor (mouse wheel zooms; Ctrl key on trackpad gestures = pinch)
+- **Trackpad two-finger swipe**: pans the graph (fires as `wheel` with deltaX/deltaY — same as Google Maps on desktop)
+- **Mouse drag**: click and drag pans; a small movement threshold (4 px) distinguishes a drag from a click
+- **Touch pinch**: two-finger pinch zooms around the midpoint; one-finger drag pans
+- **Auto tick steps**: grid lines and axis labels recalculate a human-friendly step (`niceStep`) during every zoom/pan so the graph never shows 0 or 10000 grid lines
+- **Draft quality during gesture**: implicit curves (marching squares) render at 80×80 during active zoom/pan for responsiveness; full 300×300 quality redraws on gesture end (250 ms debounce)
+
+### Trace `[done]`
+
+- Press **T** key or the **TRACE** button to enter trace mode
+- Mouse hover moves a trace cursor along the nearest explicit curve at x = cursor
+- **← →** step along the curve (1/300 of the current x range per step)
+- **↑ ↓** cycle through visible explicit curves
+- Coordinate badge at top of canvas shows `x=... y=...` prominently
+- **Escape** or **T** exits trace mode; trace is cleared on any replot
+
 ### Planned
 
-- Pan and zoom with mouse / touch
-- Trace mode: cursor snaps to curve, shows (x, y) coordinates
 - Shaded region between bounds for definite integrals
 - Intersection and zero finder (reuses numeric.js root finders)
+- Trace on implicit curves (contour walking)
 
 ---
 

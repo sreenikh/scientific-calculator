@@ -817,7 +817,7 @@ describe('compileFn: angle mode awareness', () => {
 // ---------------------------------------------------------------------------
 // GraphPanel coordinate transforms
 // ---------------------------------------------------------------------------
-import { toPixelX, toPixelY } from '../../components/GraphPanel.jsx'
+import { toPixelX, toPixelY, niceStep } from '../../components/GraphPanel.jsx'
 
 describe('graph coordinate transforms', () => {
   it('toPixelX: xmin maps to 0', () => {
@@ -890,6 +890,23 @@ describe('graph: multiple independent compileFn instances', () => {
     expect(visible[0].expr).toBe('sin(x)')
     expect(visible[1].expr).toBe('x^2')
   })
+})
+
+// ---------------------------------------------------------------------------
+// niceStep: auto grid-step for zoom/pan
+// ---------------------------------------------------------------------------
+describe('niceStep: auto tick step computation', () => {
+  it('range 20 → step 2 (20/8=2.5, nearest nice = 2)', () => expect(niceStep(20)).toBeCloseTo(2))
+  it('range 10 → step 1', () => expect(niceStep(10)).toBeCloseTo(1))
+  it('range 100 → step 10', () => expect(niceStep(100)).toBeCloseTo(10))
+  it('range 1 → step 0.1', () => expect(niceStep(1)).toBeCloseTo(0.1))
+  it('range 0.1 → step 0.01', () => expect(niceStep(0.1)).toBeCloseTo(0.01))
+  it('range 50 → step 5', () => expect(niceStep(50)).toBeCloseTo(5))
+  it('range 0 returns 1 (guard)', () => expect(niceStep(0)).toBe(1))
+  it('always returns a positive value', () => {
+    [0.001, 0.1, 1, 10, 100, 1000, 1e6].forEach(r => expect(niceStep(r)).toBeGreaterThan(0))
+  })
+  it('zoom in to range 0.02: step is 0.002', () => expect(niceStep(0.02)).toBeCloseTo(0.002))
 })
 
 // ---------------------------------------------------------------------------

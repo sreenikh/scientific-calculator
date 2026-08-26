@@ -597,6 +597,8 @@ table.iter th:first-child, table.iter td:first-child { text-align: left; color: 
   font-size: 1.0dvh; padding: 0.3dvh 0.5vw; cursor: pointer;
 }
 .graph-view-btn.active { background: var(--teal); color: #0C231C; font-weight: 700; }
+.graph-trace-btn { border-left: 1px solid #3A3F4E; letter-spacing: 0.5px; }
+.graph-trace-btn.active { background: var(--amber); color: #1A1200; font-weight: 700; }
 .graph-canvas-wrapper {
   position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column;
 }

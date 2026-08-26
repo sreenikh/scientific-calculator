@@ -182,6 +182,7 @@ The math input field is an exception. MathLive renders its content using its own
 |--------|-------------|
 | `compileFn(expr, varName, angleMode)` | Parses and compiles a math.js expression into a callable `f(x)`; varName defaults to `'x'`, angleMode to `'rad'` |
 | `compileImplicitFn(expr, angleMode)` | Compiles an implicit equation `LHS = RHS` into `F(x,y) = LHS − RHS`; uses a mutable shared scope for performance across the 300×300 marching-squares grid |
+| `niceStep(range)` | Returns a human-friendly axis step (1/2/5 × 10^n) for a given range; used by `applyPanZoom` to keep grid labels readable at any zoom level |
 | `derivativeAt(fn, x)` | Central difference, h = 1e-5 |
 | `integrate(fn, a, b)` | Composite Simpson's rule, n = 200 |
 | `newtonRaphson(fn, x0)` | Newton-Raphson root finder, max 50 iterations |
@@ -207,6 +208,10 @@ The math input field is an exception. MathLive renders its content using its own
 **Crosshair**: drawn on the overlay canvas by `drawCrosshair`. On every `mousemove`, the x coordinate is converted to math space and stored as `crosshairX` state. For explicit curves, y = fn(mathX) is computed directly. For implicit curves, `findImplicitYs` sweeps 300 y samples looking for sign changes and linearly interpolates each zero. Each intersection gets a dot, a dashed horizontal line, and a `(x, y)` label. Click toggles the lock state; when locked the line turns amber and hover events are ignored.
 
 **1:1 button**: reads the base canvas `clientWidth` / `clientHeight` and adjusts `winStr.ymin` / `winStr.ymax` so that `(xmax−xmin)/W = (ymax−ymin)/H`, keeping the y-center fixed. The reactive `useEffect([plot])` then replots automatically.
+
+**Zoom and pan**: all gesture events call `applyPanZoom(bounds, draft)` which draws directly to the canvas (bypassing React state) for immediate feedback. `applyPanZoom` also computes `niceStep` for xscl/yscl so tick marks always look sensible. After 250 ms of inactivity, `scheduleCommit` calls `setWinStr`, which triggers `useEffect([plot])` for a full-quality replot. During a draft draw, implicit curves use an 80×80 marching-squares grid instead of 300×300. Wheel `ctrlKey=true` = pinch zoom; wheel without ctrlKey = trackpad two-finger pan. Mouse drag uses a 4 px movement threshold to distinguish drag from click (click still toggles crosshair lock). Touch: 1-finger drag = pan, 2-finger pinch = zoom around touch midpoint.
+
+**Trace mode**: `traceMode` state switches the overlay to `drawTrace`. Mouse x sets `traceX`; ←/→ step by `(xmax−xmin)/300`; ↑/↓ cycle `traceCurveIdx` through explicit curves only. Trace is incompatible with crosshair and drag pan (all disabled while trace is active).
 
 Coordinate transforms (`toPixelX`, `toPixelY`) are exported pure functions, tested directly in the test suite without any canvas mock.
 
@@ -246,7 +251,7 @@ The Numbers tab passes `baseMode` from App state (via `onSetBase` callback) so c
 
 ## Testing
 
-636 Vitest tests across five files, running in node environment.
+645 Vitest tests across five files, running in node environment.
 
 ```
 src/
