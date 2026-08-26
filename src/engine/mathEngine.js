@@ -159,6 +159,8 @@ export function formatValue(value, angleMode = 'deg', complexMode = 'rect') {
       return arr.map(v => math.format(v, { precision: 8 })).join('\n')
     }
 
+    if (type === 'string') return value
+
     if (typeof value === 'number') {
       if (Number.isNaN(value)) return 'undefined'
       if (!isFinite(value)) return value > 0 ? '∞' : '-∞'
@@ -174,12 +176,14 @@ export function formatValue(value, angleMode = 'deg', complexMode = 'rect') {
 // Converts a decimal-degrees value to a D°M'S" string.
 export function toDMS(decimalDeg) {
   const sign = decimalDeg < 0 ? '-' : ''
-  const abs = Math.abs(decimalDeg)
-  const d = Math.floor(abs)
-  const mFull = (abs - d) * 60
-  const m = Math.floor(mFull)
-  const s = (mFull - m) * 60
-  const sStr = s.toFixed(4).replace(/\.?0+$/, '')
+  // Round to 4 decimal places of seconds precision before decomposing to prevent
+  // float drift (e.g. 0.85 * 60 = 50.999... causing 50'60" instead of 51'0").
+  let totalSec = Math.round(Math.abs(decimalDeg) * 3600 * 10000) / 10000
+  const d = Math.floor(totalSec / 3600)
+  totalSec -= d * 3600
+  const m = Math.floor(totalSec / 60)
+  const s = Math.round((totalSec - m * 60) * 10000) / 10000
+  const sStr = Number.isInteger(s) ? String(s) : String(s).replace(/\.?0+$/, '')
   return `${sign}${d}°${m}'${sStr}"`
 }
 

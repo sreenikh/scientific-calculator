@@ -717,11 +717,13 @@ describe('solveLinearSystem: 4x4 and 5x5', () => {
 })
 
 describe('toDMS: decimal degrees to D°M\'S" string', () => {
-  it('whole degrees: 45 -> 45°0\'0"',        () => expect(toDMS(45)).toBe('45°0\'0"'))
-  it('degrees + minutes: 45.5 -> 45°30\'0"', () => expect(toDMS(45.5)).toBe('45°30\'0"'))
-  it('full DMS: 12.5125 -> 12°30\'45"',      () => { const s = toDMS(12.5125); expect(s).toMatch(/^12°30'45/) })
-  it('negative: -30.5 -> -30°30\'0"',        () => expect(toDMS(-30.5)).toBe('-30°30\'0"'))
-  it('zero: 0 -> 0°0\'0"',                   () => expect(toDMS(0)).toBe('0°0\'0"'))
+  it('whole degrees: 45 -> 45°0\'0"',           () => expect(toDMS(45)).toBe('45°0\'0"'))
+  it('degrees + minutes: 45.5 -> 45°30\'0"',    () => expect(toDMS(45.5)).toBe('45°30\'0"'))
+  it('full DMS: 12.5125 -> 12°30\'45"',         () => expect(toDMS(12.5125)).toBe('12°30\'45"'))
+  it('negative: -30.5 -> -30°30\'0"',           () => expect(toDMS(-30.5)).toBe('-30°30\'0"'))
+  it('zero: 0 -> 0°0\'0"',                      () => expect(toDMS(0)).toBe('0°0\'0"'))
+  it('float carry: 90.85 -> 90°51\'0" not 90°50\'60"', () => expect(toDMS(90.85)).toBe('90°51\'0"'))
+  it('float carry: 1/60 -> 0°1\'0"',            () => expect(toDMS(1/60)).toBe('0°1\'0"'))
 })
 
 describe('normalizeExpression: DMS bridges', () => {
@@ -758,14 +760,19 @@ describe('evaluateExpression: fromDMS', () => {
 })
 
 describe('evaluateExpression: toDMS', () => {
-  it('toDMS(45.5) returns D degrees M\' S" string', () => {
+  it('toDMS(45.5) display is 45°30\'0" with no quotes or backslash', () => {
     const r = evaluateExpression('toDMS(45.5)')
     expect(r.ok).toBe(true)
-    expect(String(r.value)).toBe('45°30\'0"')
+    expect(r.display).toBe('45°30\'0"')
   })
-  it('toDMS(0) = 0°0\'0"', () => {
+  it('toDMS(0) display is 0°0\'0"', () => {
     const r = evaluateExpression('toDMS(0)')
     expect(r.ok).toBe(true)
-    expect(String(r.value)).toBe('0°0\'0"')
+    expect(r.display).toBe('0°0\'0"')
+  })
+  it('toDMS(90.85) display is 90°51\'0" not 90°50\'60"', () => {
+    const r = evaluateExpression('toDMS(90.85)')
+    expect(r.ok).toBe(true)
+    expect(r.display).toBe('90°51\'0"')
   })
 })

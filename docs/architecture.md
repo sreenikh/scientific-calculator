@@ -243,7 +243,7 @@ Test categories in `mathEngine.test.js`:
 
 - normalizeExpression: character subs, nth-root bridge, log-base bridge, nPr/nCr bridge, matrix operatorname bridge (inv/det/trace/transpose/size/dot/cross/norm), complex operatorname bridge (polar/abs/arg/conj/re/im), math operatorname bridge (mod/floor/ceil/round/sign), DMS bridges (fromDMS/toDMS), % percentage, Ans bridge
 - evaluateExpression: arithmetic, powers/roots, trig (deg + rad), inverse trig, reciprocal trig, logs, combinatorics, Ans, constants, expected failures, full MathLive pipeline per button, complex numbers, matrix variables in scope, OPS matrix operations, OPS vector operations (inline and stored 1-row variables), OPS Math tab functions (abs/mod/floor/ceil/round/sign/%), OPS Convert tab (fromDMS, toDMS)
-- toDMS: decimal degrees to D degrees M' S" formatting, negative values, roundtrip with fromDMS
+- toDMS: decimal degrees to D degrees M' S" formatting, negative values, float-carry edge cases (e.g. 90.85 -> 90 deg 51' 0"), string passthrough in formatValue
 - keypad contracts: structural integrity, key contracts per function group including ALPHA+x = %
 - polyRoots: degree 1-6, real and complex roots, repeated roots
 - solveLinearSystem: 2x2 through 5x5, singular matrix error
