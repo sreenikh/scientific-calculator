@@ -502,15 +502,25 @@ Move the mouse over the graph to show a crosshair at the cursor x position:
 
 ### Trace mode
 
-Press **T** (keyboard) or the **TRACE** button to enter trace mode. A cursor snaps to the first visible explicit curve.
+Press **T** (keyboard) or the **TRACE** button to enter trace mode. A cursor snaps to the first visible curve (explicit or implicit).
 
 | Key | Action |
 |-----|--------|
-| ← → | Step left/right along the curve |
-| ↑ ↓ | Switch to the previous/next explicit curve |
+| ← → | Step left/right along the curve (or forward/backward along an implicit contour) |
+| ↑ ↓ | Switch to the previous/next visible curve |
 | Escape or T | Exit trace mode |
 
-The coordinate badge at the top of the graph shows `x=... y=...` for the current trace point. Moving the mouse also repositions the trace cursor. Zoom and pan are disabled while trace mode is active. Trace is cleared on any replot.
+The coordinate badge at the top of the graph shows `x=... y=...` for the current trace point. Moving the mouse also repositions the trace cursor. For implicit curves (`[impl]` tag appears in the badge), the cursor walks the zero-contour using tangent steps.
+
+Zoom and pan are disabled while trace mode is active. Trace is cleared on any replot.
+
+**Example - trace a circle:**
+
+```
+Expression: x^2 + y^2 = 4
+Press T to enter trace, then use ← → to walk around the circle.
+↑ ↓ switches to any other plotted curves.
+```
 
 ### Combined vs. split view
 
@@ -533,6 +543,10 @@ The **combined / split** toggle (in the window settings row) controls how functi
 All six fields are editable. Press **Enter** in any field or click **plot** to apply the new window.
 
 The **1:1** button (next to the split toggle) adjusts Ymin/Ymax so that one math unit covers the same number of pixels in both axes. Use this to make circles appear circular rather than elliptical when the canvas is not square.
+
+The **RESET** button restores the default window (Xmin -10, Xmax 10, Ymin -6.2, Ymax 6.2, Xscl 1, Yscl 1). Use it when zoom or pan has moved the view to an unrecognizable location.
+
+The **FIT** button searches for where the plotted curves actually exist and adjusts the window to show them. It samples explicit curves and scans for sign changes on implicit curves, progressively expanding the search area (±5, ±15, ±50, ±150) until at least 8 points are found, then adds 15% padding. Use it when the current window shows nothing because the curves lie outside the visible area.
 
 **Example - zoom in on sin(x) near the origin:**
 

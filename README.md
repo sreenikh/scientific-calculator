@@ -39,11 +39,9 @@ A browser-based graphing scientific calculator with textbook-style math input.
 - Table mode: evaluate f(x) and optional g(x) over a range with configurable step; up to 500 rows; scrollable with sticky headers; accessible via MODE -> 5 TABLE
 - Responsive layout: scales to any window size using dvh/vw units, no breakpoints
 
-- Graph panel: explicit y = f(x) curves and implicit F(x,y) = 0 curves (circles, ellipses, hyperbolas via marching squares); combined or split-subplot view; scroll/pinch to zoom, trackpad swipe or drag to pan; hover crosshair with (x, y) labels; click to lock crosshair; trace mode (T key: step along curve with ←→, switch curves with ↑↓); 1:1 aspect-ratio button
+- Graph panel: explicit y = f(x) curves and implicit F(x,y) = 0 curves (circles, ellipses, hyperbolas via marching squares); combined or split-subplot view; scroll/pinch to zoom, trackpad swipe or drag to pan; hover crosshair with (x, y) labels; click to lock crosshair; trace mode (T key: step along explicit or implicit curve with ←→, switch curves with ↑↓); 1:1 aspect-ratio button; RESET restores default window; FIT zooms to where the curves exist
 
 ## Planned
-
-- Zoom, pan, and trace for the graph panel
 
 See [docs/phases.md](docs/phases.md) for the full roadmap.
 
@@ -62,7 +60,7 @@ Tests:
 npm test
 ```
 
-645 Vitest tests covering the expression engine, keypad contracts, graph coordinate transforms (implicit curves, zoom niceStep), statistics engine, distributions, and base-N/bitwise/K-map engine.
+658 Vitest tests covering the expression engine, keypad contracts, graph coordinate transforms (implicit curves, zoom niceStep, trace contour walking, findPlotBounds), statistics engine, distributions, and base-N/bitwise/K-map engine.
 
 ---
 

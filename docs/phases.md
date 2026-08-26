@@ -80,17 +80,21 @@
 ### Trace `[done]`
 
 - Press **T** key or the **TRACE** button to enter trace mode
-- Mouse hover moves a trace cursor along the nearest explicit curve at x = cursor
-- **← →** step along the curve (1/300 of the current x range per step)
-- **↑ ↓** cycle through visible explicit curves
-- Coordinate badge at top of canvas shows `x=... y=...` prominently
+- Mouse hover moves a trace cursor along the nearest curve (explicit or implicit) at x = cursor
+- **← →** step along the curve (1/300 of the current range per step); for implicit curves, walks the zero-contour via tangent step + Newton projection (`implicitStep`)
+- **↑ ↓** cycle through all visible curves (explicit and implicit)
+- Coordinate badge at top of canvas shows `x=... y=...` prominently; `[impl]` tag shown for implicit curves
 - **Escape** or **T** exits trace mode; trace is cleared on any replot
+
+### RESET and FIT `[done]`
+
+- **RESET** button restores the default window (-10/10/-6.2/6.2)
+- **FIT** button runs `findPlotBounds()`: progressive search (±5/±15/±50/±150), 5% percentile clipping, 15% padding; adjusts the window to show where the curves actually are
 
 ### Planned
 
 - Shaded region between bounds for definite integrals
 - Intersection and zero finder (reuses numeric.js root finders)
-- Trace on implicit curves (contour walking)
 
 ---
 

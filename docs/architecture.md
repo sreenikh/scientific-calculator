@@ -211,7 +211,9 @@ The math input field is an exception. MathLive renders its content using its own
 
 **Zoom and pan**: all gesture events call `applyPanZoom(bounds, draft)` which draws directly to the canvas (bypassing React state) for immediate feedback. `applyPanZoom` also computes `niceStep` for xscl/yscl so tick marks always look sensible. After 250 ms of inactivity, `scheduleCommit` calls `setWinStr`, which triggers `useEffect([plot])` for a full-quality replot. During a draft draw, implicit curves use an 80×80 marching-squares grid instead of 300×300. Wheel `ctrlKey=true` = pinch zoom; wheel without ctrlKey = trackpad two-finger pan. Mouse drag uses a 4 px movement threshold to distinguish drag from click (click still toggles crosshair lock). Touch: 1-finger drag = pan, 2-finger pinch = zoom around touch midpoint.
 
-**Trace mode**: `traceMode` state switches the overlay to `drawTrace`. Mouse x sets `traceX`; ←/→ step by `(xmax−xmin)/300`; ↑/↓ cycle `traceCurveIdx` through explicit curves only. Trace is incompatible with crosshair and drag pan (all disabled while trace is active).
+**Trace mode**: `traceMode` state switches the overlay to `drawTrace`. State is `tracePos: {x,y}|null` (pre-computed curve point) and `traceCurveIdx` (indexes all compiled curves, explicit and implicit). For explicit curves, mouse x evaluates `fn(x)` directly; ←/→ step x by `(xmax−xmin)/300`. For implicit curves, ←/→ call `implicitStep(fn, x, y, step, dir)` which computes the tangent direction (perpendicular to ∇F) then calls `projectOntoCurve` (Newton iteration) to snap back to the curve. ↑/↓ cycle `traceCurveIdx` through all compiled curves; `findInitialTracePos` finds a starting point on the new curve. The `[impl]` tag in the coordinate badge indicates an implicit curve. Trace is incompatible with crosshair and drag pan.
+
+**RESET / FIT**: `handleReset` calls `setWinStr(DEFAULT_WIN)`. `handleFit` calls `findPlotBounds(compiled)` which does a progressive search (±5, ±15, ±50, ±150 x-range), samples 301 points of each explicit curve, and sweeps a 30×30 sign-change grid for implicit curves; clips at the 5th/95th percentile, adds 15% padding, and returns `{xmin, xmax, ymin, ymax, xscl, yscl}`. If fewer than 8 points are found in all ranges, returns `null` (FIT is a no-op).
 
 Coordinate transforms (`toPixelX`, `toPixelY`) are exported pure functions, tested directly in the test suite without any canvas mock.
 
@@ -251,7 +253,7 @@ The Numbers tab passes `baseMode` from App state (via `onSetBase` callback) so c
 
 ## Testing
 
-645 Vitest tests across five files, running in node environment.
+658 Vitest tests across five files, running in node environment.
 
 ```
 src/
