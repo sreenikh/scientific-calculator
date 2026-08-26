@@ -459,6 +459,47 @@ Vectors can be stored as 1-row slots (e.g. slot C at 1x3) or entered inline as `
 
 ---
 
+## Graph panel
+
+Press **GRAPH** (bottom mod row, rightmost key) to open the graph panel.
+
+The panel plots y = f(x) on a canvas. It opens with f(x) = sin(x) and standard window settings already plotted.
+
+### Function input
+
+Type any expression in x into the f(x) field. The same syntax used in the main calculator works here (e.g. `sin(x)`, `x^3 - 2x`, `1/x`). Press **Enter** or the **plot** button to redraw.
+
+### Window settings
+
+| Field | Default | Meaning |
+|-------|---------|---------|
+| Xmin  | -10     | Left edge of the x-axis |
+| Xmax  | 10      | Right edge of the x-axis |
+| Ymin  | -6.2    | Bottom edge of the y-axis |
+| Ymax  | 6.2     | Top edge of the y-axis |
+| Xscl  | 1       | Spacing of vertical grid lines and x-axis tick marks |
+| Yscl  | 1       | Spacing of horizontal grid lines and y-axis tick marks |
+
+All six fields are editable. Press **Enter** in any field or click **plot** to apply the new window.
+
+**Example - zoom in on sin(x) near the origin:**
+
+```
+Xmin: -3.14    Xmax: 3.14
+Ymin: -1.2     Ymax: 1.2
+Xscl: 1        Yscl: 0.5
+```
+
+### Angle mode
+
+The **DEG** or **RAD** badge in the panel header shows the active angle mode. Trig functions in the expression use that mode. Switch the mode with the **DRG** key before opening the panel (or close, switch, and reopen).
+
+### Discontinuities
+
+The plotter detects large vertical jumps between consecutive samples and lifts the pen rather than drawing a spike. Functions like `tan(x)` and `1/x` display gaps at their asymptotes.
+
+---
+
 ## Table mode
 
 Open via **MODE -> 5 TABLE**.

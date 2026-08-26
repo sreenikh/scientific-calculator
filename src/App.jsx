@@ -14,6 +14,7 @@ import StatPanel from './components/StatPanel'
 import DistributionPanel from './components/DistributionPanel'
 import BaseNPanel from './components/BaseNPanel'
 import TablePanel from './components/TablePanel'
+import GraphPanel from './components/GraphPanel'
 import { evaluateExpression, formatValue, toDMS } from './engine/mathEngine'
 import { formatAllBases, validateBaseDigits } from './engine/baseN'
 import './App.css'
@@ -203,6 +204,7 @@ export default function App() {
       case 'openStats':    setPanel('stats');    break
       case 'openDist':     setPanel('dist');     break
       case 'openTable':    setPanel('table');    break
+      case 'openGraph':    setPanel('graph');    break
       default:
         if (/^storeMem_[K-T]$/.test(action)) {
           const letter = action[action.length - 1]
@@ -297,6 +299,7 @@ export default function App() {
         {panel === 'stats'    && <StatPanel    onClose={() => setPanel(null)} />}
         {panel === 'dist'     && <DistributionPanel onClose={() => setPanel(null)} />}
         {panel === 'table'    && <TablePanel   onClose={() => setPanel(null)} angleMode={angleMode} onInsert={insert} />}
+        {panel === 'graph'    && <GraphPanel   onClose={() => setPanel(null)} angleMode={angleMode} />}
         {panel === 'basen'    && (
           <BaseNPanel
             onClose={() => setPanel(null)}

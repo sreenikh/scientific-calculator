@@ -813,3 +813,35 @@ describe('compileFn: angle mode awareness', () => {
     expect(fn(Math.PI / 2)).toBeCloseTo(1, 10)
   })
 })
+
+// ---------------------------------------------------------------------------
+// GraphPanel coordinate transforms
+// ---------------------------------------------------------------------------
+import { toPixelX, toPixelY } from '../../components/GraphPanel.jsx'
+
+describe('graph coordinate transforms', () => {
+  it('toPixelX: xmin maps to 0', () => {
+    expect(toPixelX(-10, -10, 10, 200)).toBeCloseTo(0)
+  })
+  it('toPixelX: xmax maps to W', () => {
+    expect(toPixelX(10, -10, 10, 200)).toBeCloseTo(200)
+  })
+  it('toPixelX: midpoint maps to W/2', () => {
+    expect(toPixelX(0, -10, 10, 200)).toBeCloseTo(100)
+  })
+  it('toPixelY: ymax maps to 0 (top of canvas)', () => {
+    expect(toPixelY(6, -6, 6, 180)).toBeCloseTo(0)
+  })
+  it('toPixelY: ymin maps to H (bottom of canvas)', () => {
+    expect(toPixelY(-6, -6, 6, 180)).toBeCloseTo(180)
+  })
+  it('toPixelY: y=0 maps to H/2 when ymin=-ymax', () => {
+    expect(toPixelY(0, -6, 6, 180)).toBeCloseTo(90)
+  })
+  it('toPixelX is linear: x=5 in [-10,10] window 200px wide = 150', () => {
+    expect(toPixelX(5, -10, 10, 200)).toBeCloseTo(150)
+  })
+  it('toPixelY is linear: y=-3 in [-6,6] window 180px tall = 135', () => {
+    expect(toPixelY(-3, -6, 6, 180)).toBeCloseTo(135)
+  })
+})
