@@ -62,7 +62,7 @@ Tests:
 npm test
 ```
 
-618 Vitest tests covering the expression engine, keypad contracts, graph coordinate transforms, statistics engine, distributions, and base-N/bitwise/K-map engine.
+636 Vitest tests covering the expression engine, keypad contracts, graph coordinate transforms (including implicit curve F(x,y) compilation), statistics engine, distributions, and base-N/bitwise/K-map engine.
 
 ---
 

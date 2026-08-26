@@ -580,6 +580,9 @@ table.iter th:first-child, table.iter td:first-child { text-align: left; color: 
   padding: 0.3dvh 0; cursor: pointer; width: 100%; margin-top: 0.2dvh;
 }
 .graph-fn-add:hover { border-color: var(--teal); color: var(--teal); }
+.graph-fn-tip {
+  margin: 0.3dvh 0 0; font-size: 1.0dvh; color: #455069; font-style: italic; line-height: 1.3;
+}
 .graph-win {
   display: flex; align-items: center; gap: 0.4vw; flex-wrap: wrap; margin-bottom: 0.6dvh;
 }

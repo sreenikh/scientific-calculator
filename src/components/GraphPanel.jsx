@@ -421,7 +421,7 @@ export default function GraphPanel({ onClose, angleMode = 'deg' }) {
               <input
                 className="graph-fn-input"
                 value={expr}
-                placeholder={implicit ? 'x^2 + y^2 = r^2' : 'sin(x)'}
+                placeholder={implicit ? 'e.g. x^2 + y^2 = 4' : 'e.g. sin(x)  or  x^2 + y^2 = 4'}
                 onChange={e => updateFn(i, { expr: e.target.value })}
                 onKeyDown={e => e.key === 'Enter' && plot()}
               />
@@ -444,6 +444,7 @@ export default function GraphPanel({ onClose, angleMode = 'deg' }) {
           className="graph-fn-add"
           onClick={() => setFns(prev => [...prev, { expr: '', visible: true }])}
         >+ add function</button>
+        <p className="graph-fn-tip">label shows f(x,y) when y or = is detected — plots implicit curves (circles, ellipses, hyperbolas)</p>
       </div>
 
       <div className="graph-win">
