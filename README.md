@@ -39,7 +39,8 @@ A browser-based graphing scientific calculator with textbook-style math input.
 - Table mode: evaluate f(x) and optional g(x) over a range with configurable step; up to 500 rows; scrollable with sticky headers; accessible via MODE -> 5 TABLE
 - Responsive layout: scales to any window size using dvh/vw units, no breakpoints
 
-- Graph panel: explicit y = f(x) curves and implicit F(x,y) = 0 curves (circles, ellipses, hyperbolas via marching squares); combined or split-subplot view; scroll/pinch to zoom, trackpad swipe or drag to pan; hover crosshair with (x, y) labels; click to lock crosshair; trace mode (T key: step along explicit or implicit curve with ←→, switch curves with ↑↓); 1:1 aspect-ratio button; RESET restores default window; FIT zooms to where the curves exist
+- Graph panel (2D): explicit y = f(x) curves and implicit F(x,y) = 0 curves (circles, ellipses, hyperbolas via marching squares); combined or split-subplot view; scroll/pinch to zoom, trackpad swipe or drag to pan; hover crosshair with (x, y) labels; click to lock crosshair; trace mode (T key: step along explicit or implicit curve with ←→, switch curves with ↑↓); 1:1 aspect-ratio button; RESET restores default window; FIT zooms to where the curves exist
+- Graph panel (3D): 2D/3D toggle in header; explicit surfaces z = f(x,y) rendered on an 80×80 grid with viridis colormap and smooth normals; implicit surfaces F(x,y,z) = 0 extracted via marching cubes (6-tet-per-cube decomposition) — spheres, ellipsoids, cones, hyperboloids, tori, cylinders; OrbitControls (drag-rotate, scroll-zoom, right-drag-pan); wireframe overlay toggle; RESET camera; up to 5 surfaces per plot; Three.js WebGL renderer
 
 ## Planned
 
@@ -60,7 +61,7 @@ Tests:
 npm test
 ```
 
-658 Vitest tests covering the expression engine, keypad contracts, graph coordinate transforms (implicit curves, zoom niceStep, trace contour walking, findPlotBounds), statistics engine, distributions, and base-N/bitwise/K-map engine.
+702 Vitest tests covering the expression engine, keypad contracts, graph coordinate transforms (implicit curves, zoom niceStep, trace contour walking, findPlotBounds), 3D engine (viridis, explicit mesh builder, marching cubes), statistics engine, distributions, and base-N/bitwise/K-map engine.
 
 ---
 
@@ -91,6 +92,7 @@ src/
   engine/
     mathEngine.js       - math.js wrapper, angle-mode trig, normalizeExpression, formatValue
     numeric.js          - root finding, numeric derivative/integral, poly solver, linear system solver
+    numeric3d.js        - viridis colormap, explicit mesh builder, marching cubes for 3D graphing
     stats.js            - 1-variable stats and 2-variable regression (linear/quadratic/exp/power)
     distributions.js    - normal (pdf/cdf/inv) and binomial (pdf/cdf) distributions
     baseN.js            - base conversion, bitwise ops, K-map / Quine-McCluskey solver
@@ -101,6 +103,8 @@ src/
     Keypad.jsx          - renders ROWS from keypadConfig; handles SHIFT/ALPHA layers
     keypadConfig.js     - ROWS key layout data (shared with tests)
     HistoryStrip.jsx    - scrollable history log above the keypad
+    GraphPanel.jsx      - 2D graph overlay with 2D/3D toggle in header
+    GraphPanel3D.jsx    - Three.js WebGL 3D graph scene (explicit + implicit surfaces)
     ConstPanel.jsx      - constants overlay
     ConvPanel.jsx       - unit converter overlay
     SolvePanel.jsx      - equation solver overlay
