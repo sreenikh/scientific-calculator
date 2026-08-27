@@ -91,6 +91,19 @@
 - **RESET** button restores the default window (-10/10/-6.2/6.2)
 - **FIT** button runs `findPlotBounds()`: progressive search (±5/±15/±50/±150), 5% percentile clipping, 15% padding; adjusts the window to show where the curves actually are
 
+### 3D graphing `[done]`
+
+- **2D/3D toggle** in graph panel header; 2D and 3D preserve independent function lists and window states
+- **Explicit surfaces** z = f(x,y): 80×80 meshgrid, NaN-hole skipping, smooth per-vertex normals (central differences), viridis colormap vertex coloring (dark purple at min z → yellow at max z), auto Z-range readout
+- **Implicit surfaces** F(x,y,z) = 0: marching cubes using 6-tetrahedra-per-cube decomposition (small verifiable tri table, no black-box 256-case lookup), face normals from cross product, degenerate-triangle skip; supports spheres, ellipsoids, cones, hyperboloids, tori, cylinders
+- **Three.js WebGL scene**: Z-up coordinate system, 45° perspective camera, ambient + two directional lights, XY grid, axes helper (X=red, Y=green, Z=blue), auto-resize via ResizeObserver
+- **OrbitControls**: left-drag rotates, scroll zooms, right-drag pans; damping for smooth feel
+- **Wireframe overlay**: WIRE button toggles translucent wireframe on all plotted surfaces simultaneously
+- Up to 5 surfaces per plot, color-coded with the same 10-color palette as 2D graphs
+- **RESET camera**: restores default diagonal view
+- Window settings: Xmin/Xmax/Ymin/Ymax/Zmin/Zmax (Z bounds used only by marching cubes)
+- `numeric3d.js` exports: `viridis`, `parseExpr3D`, `compileExplicit3DFn`, `compileImplicit3DFn`, `buildExplicitMesh`, `marchingCubes`; 47 tests
+
 ### Planned
 
 - Shaded region between bounds for definite integrals

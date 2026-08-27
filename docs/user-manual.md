@@ -571,6 +571,76 @@ The **DEG** or **RAD** badge in the panel header shows the active angle mode. Tr
 
 The plotter detects large vertical jumps between consecutive samples and lifts the pen rather than drawing a spike. Functions like `tan(x)` and `1/x` display gaps at their asymptotes.
 
+### 3D mode
+
+Click **3D** in the panel header (next to the "Graph" title) to switch to 3D mode. The 2D canvas is replaced by a Three.js WebGL scene. Click **2D** to return; each mode preserves its own function list and window state independently.
+
+#### Expression types
+
+| Expression form | Surface type | Example |
+|-----------------|--------------|---------|
+| Any f(x,y) — no z | Explicit z = f(x,y) | `sin(x)*cos(y)` |
+| Contains z | Implicit F(x,y,z) = 0 | `x^2+y^2+z^2=9` |
+
+**Explicit surfaces** are sampled on an 80×80 grid over Xmin/Xmax × Ymin/Ymax. Z values are colorized using the viridis colormap (dark purple at low Z, yellow at high Z). NaN regions — domain errors, undefined input — are skipped, leaving holes.
+
+**Implicit surfaces** require z in the expression. The 40×40×40 voxel grid over Xmin–Zmax is searched using marching cubes. Each surface gets a single curve color:
+
+| Shape | Expression |
+|-------|------------|
+| Sphere (r=3) | `x^2+y^2+z^2=9` |
+| Ellipsoid | `x^2/4+y^2/9+z^2=1` |
+| Cone | `x^2+y^2=z^2` |
+| Torus (R=3, r=1) | `(sqrt(x^2+y^2)-3)^2+z^2=1` |
+| Cylinder (r=2) | `x^2+y^2=4` |
+| Hyperboloid | `x^2+y^2-z^2=1` |
+
+#### Window settings
+
+| Field | Meaning |
+|-------|---------|
+| Xmin / Xmax | X domain (explicit) or X bounds for marching cubes (implicit) |
+| Ymin / Ymax | Y domain (explicit) or Y bounds for marching cubes (implicit) |
+| Zmin / Zmax | Marching cubes Z bounds only; explicit surfaces ignore these |
+
+After plotting an explicit surface, the panel shows the auto-computed Z range below the window fields.
+
+#### Camera controls
+
+| Gesture | Action |
+|---------|--------|
+| Left-drag | Rotate around the target |
+| Scroll wheel | Zoom in/out |
+| Right-drag | Pan |
+| Touch one-finger drag | Rotate |
+| Touch pinch | Zoom |
+
+The scene is Z-up: the XY plane is horizontal, Z points up. Axes are shown as colored lines (X=red, Y=green, Z=blue). The XY grid is drawn at z=0.
+
+#### Controls
+
+- **WIRE** — toggle a translucent wireframe overlay on all surfaces.
+- **RESET** — restore the default camera angle (diagonal view from above).
+- **plot** — evaluate all visible functions and rebuild the scene.
+
+**Example — sphere:**
+
+```
+Switch to 3D.
+f1: x^2+y^2+z^2=9
+Zmin: -4    Zmax: 4
+Click plot. Drag to rotate. Scroll to zoom.
+```
+
+**Example — compare a bowl and a saddle:**
+
+```
+f1: x^2+y^2     (paraboloid opening upward, viridis colors)
+f2: x^2-y^2     (saddle surface)
+Xmin: -3  Xmax: 3  Ymin: -3  Ymax: 3
+Click plot.
+```
+
 ---
 
 ## Table mode

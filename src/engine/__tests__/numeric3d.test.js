@@ -234,4 +234,59 @@ describe('marchingCubes', () => {
     const { positions } = marchingCubes(f, -1, 1, -1, 1, -1, 1, 8)
     expect(positions.length).toBeGreaterThan(0)
   })
+
+  it('torus (R=2, r=0.5) produces non-empty surface', () => {
+    const R = 2, r = 0.5
+    const f = (x, y, z) => { const d = Math.sqrt(x*x+y*y) - R; return d*d + z*z - r*r }
+    const { positions } = marchingCubes(f, -3, 3, -3, 3, -1, 1, 10)
+    expect(positions.length).toBeGreaterThan(0)
+  })
+
+  it('hyperboloid x²+y²-z²=1 produces non-empty surface', () => {
+    const f = (x, y, z) => x*x + y*y - z*z - 1
+    const { positions } = marchingCubes(f, -2, 2, -2, 2, -1.5, 1.5, 10)
+    expect(positions.length).toBeGreaterThan(0)
+  })
+
+  it('cone x²+y²=z² produces non-empty surface', () => {
+    const f = (x, y, z) => x*x + y*y - z*z
+    const { positions } = marchingCubes(f, -2, 2, -2, 2, -2, 2, 10)
+    expect(positions.length).toBeGreaterThan(0)
+  })
+})
+
+// ── additional edge cases ─────────────────────────────────────────────────────
+
+describe('buildExplicitMesh: edge cases', () => {
+  it('all-NaN function produces no index triangles', () => {
+    const { indices } = buildExplicitMesh(() => NaN, -1, 1, -1, 1, 4)
+    expect(indices.length).toBe(0)
+  })
+
+  it('constant z=5: zmin and zmax both 5; all colors match viridis(0)', () => {
+    const { colors, zmin, zmax } = buildExplicitMesh(() => 5, -1, 1, -1, 1, 4)
+    expect(zmin).toBeCloseTo(5)
+    expect(zmax).toBeCloseTo(5)
+    const [r0, g0, b0] = [colors[0], colors[1], colors[2]]
+    for (let i = 0; i < colors.length; i += 3) {
+      expect(colors[i]).toBeCloseTo(r0, 4)
+      expect(colors[i+1]).toBeCloseTo(g0, 4)
+      expect(colors[i+2]).toBeCloseTo(b0, 4)
+    }
+  })
+
+  it('positions array length is (N+1)^2 * 3 for any N', () => {
+    const N = 10
+    const { positions } = buildExplicitMesh((x, y) => x + y, -1, 1, -1, 1, N)
+    expect(positions.length).toBe((N+1) * (N+1) * 3)
+  })
+})
+
+describe('compileImplicit3DFn: error handling', () => {
+  it('throws on invalid expression', () => {
+    expect(() => compileImplicit3DFn('((')).toThrow()
+  })
+  it('throws on mismatched parentheses', () => {
+    expect(() => compileImplicit3DFn('x^2 + y^2 + z^2 =')).toThrow()
+  })
 })

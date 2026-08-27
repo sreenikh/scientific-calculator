@@ -32,6 +32,8 @@ graph TD
     App --> DI["DistributionPanel.jsx\n(Normal + Binomial)"]
     App --> BNP["BaseNPanel.jsx\n(Numbers tab + K-map tab)"]
     App --> TP["TablePanel.jsx\n(f(x) + optional g(x) table)"]
+    App --> GP["GraphPanel.jsx\n(2D/3D toggle, owns both panels)"]
+    GP --> GP3D["GraphPanel3D.jsx\n(Three.js WebGL, OrbitControls)"]
 
     Screen --> MF["&lt;math-field&gt;\n(MathLive web component)"]
 
@@ -174,6 +176,23 @@ The math input field is an exception. MathLive renders its content using its own
 
 ---
 
+## 3D engine
+
+`engine/numeric3d.js` provides:
+
+| Export | Description |
+|--------|-------------|
+| `viridis(t)` | Maps t ∈ [0,1] to [r,g,b] using a 6th-degree polynomial fit of the viridis colormap |
+| `parseExpr3D(expr)` | Detects whether an expression contains `z` (implicit 3D surface) or not (explicit z=f(x,y)) |
+| `compileExplicit3DFn(expr, angleMode)` | Compiles z = f(x,y) into a callable `(x,y) => z` |
+| `compileImplicit3DFn(expr, angleMode)` | Compiles F(x,y,z) = 0 (handles `LHS = RHS` form) into a callable `(x,y,z) => F` |
+| `buildExplicitMesh(fn, xmin, xmax, ymin, ymax, N)` | Builds `{ positions, normals, colors, indices, zmin, zmax }` Float32Arrays for a Three.js BufferGeometry; evaluates on an (N+1)² grid, skips NaN quads, applies viridis vertex colors |
+| `marchingCubes(fn, xmin, xmax, ymin, ymax, zmin, zmax, N)` | Extracts an isosurface (F=0) from an N³ voxel grid using a 6-tetrahedra-per-cube decomposition; returns `{ positions, normals }` as flat Float32Arrays (3 verts × 3 coords per triangle) |
+
+`GraphPanel3D` creates a Three.js `BufferGeometry` from these arrays and assigns it to `MeshPhongMaterial` with `vertexColors` (explicit) or a solid curve color (implicit). A `WireframeGeometry` overlay is kept alongside each mesh and toggled via a `visible` flag.
+
+---
+
 ## Numeric engine
 
 `engine/numeric.js` provides:
@@ -199,7 +218,11 @@ The math input field is an exception. MathLive renders its content using its own
 
 ## Graph panel
 
-`GraphPanel` renders a DPR-aware `<canvas>` inside a flex-column overlay. Layout: header + function input rows + window fields, then the canvas wrapper (`flex: 1`) holds a base canvas (the graph) and an overlay canvas (the crosshair), both stacked via `position: absolute`.
+`GraphPanel` renders a flex-column overlay that hosts a **2D/3D toggle** in the header. When **2D** is selected (default), it renders the existing 2D canvas stack. When **3D** is selected, it renders `GraphPanel3D` which owns a Three.js `<canvas>` managed imperatively via `useRef` and a `useEffect` setup/teardown pattern.
+
+`GraphPanel3D` initialises the Three.js scene once on mount (camera, renderer, lights, grid, axes, OrbitControls, ResizeObserver, animation loop) and cleans up on unmount. Plotting is triggered by the `plot` callback: it clears all previously added `Mesh` and `LineSegments` objects, compiles each visible function, calls `buildExplicitMesh` or `marchingCubes` from `numeric3d.js`, constructs `BufferGeometry` from the returned typed arrays, and adds `MeshPhongMaterial` meshes to the scene. A paired `WireframeGeometry` is kept for each mesh and its `visible` flag is toggled by the WIRE button.
+
+`GraphPanel` (2D) renders a DPR-aware `<canvas>` inside a flex-column overlay. Layout: header + function input rows + window fields, then the canvas wrapper (`flex: 1`) holds a base canvas (the graph) and an overlay canvas (the crosshair), both stacked via `position: absolute`.
 
 **Explicit curves** (`parseExpr` returns `implicit: false`): sampled at 2 points per pixel across the x range; large vertical pixel jumps lift the pen to handle discontinuities like `tan(x)` and `1/x`.
 
@@ -253,7 +276,7 @@ The Numbers tab passes `baseMode` from App state (via `onSetBase` callback) so c
 
 ## Testing
 
-658 Vitest tests across five files, running in node environment.
+702 Vitest tests across six files, running in node environment.
 
 ```
 src/
@@ -262,6 +285,7 @@ src/
   engine/__tests__/stats.test.js            - oneVarStats + twoVarStats (all four regression models) + multiVarStats
   engine/__tests__/distributions.test.js    - normalPdf + normalCdf + normalInv + binomialPdf + binomialCdf
   engine/__tests__/baseN.test.js            - parseBase + format functions + bitwiseOp + kmapMinterm + karnaughMinimize + formatImplicant
+  engine/__tests__/numeric3d.test.js        - viridis + parseExpr3D + compileExplicit3DFn + compileImplicit3DFn + buildExplicitMesh + marchingCubes
   (mathEngine.test.js also covers compileImplicitFn: circle/ellipse/hyperbola on-curve/inside/outside, mutable scope isolation, angle-mode trig)
 ```
 
