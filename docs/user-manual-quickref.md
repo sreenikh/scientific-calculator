@@ -2,7 +2,7 @@
 
 ## Overview
 
-Model FX-∞G is a browser-based scientific calculator with textbook-style math input. Expressions look the way they do on paper - fractions stack vertically, roots draw a vinculum, exponents sit above the baseline - and pressing **=** evaluates them.
+GraphN² is a browser-based scientific calculator with textbook-style math input. Expressions look the way they do on paper - fractions stack vertically, roots draw a vinculum, exponents sit above the baseline - and pressing **=** evaluates them.
 
 The layout scales to fit any window size. Resize the browser freely; font sizes and button heights adjust automatically.
 
