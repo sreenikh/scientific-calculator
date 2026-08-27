@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /scientific-calculator/$
+Disallow: /scientific-calculator/assets/
+Crawl-delay: 10
+
+Sitemap: https://sreenikh.github.io/scientific-calculator/
