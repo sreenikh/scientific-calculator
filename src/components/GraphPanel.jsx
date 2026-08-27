@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { compileFn, compileImplicitFn } from '../engine/numeric'
+import { trackEvent } from '../analytics'
 
 export const CURVE_COLORS = [
   '#2CC7A0', '#E06C75', '#E5C07B', '#61AFEF', '#C678DD',
@@ -387,6 +388,7 @@ export default function GraphPanel({ onClose, angleMode = 'deg' }) {
     }
     if (!compiled.length) { setError('No visible functions to plot'); return }
     compiledFnsRef.current = compiled
+    trackEvent('graph_plotted', { fn_count: compiled.length, has_implicit: compiled.some(c => c.isImplicit) })
     if (splitMode) { compiled.forEach((e, i) => { const c = canvasRefs.current[i]; if (c) drawGraph(c, [e], win) }) }
     else { const c = canvasRefs.current[0]; if (c) drawGraph(c, compiled, win) }
     setCrosshairX(null); setCrosshairLocked(false); setTraceMode(false); setTracePos(null)

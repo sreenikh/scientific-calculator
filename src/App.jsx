@@ -17,6 +17,7 @@ import TablePanel from './components/TablePanel'
 import GraphPanel from './components/GraphPanel'
 import { evaluateExpression, formatValue, toDMS } from './engine/mathEngine'
 import { formatAllBases, validateBaseDigits } from './engine/baseN'
+import { trackEvent } from './analytics'
 import './App.css'
 
 const EMPTY_MATRIX_VARS = { A: null, B: null, C: null, D: null, E: null, F: null, G: null, H: null, I: null, J: null }
@@ -81,6 +82,7 @@ export default function App() {
       if (v !== null) vars[k] = v
     }
     const result = evaluateExpression(exprToUse, { angleMode, vars, complexMode })
+    trackEvent('expression_evaluated', { angle_mode: angleMode, base_mode: baseMode, success: result.ok })
     if (result.ok) {
       const baseFormatted = formatInBase(result.value, baseMode)
       const isNumeric = typeof result.value === 'number' && !result.isComplex && !result.isMatrix
@@ -148,13 +150,17 @@ export default function App() {
       case 'consumeRcl':
         setRclActive(false)
         break
-      case 'toggleAngle':
-        setAngleMode(m => m === 'deg' ? 'rad' : 'deg')
+      case 'toggleAngle': {
+        const newAngle = angleMode === 'deg' ? 'rad' : 'deg'
+        setAngleMode(newAngle)
+        trackEvent('angle_mode_changed', { to: newAngle })
         break
+      }
       case 'cycleBase': {
         const order = ['dec', 'hex', 'oct', 'bin']
         const newBase = order[(order.indexOf(baseMode) + 1) % order.length]
         setBaseMode(newBase)
+        trackEvent('base_mode_changed', { to: newBase })
         if (newBase === 'dec') {
           if (!isLastMatrix) setResultDisplay(formatValue(ans, angleMode, complexMode))
         } else {
@@ -191,20 +197,20 @@ export default function App() {
       case 'evaluate':
         evaluate()
         break
-      case 'openConst':   setPanel('const');    break
-      case 'openConv':    setPanel('conv');     break
-      case 'openSolve':   setPanel('solve');    break
-      case 'openDeriv':   setPanel('deriv');    break
-      case 'openInteg':   setPanel('integ');    break
-      case 'openBaseN':   setPanel('basen');    break
-      case 'openModeMenu': setPanel('mode');   break
-      case 'openMatrix':  setPanel('matrix');   break
-      case 'openOps':     setPanel('ops');      break
-      case 'openEquation': setPanel('equation'); break
-      case 'openStats':    setPanel('stats');    break
-      case 'openDist':     setPanel('dist');     break
-      case 'openTable':    setPanel('table');    break
-      case 'openGraph':    setPanel('graph');    break
+      case 'openConst':    setPanel('const');    trackEvent('panel_open', { panel: 'const' });    break
+      case 'openConv':     setPanel('conv');     trackEvent('panel_open', { panel: 'conv' });     break
+      case 'openSolve':    setPanel('solve');    trackEvent('panel_open', { panel: 'solve' });    break
+      case 'openDeriv':    setPanel('deriv');    trackEvent('panel_open', { panel: 'calculus_deriv' }); break
+      case 'openInteg':    setPanel('integ');    trackEvent('panel_open', { panel: 'calculus_integ' }); break
+      case 'openBaseN':    setPanel('basen');    trackEvent('panel_open', { panel: 'basen' });    break
+      case 'openModeMenu': setPanel('mode');     trackEvent('panel_open', { panel: 'mode' });     break
+      case 'openMatrix':   setPanel('matrix');   trackEvent('panel_open', { panel: 'matrix' });   break
+      case 'openOps':      setPanel('ops');      trackEvent('panel_open', { panel: 'ops' });      break
+      case 'openEquation': setPanel('equation'); trackEvent('panel_open', { panel: 'equation' }); break
+      case 'openStats':    setPanel('stats');    trackEvent('panel_open', { panel: 'stats' });    break
+      case 'openDist':     setPanel('dist');     trackEvent('panel_open', { panel: 'dist' });     break
+      case 'openTable':    setPanel('table');    trackEvent('panel_open', { panel: 'table' });    break
+      case 'openGraph':    setPanel('graph');    trackEvent('panel_open', { panel: 'graph' });    break
       default:
         if (/^storeMem_[K-T]$/.test(action)) {
           const letter = action[action.length - 1]
