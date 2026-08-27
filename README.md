@@ -82,6 +82,7 @@ To check a deployment:
 - [Architecture](docs/architecture.md)
 - [Phases and roadmap](docs/phases.md)
 - [User manual](docs/user-manual.md)
+- [Quick reference](docs/user-manual-quickref.md)
 
 ---
 
