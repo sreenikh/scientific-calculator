@@ -241,4 +241,4 @@ Accessed via **MODE -> 5 TABLE**.
 ## Notes
 
 - The test suite (`npm test`) is the merge gate on every PR. New phases add tests before wiring UI.
-- GitHub Pages is live at https://sreenikh.github.io/scientific-calculator/ via `.github/workflows/deploy.yml` on push to `main`.
+- Cloudflare Pages is live at https://graph.nsquaredcreative.ca; Cloudflare builds and deploys on every push to `main`.
