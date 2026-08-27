@@ -1,8 +1,8 @@
-# Model FX-∞G
+# GraphN²
 
 A browser-based graphing scientific calculator with textbook-style math input.
 
-**Live:** https://sreenikh.github.io/scientific-calculator/
+**Live:** https://graph.nsquaredcreative.ca
 
 ---
 
@@ -67,13 +67,12 @@ npm test
 
 ## Deployment
 
-The app deploys automatically to GitHub Pages on every push to `main` via `.github/workflows/deploy.yml`.
+The app is hosted on Cloudflare Pages at https://graph.nsquaredcreative.ca. Cloudflare builds and deploys automatically on every push to `main`.
 
 To check a deployment:
-1. Go to the **Actions** tab on GitHub
-2. Click the latest **Deploy to GitHub Pages** run
-3. The **deploy** job shows build output and the live URL once complete
-4. Visit https://sreenikh.github.io/scientific-calculator/ to confirm
+1. Go to the **Actions** tab on GitHub and confirm the CI build passes
+2. Open the Cloudflare Pages dashboard (Workers & Pages > graphn2) to see the deployment status
+3. Visit https://graph.nsquaredcreative.ca to confirm
 
 ---
 

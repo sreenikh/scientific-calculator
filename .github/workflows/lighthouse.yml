@@ -16,7 +16,7 @@ jobs:
       - run: npm ci
       - run: npm run build
       - name: Prepare dist for Lighthouse
-        run: mkdir -p dist-serve/scientific-calculator && cp -r dist/. dist-serve/scientific-calculator/
+        run: mkdir -p dist-serve && cp -r dist/. dist-serve/
       - name: Serve and audit
         uses: treosh/lighthouse-ci-action@v12
         with:

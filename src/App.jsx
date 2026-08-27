@@ -242,8 +242,8 @@ export default function App() {
   return (
     <div className="wrap">
       <div className="brand">
-        <h1>Model FX-∞G</h1>
-        <span>Graphing scientific</span>
+        <h1>GraphN²</h1>
+        <span>Scientific calculator</span>
       </div>
 
       <div className="device">
