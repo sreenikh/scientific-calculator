@@ -40,7 +40,7 @@ A browser-based graphing scientific calculator with textbook-style math input.
 - Responsive layout: scales to any window size using dvh/vw units, no breakpoints
 
 - Graph panel (2D): explicit y = f(x) curves and implicit F(x,y) = 0 curves (circles, ellipses, hyperbolas via marching squares); combined or split-subplot view; scroll/pinch to zoom, trackpad swipe or drag to pan; hover crosshair with (x, y) labels; click to lock crosshair; trace mode (T key: step along explicit or implicit curve with ←→, switch curves with ↑↓); 1:1 aspect-ratio button; RESET restores default window; FIT zooms to where the curves exist
-- Graph panel (3D): 2D/3D toggle in header; explicit surfaces z = f(x,y) rendered on an 80×80 grid with viridis colormap and smooth normals; implicit surfaces F(x,y,z) = 0 extracted via marching cubes (6-tet-per-cube decomposition) — spheres, ellipsoids, cones, hyperboloids, tori, cylinders; OrbitControls (drag-rotate, scroll-zoom, right-drag-pan); wireframe overlay toggle; RESET camera; up to 5 surfaces per plot; Three.js WebGL renderer
+- Graph panel (3D): 2D/3D toggle in header; explicit surfaces z = f(x,y) rendered on an 80×80 grid with viridis colormap and smooth normals; implicit surfaces F(x,y,z) = 0 extracted via marching cubes (6-tet-per-cube decomposition): spheres, ellipsoids, cones, hyperboloids, tori, cylinders; OrbitControls (drag-rotate, scroll-zoom, right-drag-pan); wireframe overlay toggle; RESET camera; up to 5 surfaces per plot; Three.js WebGL renderer
 
 ## Planned
 
@@ -82,6 +82,7 @@ To check a deployment:
 - [Architecture](docs/architecture.md)
 - [Phases and roadmap](docs/phases.md)
 - [User manual](docs/user-manual.md)
+- [Quick reference](docs/user-manual-quickref.md)
 
 ---
 

@@ -10,7 +10,7 @@ const MODELS = [
 ]
 
 function fmt(n) {
-  if (Number.isNaN(n)) return '—'
+  if (Number.isNaN(n)) return '--'
   if (!isFinite(n)) return n > 0 ? '∞' : '-∞'
   return math.format(n, { precision: 8 })
 }
@@ -290,7 +290,7 @@ export default function StatPanel({ onClose }) {
                   />
                 </span>
                 <span className="stat-result-val">
-                  {valid ? fmt(percentile(result.sorted, p)) : '—'}
+                  {valid ? fmt(percentile(result.sorted, p)) : '--'}
                 </span>
                 <button
                   className="stat-pct-del"

@@ -7,7 +7,7 @@ const OPERATIONS = {
   ],
   Math: [
     { label: 'abs',   desc: 'Absolute value (real numbers); complex magnitude',     insert: '\\operatorname{abs}('   },
-    { label: 'mod',   desc: 'Modulo: remainder after division — mod(a, b)',          insert: '\\operatorname{mod}('   },
+    { label: 'mod',   desc: 'Modulo: remainder after division; mod(a, b)',          insert: '\\operatorname{mod}('   },
     { label: 'floor', desc: 'Round down to nearest integer',                         insert: '\\operatorname{floor}(' },
     { label: 'ceil',  desc: 'Round up to nearest integer',                           insert: '\\operatorname{ceil}('  },
     { label: 'round', desc: 'Round to nearest integer',                              insert: '\\operatorname{round}(' },
