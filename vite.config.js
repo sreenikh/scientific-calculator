@@ -16,7 +16,7 @@ export default defineConfig({
       sourcemaps: { filesToDeleteAfterUpload: ['dist/**/*.map'] },
     }),
   ].filter(Boolean),
-  base: '/scientific-calculator/',
+  base: '/',
   build: {
     // Source maps are generated only when the Sentry plugin is active (CI with secrets set).
     // The plugin uploads them to Sentry and deletes the .map files before Pages deployment.
