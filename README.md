@@ -1,4 +1,4 @@
-# Model FX-∞G
+# GraphN²
 
 A browser-based graphing scientific calculator with textbook-style math input.
 

@@ -1,7 +1,7 @@
-# Model FX-∞G User Guide
+# GraphN² User Guide
 
 **Browser-based graphing scientific calculator**
-https://sreenikh.github.io/scientific-calculator/
+https://graph.nsquaredcreative.ca
 
 ---
 
