@@ -1,8 +1,8 @@
 {
   "ci": {
     "collect": {
-      "staticDistDir": "./dist",
-      "url": ["http://localhost/scientific-calculator/"]
+      "staticDistDir": "./dist-serve",
+      "url": ["http://localhost:9001/scientific-calculator/"]
     },
     "assert": {
       "assertions": {
