@@ -21,8 +21,8 @@ https://sreenikh.github.io/scientific-calculator/
 12. [Distribution Mode](#12-distribution-mode)
 13. [Table Mode](#13-table-mode)
 14. [Base-N Panel](#14-base-n-panel)
-15. [Graph Panel — 2D](#15-graph-panel--2d)
-16. [Graph Panel — 3D](#16-graph-panel--3d)
+15. [Graph Panel: 2D](#15-graph-panel-2d)
+16. [Graph Panel: 3D](#16-graph-panel-3d)
 17. [OPS Panel](#17-ops-panel)
 18. [Constants Panel](#18-constants-panel)
 19. [Unit Conversion Panel](#19-unit-conversion-panel)
@@ -43,7 +43,7 @@ The calculator is arranged top to bottom:
 │  Status bar            │  DEG/RAD  SHIFT  ALPHA  base mode  memory slots
 │  Math input field      │  Editable expression; results look like printed math
 │  Result line           │  Latest answer (right-aligned); errors in red
-│  History strip         │  Last 100 expressions — click any to restore
+│  History strip         │  Last 100 expressions; click any to restore
 ├────────────────────────┤
 │  Top modifier row      │  SHIFT  ALPHA  MODE  DRG  BASE
 │  Keypad rows           │  Scientific functions, digits, operators
@@ -53,9 +53,9 @@ The calculator is arranged top to bottom:
 
 ### Opening panels
 
-- **MODE** — opens the mode menu (Equation, Matrix, Statistics, Distribution, Table)
-- **CONST / CONV / SOLVE / OPS / BASE-N / GRAPH** — opens the corresponding overlay panel
-- **d/dx ∫** — opens the Calculus panel
+- **MODE**: opens the mode menu (Equation, Matrix, Statistics, Distribution, Table)
+- **CONST / CONV / SOLVE / OPS / BASE-N / GRAPH**: opens the corresponding overlay panel
+- **d/dx ∫**: opens the Calculus panel
 
 Press **close** (top-right of any panel) to return to the main calculator.
 
@@ -70,7 +70,7 @@ Each key has up to three functions printed on it:
 
 | Layer | How to activate | Status bar indicator |
 |-------|-----------------|----------------------|
-| Primary | Press the key directly | — |
+| Primary | Press the key directly | (none) |
 | SHIFT | Press **SHIFT**, then the key | SHIFT lights up amber |
 | ALPHA | Press **ALPHA**, then the key | ALPHA lights up teal |
 
@@ -84,17 +84,34 @@ SHIFT and ALPHA cancel automatically after one key press. Press them again to ca
 
 Click anywhere in the math field to position the cursor. The keypad inserts math at the cursor.
 
-- **DEL** — delete the character or structure to the left of the cursor
-- **AC** — clear the entire expression and reset the result to 0
+- **DEL**: deletes the character or structure to the left of the cursor
+- **AC**: clears the entire expression and resets the result to 0
 
 ### MATH / LINE display toggle
 
 Press the **MATH** button (in the display row, left side) to switch between:
 
-- **MATH mode** — fractions stack vertically, roots show a vinculum, exponents sit above the baseline. This is the default.
-- **LINE mode** — everything on one line as plain text. Useful for copying expressions.
+- **MATH mode**: fractions stack vertically, roots show a vinculum, exponents sit above the baseline. This is the default.
+- **LINE mode**: everything on one line as plain text. Useful for copying expressions.
 
 The button shows the active mode and toggles on each press.
+
+### Status bar
+
+The top strip of the display shows calculator state at a glance:
+
+| Indicator | Meaning |
+|-----------|---------|
+| **DEG** (bold) | Degree mode active |
+| **RAD** (bold) | Radian mode active |
+| **SHIFT** (amber) | SHIFT layer active; next key uses its orange function |
+| **ALPHA** (teal) | ALPHA layer active; next key uses its teal function |
+| **HEX / OCT / BIN** (teal) | Base mode is non-decimal; integer results reformat to the active base |
+| Teal letters (K-T) | Memory slots that have stored values |
+| **STO** (amber) | Store mode active; press a digit to store the current result |
+| **RCL** (teal) | Recall mode active; press a digit to insert the slot variable |
+
+When the base is decimal (DEC), no base indicator appears. When you press BASE to cycle to HEX, OCT, or BIN, the status bar shows the active base in teal. Press BASE again to return to DEC and the indicator disappears.
 
 ### Result line
 
@@ -104,8 +121,8 @@ After pressing **=**, the result appears right-aligned on the result line.
 |-------------|---------|--------------|
 | Real number | Decimal | **DMS** button (converts to D°M'S") |
 | Complex number | `a + bi` | **RECT / POLAR** button |
-| Matrix | `[a  b] / [c  d]` | — |
-| Error | Red message | — |
+| Matrix | `[a  b] / [c  d]` | - |
+| Error | Red message | - |
 
 ### DMS display
 
@@ -115,7 +132,7 @@ After evaluating any real-number result, a **DMS** button appears on the left si
 
 **Ans** holds the result of the most recent successful evaluation. Press the **Ans** key to insert it into the next expression.
 
-**Example — chaining calculations:**
+**Example: chaining calculations:**
 1. Type `25` → press `[=]` → result: `25`
 2. Type `sqrt(` → press `[Ans]` → type `)` → press `[=]` → result: `5`
 
@@ -176,11 +193,11 @@ Standard mathematical precedence applies: exponents before multiplication/divisi
 
 Close the parenthesis after entering the argument.
 
-**Example — sin(30°) in DEG mode:**
+**Example: sin(30°) in DEG mode:**
 1. Confirm status bar shows **DEG**
 2. Type `sin(30)` → press `[=]` → `0.5`
 
-**Example — angle whose sine is 0.5:**
+**Example: angle whose sine is 0.5:**
 1. Press `[SHIFT]` → `[sin]` (inserts sin⁻¹)
 2. Type `0.5)` → press `[=]` → `30` (in DEG mode)
 
@@ -194,7 +211,7 @@ Close the parenthesis after entering the argument.
 
 Hyperbolic functions are not affected by angle mode.
 
-**Example — verify sinh(1) ≈ 1.1752:**
+**Example: verify sinh(1) ≈ 1.1752:**
 - Type `sinh(1)` → press `[=]` → `1.175201194`
 
 ### Logarithms and exponentials
@@ -202,16 +219,16 @@ Hyperbolic functions are not affected by angle mode.
 | Press | Function | SHIFT | ALPHA |
 |-------|----------|-------|-------|
 | `log` | log₁₀( | 10^x box | logbase( |
-| `ln` | ln( | e^x box | — |
-| `e` | Euler's number | — | — |
-| `π` | Pi | — | — |
+| `ln` | ln( | e^x box | - |
+| `e` | Euler's number | - | - |
+| `π` | Pi | - | - |
 
-**Example — log base 2 of 64:**
+**Example: log base 2 of 64:**
 1. Press `[ALPHA]` → `[log]` (inserts logbase)
 2. Type `2`, press Tab, type `64)`
 3. Press `[=]` → `6`
 
-**Example — e^3:**
+**Example: e^3:**
 1. Press `[SHIFT]` → `[ln]` (inserts e^x box)
 2. Type `3`
 3. Press `[=]` → `20.08553692`
@@ -248,7 +265,7 @@ Press **DRG** (top modifier row) to toggle between **DEG** and **RAD**. The acti
 - Degrees to radians: multiply by `π/180`
 - Radians to degrees: multiply by `180/π`
 
-**Example — convert 45° to radians:**
+**Example: convert 45° to radians:**
 - Type `45 × π / 180` → `[=]` → `0.7853981634`
 
 ---
@@ -261,22 +278,22 @@ The calculator handles complex numbers automatically when a result requires it.
 
 Press `[SHIFT]` → `[Ans]` to insert **i** (the imaginary unit) into an expression.
 
-**Example — compute (2 + 3i)²:**
+**Example: compute (2 + 3i)²:**
 - Type `(2 + 3i)²` → `[=]` → `-5 + 12i`
 
-**Example — complex square root:**
+**Example: complex square root:**
 - Type `sqrt(-4)` → `[=]` → `2i`
 
 ### Rectangular and polar display
 
 When the result is complex, a toggle button appears to the left of the result:
 
-- **RECT** — displays as `a + bi` (default)
-- **POLAR** — displays as `r∠θ` where θ follows the current angle mode
+- **RECT**: displays as `a + bi` (default)
+- **POLAR**: displays as `r∠θ` where θ follows the current angle mode
 
 Click the button to switch. Switching does not re-evaluate; it only reformats the display.
 
-**Example — polar form of 1 + i (in DEG mode):**
+**Example: polar form of 1 + i (in DEG mode):**
 1. Type `1 + 1i` → `[=]` → `1 + 1i`
 2. Click **RECT** toggle → `1.414213562∠45°`
 
@@ -284,7 +301,7 @@ Click the button to switch. Switching does not re-evaluate; it only reformats th
 
 All standard operations work on complex numbers. Use functions from the OPS panel → Complex tab for `re`, `im`, `conj`, `arg`, `abs`, `polar`.
 
-**Example — magnitude of 3 + 4i:**
+**Example: magnitude of 3 + 4i:**
 - Use OPS → Complex → `abs`, type `abs(3 + 4i)` → `[=]` → `5`
 
 ---
@@ -296,7 +313,7 @@ The calculator has 10 scalar memory slots: **K through T** (distinct from matrix
 ### Storing a value
 
 1. Evaluate an expression to produce a result.
-2. Press `[SHIFT]` → `[AC]` — status bar shows **STO** in amber.
+2. Press `[SHIFT]` → `[AC]`: the status bar shows **STO** in amber.
 3. Press a digit key:
 
 | Digit | Slot |
@@ -318,7 +335,7 @@ The STO indicator clears; the stored slot letter appears as a small teal indicat
 
 ### Recalling a value
 
-1. Press `[ALPHA]` → `[AC]` — status bar shows **RCL** in teal.
+1. Press `[ALPHA]` → `[AC]`: the status bar shows **RCL** in teal.
 2. Press a digit (1–9 or 0) to insert that slot's variable name into the expression.
 3. Build and evaluate the full expression as normal.
 
@@ -350,11 +367,11 @@ When a non-decimal base is active, pressing `[=]` validates the expression first
 | OCT | 8 9 |
 | HEX | none (A–F are valid) |
 
-**Example — convert 255 to hex:**
+**Example: convert 255 to hex:**
 1. Type `255` → `[=]` → result: `255`
 2. Press `[BASE]` until **HEX** appears → result reformats to `FF`
 
-**Example — binary addition:**
+**Example: binary addition:**
 1. Press `[BASE]` until **BIN** appears
 2. Type `1010 + 110` → `[=]` → `10000` (= 16 in decimal)
 
@@ -375,12 +392,12 @@ Finds all roots (real and complex) of aₙxⁿ + … + a₁x + a₀ = 0.
 
 Results appear below: `x₁`, `x₂`, … as real decimals or `a ± bi`.
 
-**Example — roots of x² − 5x + 6 = 0:**
+**Example: roots of x² − 5x + 6 = 0:**
 1. Select degree **2**.
 2. Coefficients: `1`, `−5`, `6`
 3. Press **Solve** → `x₁ = 3`, `x₂ = 2`
 
-**Example — roots of x³ − 6x² + 11x − 6 = 0:**
+**Example: roots of x³ − 6x² + 11x − 6 = 0:**
 1. Select degree **3**.
 2. Coefficients: `1`, `−6`, `11`, `−6`
 3. Press **Solve** → `x₁ = 3`, `x₂ = 2`, `x₃ = 1`
@@ -396,7 +413,7 @@ Solves systems of 2–5 simultaneous linear equations.
 2. Fill in the augmented matrix [A | b]. Each row is one equation; the rightmost column is the right-hand side.
 3. Press **Solve**.
 
-**Example — solve the 2×2 system: 2x + y = 5, x − y = 1:**
+**Example: solve the 2×2 system: 2x + y = 5, x − y = 1:**
 1. Select **2×2**.
 2. Row 1: `2`, `1`, `5`; Row 2: `1`, `−1`, `1`
 3. Press **Solve** → `x₁ = 2`, `x₂ = 1`
@@ -420,7 +437,7 @@ Press `[MODE]` → select **2 MATRIX / VECTOR**.
 
 Set rows to **1** and columns to the number of components. A 1×N slot becomes a vector and supports `dot`, `norm`, and `cross` operations.
 
-**Example — store [1, 2, 3] as a vector in slot C:**
+**Example: store [1, 2, 3] as a vector in slot C:**
 1. Select slot **C**; set rows = 1, cols = 3.
 2. Enter `1`, `2`, `3` in the cells.
 3. Press **Store to C**.
@@ -429,7 +446,7 @@ Set rows to **1** and columns to the number of components. A 1×N slot becomes a
 
 Type variable names directly in the math field, or use `[ALPHA]` + digit (1–9, 0 for A–J) to insert them. Press `[=]` to evaluate.
 
-**Example — multiply matrices A and B:**
+**Example: multiply matrices A and B:**
 1. Store a 2×2 matrix in slot **A** and a 2×2 matrix in slot **B**.
 2. In the math field, type `A × B` (or use ALPHA keys).
 3. Press `[=]` → result matrix.
@@ -445,7 +462,7 @@ Type variable names directly in the math field, or use `[ALPHA]` + digit (1–9,
 | `transpose(A)` | Transpose | Any matrix |
 | `size(A)` | Dimensions [rows, cols] | Any matrix |
 
-**Example — find the determinant of a 3×3 matrix:**
+**Example: find the determinant of a 3×3 matrix:**
 1. Store the matrix in slot **A**.
 2. Type `det(A)` → `[=]` → scalar result.
 
@@ -457,7 +474,7 @@ Type variable names directly in the math field, or use `[ALPHA]` + digit (1–9,
 | `cross(C, D)` | Cross product | Both 1×3 |
 | `norm(C)` | Magnitude | Any vector |
 
-**Example — angle between two vectors using dot product:**
+**Example: angle between two vectors using dot product:**
 1. Store `[1, 0, 0]` in slot **C** (1×3) and `[1, 1, 0]` in slot **D** (1×3).
 2. Type `acos(dot(C, D) / (norm(C) × norm(D)))` → `[=]` → `45` (DEG mode)
 
@@ -496,7 +513,7 @@ Press `[MODE]` → select **3 STATISTICS**.
 
 Fixed percentiles P10/P25/P50/P75/P90 are shown. Press **+ Add percentile** to query any custom Pn.
 
-**Example — find mean and standard deviation of 2, 4, 4, 4, 5, 5, 7, 9:**
+**Example: find mean and standard deviation of 2, 4, 4, 4, 5, 5, 7, 9:**
 1. Enter the 8 values in 1-Var data list.
 2. Press **Compute** → x̄ = `5`, σ = `2`
 
@@ -516,7 +533,7 @@ Fixed percentiles P10/P25/P50/P75/P90 are shown. Press **+ Add percentile** to q
 
 Results include the fitted equation, coefficients, r (correlation), and r².
 
-**Example — linear fit for (1, 2.1), (2, 3.9), (3, 6.2), (4, 7.8):**
+**Example: linear fit for (1, 2.1), (2, 3.9), (3, 6.2), (4, 7.8):**
 1. Enter the four (x, y) pairs.
 2. Select **Linear** → Compute → a ≈ `0.23`, b ≈ `1.92`, r ≈ `0.999`
 
@@ -546,12 +563,12 @@ Set parameters **μ** (mean, default 0) and **σ** (std dev, default 1).
 | cdf | x | P(X ≤ x); complement P(X > x) also shown |
 | inv | p ∈ (0,1) | x such that P(X ≤ x) = p |
 
-**Example — P(X ≤ 1.96) for standard normal:**
+**Example: P(X ≤ 1.96) for standard normal:**
 1. μ = `0`, σ = `1`.
 2. Select **cdf**, enter x = `1.96`.
 3. Press **Compute** → P(X ≤ 1.96) ≈ `0.975002`
 
-**Example — find the 99th percentile:**
+**Example: find the 99th percentile:**
 1. Select **inv**, enter p = `0.99`.
 2. Press **Compute** → `2.326347874`
 
@@ -561,15 +578,15 @@ Set parameters **n** (trials, positive integer) and **p** (probability per trial
 
 | Function | Input | Output |
 |----------|-------|--------|
-| pdf | k | P(X = k) — exactly k successes |
-| cdf | k | P(X ≤ k) — at most k successes |
+| pdf | k | P(X = k); exactly k successes |
+| cdf | k | P(X ≤ k); at most k successes |
 
-**Example — P(X = 3) with n=10, p=0.3:**
+**Example: P(X = 3) with n=10, p=0.3:**
 1. n = `10`, p = `0.3`.
 2. Select **pdf**, enter k = `3`.
 3. Press **Compute** → `0.2668279...`
 
-**Example — P(X ≤ 5) with n=20, p=0.4:**
+**Example: P(X ≤ 5) with n=20, p=0.4:**
 1. n = `20`, p = `0.4`.
 2. Select **cdf**, enter k = `5`.
 3. Press **Compute** → `0.1255144...`
@@ -590,12 +607,12 @@ Press `[MODE]` → select **5 TABLE**.
 
 The table generates up to 500 rows. Scroll vertically; column headers stay fixed.
 
-**Example — square and square-root table:**
+**Example: square and square-root table:**
 - f(x) = `x^2`, g(x) = `sqrt(x)`
 - Start = `0`, End = `10`, Step = `1`
 - Press **go** → 11 rows showing x², √x side by side
 
-**Example — sine and cosine at 30° intervals in DEG mode:**
+**Example: sine and cosine at 30° intervals in DEG mode:**
 - f(x) = `sin(x)`, g(x) = `cos(x)`
 - Start = `0`, End = `360`, Step = `30`
 - Press **go** → 13 rows
@@ -610,9 +627,9 @@ Press `[BASE-N]` (bottom modifier row) to open the panel.
 
 ### Numbers tab
 
-**Base selector** — clicking DEC / HEX / OCT / BIN sets the global base mode (same as the BASE key).
+**Base selector**: click DEC / HEX / OCT / BIN to set the global base mode (same as the BASE key).
 
-**Expression evaluator** — type any integer expression and press **Evaluate** or Enter.
+**Expression evaluator**: type any integer expression and press **Evaluate** or Enter.
 
 Supported operators:
 
@@ -627,11 +644,11 @@ Supported operators:
 | `<<` `>>` | Left / logical right shift |
 | `( )` | Grouping |
 
-The result displays in all four bases simultaneously; the active base row is highlighted. Numbers are BigInt — no overflow.
+The result displays in all four bases simultaneously; the active base row is highlighted. Numbers are BigInt; no overflow.
 
 **Mixed-base input:** prefix literals with `0b` (binary), `0x` or `0h` (hex), `0o` (octal), `0d` (decimal) regardless of the active base.
 
-**Example — `0xFF AND 0b11110000` in any base:**
+**Example: `0xFF AND 0b11110000` in any base:**
 - Type `0xFF AND 0b11110000` → Evaluate → result in all four bases
 
 ### K-map tab
@@ -647,14 +664,14 @@ For 2–6 variables: a Gray-code grid is shown. For 7–8 variables: a flat scro
 
 Complemented literals use an apostrophe: `A'`, `BC'D`, etc.
 
-**Example — minimize a 3-variable majority function (output = 1 when ≥ 2 inputs are 1):**
+**Example: minimize a 3-variable majority function (output = 1 when ≥ 2 inputs are 1):**
 1. Choose **3 variables**.
 2. Set cells: m₃=1, m₅=1, m₆=1, m₇=1 (all others 0).
 3. Press **Minimize** → `AB + AC + BC`
 
 ---
 
-## 15. Graph Panel — 2D
+## 15. Graph Panel: 2D
 
 Press `[GRAPH]` (bottom modifier row, rightmost key). The panel opens in **2D** mode with `sin(x)` already plotted.
 
@@ -691,10 +708,10 @@ Implicit curves are rendered using marching squares on a 300×300 grid.
 Edit any field and press **plot** or Enter to apply.
 
 **Buttons:**
-- **combined / split** — all functions on one canvas, or each in its own subplot
-- **1:1** — adjusts Ymin/Ymax so one math unit = the same pixel count on both axes (makes circles circular)
-- **RESET** — restore default window (−10/10/−6.2/6.2/1/1)
-- **FIT** — auto-zoom to where the curves exist
+- **combined / split**: all functions on one canvas, or each in its own subplot
+- **1:1**: adjusts Ymin/Ymax so one math unit = the same pixel count on both axes (makes circles circular)
+- **RESET**: restores the default window (−10/10/−6.2/6.2/1/1)
+- **FIT**: auto-zooms to where the curves exist
 
 ### Zoom and pan
 
@@ -727,21 +744,21 @@ Press `[T]` on the keyboard or the **TRACE** button to enter trace mode.
 
 The coordinate badge shows `x = … y = …` for the trace point. For implicit curves, an `[impl]` tag appears and the cursor walks the zero-contour.
 
-**Example — trace a circle:**
+**Example: trace a circle:**
 1. Enter `x^2 + y^2 = 9`, press **plot**.
 2. Press `[T]` to enter trace mode.
 3. Press `[←]` / `[→]` to walk around the circle.
 4. Press `[↑]` / `[↓]` to switch to another plotted curve.
 5. Press `[Esc]` to exit.
 
-**Example — compare two functions:**
+**Example: compare two functions:**
 1. f1: `sin(x)`, f2: `cos(x)`, press **plot**.
 2. Press `[T]` → trace starts on f1.
 3. Press `[↓]` to switch to f2.
 
 ---
 
-## 16. Graph Panel — 3D
+## 16. Graph Panel: 3D
 
 Click the **3D** button in the graph panel header (next to the "Graph" title) to switch to 3D mode. The 2D canvas is replaced by a Three.js WebGL scene. Click **2D** to return; the two modes preserve their states independently.
 
@@ -749,7 +766,7 @@ Click the **3D** button in the graph panel header (next to the "Graph" title) to
 
 | Expression | Surface type | Detected by |
 |------------|--------------|-------------|
-| Any f(x,y) — no z | Explicit surface z = f(x,y) | absence of z |
+| Any f(x,y) (no z) | Explicit surface z = f(x,y) | absence of z |
 | Contains z | Implicit surface F(x,y,z) = 0 | presence of z |
 
 **Explicit surfaces** are sampled on an 80×80 grid over Xmin/Xmax × Ymin/Ymax. Z values are colorized with the viridis colormap (dark purple = low Z, yellow = high Z).
@@ -776,7 +793,7 @@ Click the **3D** button in the graph panel header (next to the "Graph" title) to
 |-------|---------|
 | Xmin / Xmax | X domain (explicit) or marching cubes X bounds (implicit) |
 | Ymin / Ymax | Y domain (explicit) or marching cubes Y bounds (implicit) |
-| Zmin / Zmax | Marching cubes Z bounds only — explicit surfaces ignore these |
+| Zmin / Zmax | Marching cubes Z bounds only; explicit surfaces ignore these |
 
 After plotting an explicit surface, the auto-computed Z range is shown below the window fields.
 
@@ -800,15 +817,15 @@ Coordinate system: Z-up. Axes: X = red, Y = green, Z = blue.
 | **RESET** | Restore default camera angle |
 | **plot** | Evaluate and render all visible functions |
 
-**Example — plot a sphere:**
+**Example: plot a sphere:**
 1. Switch to 3D.
 2. Enter `x^2 + y^2 + z^2 = 9`. Set Zmin = `−4`, Zmax = `4`.
 3. Press **plot**. Drag to rotate; scroll to zoom.
 
-**Example — compare a bowl and a saddle:**
+**Example: compare a bowl and a saddle:**
 1. f1: `x^2 + y^2`; f2: `x^2 − y^2`
 2. Set Xmin = `−3`, Xmax = `3`, Ymin = `−3`, Ymax = `3`.
-3. Press **plot** — both surfaces plotted simultaneously with viridis coloring.
+3. Press **plot**: both surfaces are plotted simultaneously with viridis coloring.
 
 ---
 
@@ -835,7 +852,7 @@ Press `[OPS]` (bottom modifier row) to open the operations panel. Click any oper
 | `det(A)` | Square matrix |
 | `trace(A)` | Square matrix |
 | `transpose(A)` | Any matrix |
-| `size(A)` | Any matrix — returns [rows, cols] |
+| `size(A)` | Any matrix; returns [rows, cols] |
 
 ### Vector tab
 
@@ -873,7 +890,7 @@ Press `[CONST]` to open the constants library.
 2. Click a constant to insert its numeric value into the math field at the cursor.
 3. Press **close** to dismiss without inserting.
 
-**Example — compute the energy of a photon at 500 nm:**
+**Example: compute the energy of a photon at 500 nm:**
 1. Open CONST → Universal → click **c** (speed of light: 2.99792458×10⁸) → inserted
 2. Build `h × c / λ` where h is Planck's constant and λ = `500e-9`
 3. Press `[=]`
@@ -891,10 +908,10 @@ Press `[CONV]` to open the converter.
 
 > **Note:** The result is not inserted into the math field.
 
-**Example — convert 100 miles to kilometers:**
+**Example: convert 100 miles to kilometers:**
 - Category: Length → from: `mile` → to: `km` → value: `100` → result: `160.934`
 
-**Example — convert 37°C to Fahrenheit:**
+**Example: convert 37°C to Fahrenheit:**
 - Category: Temperature → from: `°C` → to: `°F` → value: `37` → result: `98.6`
 
 ---
@@ -918,12 +935,12 @@ The iteration table shows how the method converged.
 | Secant | x₀, x₁ (two guesses) | When derivative is expensive or unavailable |
 | Bisection | a, b (bracket) | When you can bracket the root with opposite signs |
 
-**Example — find √2 as a root of x² − 2 = 0:**
+**Example: find √2 as a root of x² − 2 = 0:**
 - f(x) = `x^2 − 2`
 - Newton-Raphson, x₀ = `1`
 - Press **solve** → root ≈ `1.41421356`
 
-**Example — find the root of cos(x) = x (in RAD mode):**
+**Example: find the root of cos(x) = x (in RAD mode):**
 - f(x) = `cos(x) − x`
 - Bisection, a = `0`, b = `1`
 - Press **solve** → root ≈ `0.73908513` (Dottie number)
@@ -943,7 +960,7 @@ Approximates f′(x) at a given point using the central difference method.
 2. Enter the x value.
 3. Press **compute**.
 
-**Example — slope of sin(x) at x = π/4 (RAD mode):**
+**Example: slope of sin(x) at x = π/4 (RAD mode):**
 - f(x) = `sin(x)`, x = `pi/4`
 - Press **compute** → `0.7071067812` (= cos(π/4))
 
@@ -956,11 +973,11 @@ Approximates ∫ₐᵇ f(x) dx using Simpson's rule with 200 subintervals.
 2. Enter lower and upper bounds.
 3. Press **compute**.
 
-**Example — area under sin(x) from 0 to π (RAD mode):**
+**Example: area under sin(x) from 0 to π (RAD mode):**
 - f(x) = `sin(x)`, lower = `0`, upper = `pi`
 - Press **compute** → `2` (exact)
 
-**Example — ∫₀¹ e^(−x²) dx (Gaussian integral half):**
+**Example: ∫₀¹ e^(−x²) dx (Gaussian integral half):**
 - f(x) = `e^(−x^2)`, lower = `0`, upper = `1`
 - Press **compute** → `0.7468241328`
 

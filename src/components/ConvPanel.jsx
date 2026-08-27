@@ -57,7 +57,7 @@ export default function ConvPanel({ onClose }) {
         </select>
       </div>
       <div className="ov-result">
-        {result === null ? '—' : Math.round(result * 1e6) / 1e6} {result === null ? '' : toUnit}
+        {result === null ? '--' : Math.round(result * 1e6) / 1e6} {result === null ? '' : toUnit}
       </div>
       <div className="ov-note">16 categories, 90+ units. Temperature uses affine conversion.</div>
     </div>

@@ -324,10 +324,10 @@ Enter x values in the data list (one per row). Empty rows are ignored. Press **C
 | σ² | Population variance |
 | s | Sample standard deviation |
 | s² | Sample variance |
-| CV | Coefficient of variation (s / x̅); — when mean is zero |
-| SEM | Standard error of mean (s / √n); — for n = 1 |
-| Skewness | Adjusted Fisher-Pearson skewness; — for n < 3 |
-| Kurtosis | Excess kurtosis (Fisher); — for n < 4 |
+| CV | Coefficient of variation (s / x̅); undefined when mean is zero |
+| SEM | Standard error of mean (s / √n); undefined for n = 1 |
+| Skewness | Adjusted Fisher-Pearson skewness; undefined for n < 3 |
+| Kurtosis | Excess kurtosis (Fisher); undefined for n < 4 |
 | Min / Max | Smallest / largest value |
 
 Fixed percentiles P10, P25, P50, P75, P90 are shown below the main stats. Press **+ Add percentile** to add a custom Pn query (enter any value 0-100); press **×** to remove it.
@@ -579,10 +579,10 @@ Click **3D** in the panel header (next to the "Graph" title) to switch to 3D mod
 
 | Expression form | Surface type | Example |
 |-----------------|--------------|---------|
-| Any f(x,y) — no z | Explicit z = f(x,y) | `sin(x)*cos(y)` |
+| Any f(x,y) (no z) | Explicit z = f(x,y) | `sin(x)*cos(y)` |
 | Contains z | Implicit F(x,y,z) = 0 | `x^2+y^2+z^2=9` |
 
-**Explicit surfaces** are sampled on an 80×80 grid over Xmin/Xmax × Ymin/Ymax. Z values are colorized using the viridis colormap (dark purple at low Z, yellow at high Z). NaN regions — domain errors, undefined input — are skipped, leaving holes.
+**Explicit surfaces** are sampled on an 80×80 grid over Xmin/Xmax × Ymin/Ymax. Z values are colorized using the viridis colormap (dark purple at low Z, yellow at high Z). NaN regions (domain errors, undefined input) are skipped, leaving holes.
 
 **Implicit surfaces** require z in the expression. The 40×40×40 voxel grid over Xmin–Zmax is searched using marching cubes. Each surface gets a single curve color:
 
@@ -619,11 +619,11 @@ The scene is Z-up: the XY plane is horizontal, Z points up. Axes are shown as co
 
 #### Controls
 
-- **WIRE** — toggle a translucent wireframe overlay on all surfaces.
-- **RESET** — restore the default camera angle (diagonal view from above).
-- **plot** — evaluate all visible functions and rebuild the scene.
+- **WIRE**: toggle a translucent wireframe overlay on all surfaces.
+- **RESET**: restore the default camera angle (diagonal view from above).
+- **plot**: evaluate all visible functions and rebuild the scene.
 
-**Example — sphere:**
+**Example: sphere:**
 
 ```
 Switch to 3D.
@@ -632,7 +632,7 @@ Zmin: -4    Zmax: 4
 Click plot. Drag to rotate. Scroll to zoom.
 ```
 
-**Example — compare a bowl and a saddle:**
+**Example: compare a bowl and a saddle:**
 
 ```
 f1: x^2+y^2     (paraboloid opening upward, viridis colors)

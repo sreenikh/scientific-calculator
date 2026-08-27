@@ -1,5 +1,63 @@
 # Architecture
 
+## System overview
+
+```mermaid
+flowchart TB
+    subgraph INPUT["User Input"]
+        direction LR
+        KP["Keypad\nSHIFT / ALPHA layers\n3-function keys"]
+        ML["MathLive field\ntextbook math input\nfractions · roots · superscripts"]
+    end
+
+    subgraph BRIDGE["MathLive Bridge  (normalizeExpression)"]
+        direction LR
+        NE1["× ÷ − → * / -"]
+        NE2["root / logbase / nCr / nPr"]
+        NE3["operatorname spacing fix\n(inv/det/dot/cross/…)"]
+        NE4["placeholder guards"]
+    end
+
+    subgraph ENGINE["Math Engines"]
+        direction TB
+        MJ["math.js\nevaluate()"]
+        NUM["numeric.js\nroots · integral\nderivative · poly · linsolve"]
+        N3D["numeric3d.js\nexplicit mesh (80x80)\nmarching cubes (6-tet)\nviridis colormap"]
+        ST["stats.js\n1-var · 2-var regression\nmultiple linear"]
+        DIST["distributions.js\nnormal · binomial\npdf / cdf / inv"]
+        BN["baseN.js\nBigInt ops\nQuine-McCluskey K-map"]
+    end
+
+    subgraph STATE["React State  (App.jsx)"]
+        direction LR
+        ANG["angleMode\nDEG / RAD"]
+        BASE["baseMode\nDEC/HEX/OCT/BIN"]
+        VARS["Matrix vars A-J\nMemory K-T\nAns"]
+        HIST["History\n(last 100)"]
+    end
+
+    subgraph OUTPUT["Output"]
+        direction LR
+        RES["Result line\nscalar · matrix · complex\nDMS · RECT/POLAR"]
+        G2D["2D Graph\nCanvas API\nexplicit + marching-squares implicit\nzoom · pan · trace"]
+        G3D["3D Graph\nThree.js WebGL\nexplicit surfaces (viridis)\nmarching-cubes implicit\nOrbitControls"]
+        OVL["11 Overlay Panels\nConst · Conv · Solve · Calc\nMatrix · OPS · Stats\nDist · Base-N · Eq · Table"]
+    end
+
+    INPUT --> BRIDGE
+    BRIDGE --> MJ
+    STATE -->|"scope: vars, Ans\nangle/base mode"| MJ
+    MJ --> RES
+    MJ --> NUM --> RES
+    MJ --> ST --> OVL
+    MJ --> DIST --> OVL
+    MJ --> BN --> OVL
+    NUM --> G2D
+    N3D --> G2D
+    N3D --> G3D
+    RES -->|"Ans, history"| STATE
+```
+
 ## Stack
 
 | Layer | Library | Role |

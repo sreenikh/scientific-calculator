@@ -216,7 +216,7 @@ function drawCrosshair(canvas, win, curves, mathX, locked) {
   })
 }
 
-// Trace overlay: uses pre-computed tracePos { x, y } — works for both explicit and implicit.
+// Trace overlay: uses pre-computed tracePos { x, y }; works for both explicit and implicit.
 function drawTrace(canvas, win, curves, tracePos, activeCurveIdx) {
   if (!canvas || !win) return
   const dpr = window.devicePixelRatio || 1
@@ -627,7 +627,7 @@ export default function GraphPanel({ onClose, angleMode = 'deg' }) {
           )
         })}
         <button className="graph-fn-add" onClick={() => setFns(prev => [...prev, { expr: '', visible: true }])}>+ add function</button>
-        <p className="graph-fn-tip">label shows f(x,y) when y or = detected — plots implicit curves (circles, ellipses, hyperbolas)</p>
+        <p className="graph-fn-tip">label shows f(x,y) when y or = detected; plots implicit curves (circles, ellipses, hyperbolas)</p>
       </div>
 
       <div className="graph-win">

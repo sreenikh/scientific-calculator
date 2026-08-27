@@ -71,7 +71,7 @@
 ### Zoom and pan `[done]`
 
 - **Scroll / Ctrl+scroll**: zoom in and out centered on cursor (mouse wheel zooms; Ctrl key on trackpad gestures = pinch)
-- **Trackpad two-finger swipe**: pans the graph (fires as `wheel` with deltaX/deltaY — same as Google Maps on desktop)
+- **Trackpad two-finger swipe**: pans the graph (fires as `wheel` with deltaX/deltaY, same as Google Maps on desktop)
 - **Mouse drag**: click and drag pans; a small movement threshold (4 px) distinguishes a drag from a click
 - **Touch pinch**: two-finger pinch zooms around the midpoint; one-finger drag pans
 - **Auto tick steps**: grid lines and axis labels recalculate a human-friendly step (`niceStep`) during every zoom/pan so the graph never shows 0 or 10000 grid lines
@@ -166,7 +166,7 @@ Accessed via MODE menu (item 3).
 
 - 1-variable tab: enter x values; computes n, Σx, Σx², mean, median, mode, Q1, Q3, IQR, range, population std dev (σ) and variance (σ²), sample std dev (s) and variance (s²), CV, SEM, skewness (Fisher), excess kurtosis, min, max
   - Fixed percentiles P10/P25/P50/P75/P90; dynamic custom percentile inputs (add/remove any number of Pn queries)
-  - Linear interpolation percentile method; NaN values display as — rather than erroring
+  - Linear interpolation percentile method; NaN values display as '--' rather than erroring
 - 2-variable tab: enter (x, y) pairs; choose Linear, Quadratic, Exponential, or Power regression
   - Linear/Exp/Power: returns a, b, r, r²
   - Quadratic: returns a, b, c, r² (normal equations via 3x3 Gaussian elimination)
