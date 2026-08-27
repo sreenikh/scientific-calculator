@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { compileFn, compileImplicitFn } from '../engine/numeric'
 import { trackEvent } from '../analytics'
+import GraphPanel3D from './GraphPanel3D'
 
 export const CURVE_COLORS = [
   '#2CC7A0', '#E06C75', '#E5C07B', '#61AFEF', '#C678DD',
@@ -321,6 +322,7 @@ const DEFAULT_WIN = { xmin: '-10', xmax: '10', ymin: '-6.2', ymax: '6.2', xscl: 
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function GraphPanel({ onClose, angleMode = 'deg' }) {
+  const [graphDim, setGraphDim] = useState('2d')
   const [fns, setFns] = useState([{ expr: 'sin(x)', visible: true }])
   const [winStr, setWinStr] = useState(DEFAULT_WIN)
   const [splitMode, setSplitMode] = useState(false)
@@ -603,10 +605,15 @@ export default function GraphPanel({ onClose, angleMode = 'deg' }) {
     <div className="overlay graph-overlay">
       <div className="ov-head">
         <h3>Graph</h3>
+        <div className="graph-dim-toggle">
+          <button className={`graph-dim-btn${graphDim === '2d' ? ' active' : ''}`} onClick={() => setGraphDim('2d')}>2D</button>
+          <button className={`graph-dim-btn${graphDim === '3d' ? ' active' : ''}`} onClick={() => setGraphDim('3d')}>3D</button>
+        </div>
         <span className="tbl-mode-badge">{angleMode.toUpperCase()}</span>
         <button className="ov-close" onClick={onClose}>close</button>
       </div>
 
+      {graphDim === '3d' ? <GraphPanel3D angleMode={angleMode} /> : (<>
       <div className="graph-fns">
         {fns.map(({ expr, visible }, i) => {
           const { implicit } = parseExpr(expr.trim())
@@ -667,6 +674,7 @@ export default function GraphPanel({ onClose, angleMode = 'deg' }) {
           <canvas ref={el => { overlayRefs.current[0] = el }} className="graph-crosshair-overlay" />
         </div>
       )}
+      </>)}
     </div>
   )
 }

@@ -626,3 +626,29 @@ table.iter th:first-child, table.iter td:first-child { text-align: left; color: 
   font-family: 'JetBrains Mono', monospace; z-index: 1; pointer-events: none;
   text-shadow: 0 0 6px #000;
 }
+
+/* 2D/3D mode toggle in graph panel header */
+.graph-dim-toggle {
+  display: flex; border: 1px solid #3A3F4E; border-radius: 4px; overflow: hidden; flex-shrink: 0;
+}
+.graph-dim-btn {
+  background: none; border: none; color: var(--steel); font-family: inherit;
+  font-size: 1.0dvh; padding: 0.3dvh 0.6vw; cursor: pointer; letter-spacing: 0.5px;
+}
+.graph-dim-btn.active { background: var(--teal); color: #0C231C; font-weight: 700; }
+
+/* 3D graph canvas wrapper */
+.graph3d-canvas-wrapper {
+  position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column;
+}
+.graph3d-canvas {
+  flex: 1; min-height: 0; width: 100%; border-radius: 6px; display: block; background: #0F1117;
+}
+.graph3d-computing {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  color: var(--teal); font-size: 1.2dvh; letter-spacing: 1px; pointer-events: none;
+  text-shadow: 0 0 12px rgba(44,199,160,0.6); z-index: 2;
+}
+.graph3d-zinfo {
+  font-size: 1.0dvh; color: #555B6E; padding: 0 0 0.3dvh;
+}
