@@ -126,6 +126,8 @@
 - Toggle button on the result line switches between the two forms
 - Polar angle follows the current DEG/RAD mode
 - Toggle only appears when the last result is complex
+- Ans and memory slots K-T accept and propagate complex values; stored complex values work in subsequent expressions
+- nth root / sqrt of any negative real or complex argument shows all n roots in a panel below the result; for odd roots of real negatives (e.g. `∛(-8)`), Ans stays the real result (-2) while the panel lists all three roots including the complex ones; clicking any root promotes it to Ans for independent STO
 
 ### Matrix / Vector mode `[done]`
 

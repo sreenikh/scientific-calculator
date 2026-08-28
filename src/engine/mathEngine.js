@@ -2,8 +2,18 @@ import { create, all } from 'mathjs'
 
 export const math = create(all, {})
 
+// Returns all n complex roots of z = r·e^(iθ): r^(1/n)·e^(i(θ+2πk)/n) for k=0..n-1.
+export function allNthRoots(z, n) {
+  const r = Math.pow(math.abs(z), 1 / n)
+  const theta = math.arg(z)
+  return Array.from({ length: n }, (_, k) => {
+    const angle = (theta + 2 * Math.PI * k) / n
+    return math.complex(r * Math.cos(angle), r * Math.sin(angle))
+  })
+}
+
 // DEG mode converts degrees to radians on input and back on output.
-function buildScope(angleMode, vars) {
+function buildScope(angleMode, vars, onMultiRoot = null) {
   const toRad = (x) => (angleMode === 'deg' ? (x * Math.PI) / 180 : x)
   const toOut = (rad) => (angleMode === 'deg' ? (rad * 180) / Math.PI : rad)
 
@@ -41,7 +51,30 @@ function buildScope(angleMode, vars) {
     log:  (x) => Math.log10(x),
     ln:   (x) => Math.log(x),
     logb: (x, b) => Math.log(x) / Math.log(b),
-    nthRoot: (x, n) => math.typeOf(x) === 'Complex' ? math.pow(x, 1 / n) : math.nthRoot(x, n),
+    nthRoot: (x, n) => {
+      const isComplexArg = math.typeOf(x) === 'Complex'
+      const isNegativeReal = typeof x === 'number' && x < 0
+      if (isComplexArg || isNegativeReal) {
+        const z = isComplexArg ? x : math.complex(x, 0)
+        const roots = allNthRoots(z, n)
+        if (onMultiRoot) onMultiRoot(roots)
+        // Odd root of a real negative: keep -2 (not the principal complex root) as Ans
+        if (!isComplexArg && n % 2 !== 0) return math.nthRoot(x, n)
+        return roots[0]
+      }
+      return math.nthRoot(x, n)
+    },
+    sqrt: (x) => {
+      const isComplexArg = math.typeOf(x) === 'Complex'
+      const isNegative = typeof x === 'number' && x < 0
+      if (isComplexArg || isNegative) {
+        const z = isComplexArg ? x : math.complex(x, 0)
+        const roots = allNthRoots(z, 2)
+        if (onMultiRoot) onMultiRoot(roots)
+        return roots[0]
+      }
+      return math.sqrt(x)
+    },
     nPr: (n, r) => math.permutations(n, r),
     nCr: (n, r) => math.combinations(n, r),
     fromDMS: (d, m = 0, s = 0) => {
@@ -113,13 +146,14 @@ export function evaluateExpression(rawExpr, { angleMode = 'deg', vars = {}, comp
   if (/log _\(\(\)\)/.test(expr)) return { ok: false, error: 'Enter the log base' }
 
   try {
-    const scope = buildScope(angleMode, vars)
+    let multiRoots = null
+    const scope = buildScope(angleMode, vars, (roots) => { multiRoots = roots })
     const value = math.evaluate(expr, scope)
     if (value === undefined) return { ok: false, error: 'Nothing to evaluate' }
     const type = math.typeOf(value)
     const isComplex = type === 'Complex'
     const isMatrix = type === 'DenseMatrix' || type === 'SparseMatrix'
-    return { ok: true, value, display: formatValue(value, angleMode, complexMode), isComplex, isMatrix }
+    return { ok: true, value, display: formatValue(value, angleMode, complexMode), isComplex, isMatrix, multiRoots }
   } catch (err) {
     return { ok: false, error: humanizeError(err) }
   }

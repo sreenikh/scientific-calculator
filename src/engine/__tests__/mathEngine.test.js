@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { normalizeExpression, evaluateExpression, toDMS } from '../mathEngine.js'
+import { normalizeExpression, evaluateExpression, toDMS, allNthRoots, math } from '../mathEngine.js'
 import { polyRoots, solveLinearSystem, compileFn, compileImplicitFn } from '../numeric.js'
 
 const DEG = { angleMode: 'deg' }
@@ -110,20 +110,71 @@ describe('evaluateExpression: powers and roots', () => {
   // Via the normalisation bridge (simulates MathLive ascii-math for \sqrt[3]{8})
   it('root(3)(8) → 2',         () => expect(ok('root(3)(8)')).toBeCloseTo(2, 10))
   it('root(4)(16) → 2',        () => expect(ok('root(4)(16)')).toBeCloseTo(2, 10))
-  // Real-negative odd roots must stay real
-  it('nthRoot(-8, 3) = -2 (real, not complex)', () => {
-    const r = evaluateExpression('nthRoot(-8, 3)', { angleMode: 'deg', vars: {}, complexMode: 'rect' })
+  // Odd root of real negative: Ans stays real (-2), but panel shows all 3 roots
+  it('nthRoot(-8, 3) = -2 with 3-root panel', () => {
+    const r = evaluateExpression('nthRoot(-8, 3)', DEG)
     expect(r.ok).toBe(true)
-    expect(r.isComplex).toBe(false)
     expect(r.value).toBeCloseTo(-2, 10)
+    expect(r.multiRoots).toHaveLength(3)
+    // One of the roots should be the real root -2
+    const realRoot = r.multiRoots.find(root => Math.abs(root.im) < 1e-6)
+    expect(realRoot).toBeDefined()
+    expect(realRoot.re).toBeCloseTo(-2, 6)
   })
-  // Complex argument: cbrt(i) principal value = sqrt(3)/2 + i/2
-  it('nthRoot(i, 3) returns principal complex value', () => {
-    const r = evaluateExpression('nthRoot(i, 3)', { angleMode: 'deg', vars: {}, complexMode: 'rect' })
+  // sqrt of positive real: no multiRoots
+  it('sqrt(4) = 2, no multiRoots', () => {
+    const r = evaluateExpression('sqrt(4)', DEG)
     expect(r.ok).toBe(true)
-    expect(r.isComplex).toBe(true)
-    expect(r.value.re).toBeCloseTo(Math.sqrt(3) / 2, 6)
-    expect(r.value.im).toBeCloseTo(0.5, 6)
+    expect(r.value).toBe(2)
+    expect(r.multiRoots).toBeNull()
+  })
+})
+
+describe('allNthRoots and multi-root capture', () => {
+  it('allNthRoots(i, 2) returns 2 roots with correct magnitudes', () => {
+    const i = math.complex(0, 1)
+    const roots = allNthRoots(i, 2)
+    expect(roots).toHaveLength(2)
+    roots.forEach(r => expect(Math.hypot(r.re, r.im)).toBeCloseTo(1, 6))
+  })
+
+  it('sqrt(i) principal value = 1/sqrt(2) + i/sqrt(2)', () => {
+    const r = evaluateExpression('sqrt(i)', DEG)
+    expect(r.ok).toBe(true)
+    expect(r.value.re).toBeCloseTo(Math.SQRT2 / 2, 6)
+    expect(r.value.im).toBeCloseTo(Math.SQRT2 / 2, 6)
+    expect(r.multiRoots).toHaveLength(2)
+    expect(r.multiRoots[1].re).toBeCloseTo(-Math.SQRT2 / 2, 6)
+    expect(r.multiRoots[1].im).toBeCloseTo(-Math.SQRT2 / 2, 6)
+  })
+
+  it('sqrt(-i) principal = 1/sqrt(2) - i/sqrt(2), second = -1/sqrt(2) + i/sqrt(2)', () => {
+    const r = evaluateExpression('sqrt(-i)', DEG)
+    expect(r.ok).toBe(true)
+    expect(r.value.re).toBeCloseTo(Math.SQRT2 / 2, 6)
+    expect(r.value.im).toBeCloseTo(-Math.SQRT2 / 2, 6)
+    expect(r.multiRoots).toHaveLength(2)
+  })
+
+  it('sqrt(-4) returns 2i principal, multiRoots has -2i as second', () => {
+    const r = evaluateExpression('sqrt(-4)', DEG)
+    expect(r.ok).toBe(true)
+    expect(r.value.im).toBeCloseTo(2, 6)
+    expect(r.multiRoots).toHaveLength(2)
+    expect(r.multiRoots[1].im).toBeCloseTo(-2, 6)
+  })
+
+  it('nthRoot(i, 3) returns 3 roots', () => {
+    const r = evaluateExpression('nthRoot(i, 3)', DEG)
+    expect(r.ok).toBe(true)
+    expect(r.multiRoots).toHaveLength(3)
+    r.multiRoots.forEach(root => expect(Math.hypot(root.re, root.im)).toBeCloseTo(1, 6))
+  })
+
+  it('nthRoot(-4, 2) returns 2 complex roots', () => {
+    const r = evaluateExpression('nthRoot(-4, 2)', DEG)
+    expect(r.ok).toBe(true)
+    expect(r.multiRoots).toHaveLength(2)
   })
 })
 
