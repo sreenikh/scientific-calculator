@@ -58,13 +58,43 @@ export default function App() {
   const [displayMode, setDisplayMode] = useState('math')  // 'math'|'line'
   const [dmsMode, setDmsMode] = useState(false)
   const [lastNumericValue, setLastNumericValue] = useState(null)
+  const [pendingReset, setPendingReset] = useState(false)
   const screenRef = useRef(null)
+  const resetTimerRef = useRef(null)
 
   const handleChange = useCallback((newLatex, newAscii) => {
     setLatex(newLatex)
     setAsciiMath(newAscii)
     setError(null)
   }, [])
+
+  function resetAll() {
+    if (resetTimerRef.current) clearTimeout(resetTimerRef.current)
+    screenRef.current?.clear()
+    screenRef.current?.setDisplayMode('math')
+    setResultDisplay('0')
+    setError(null)
+    setAngleMode('deg')
+    setAns(0)
+    setHistory([])
+    setComplexMode('rect')
+    setIsLastComplex(false)
+    setIsLastMatrix(false)
+    setLastComplexValue(null)
+    setLastNumericValue(null)
+    setMatrixVars(EMPTY_MATRIX_VARS)
+    setMemVars(EMPTY_MEM_VARS)
+    setShiftActive(false)
+    setAlphaActive(false)
+    setStoActive(false)
+    setRclActive(false)
+    setBaseMode('dec')
+    setDisplayMode('math')
+    setDmsMode(false)
+    setPanel(null)
+    setPendingReset(false)
+    trackEvent('master_reset')
+  }
 
   function insert(fragment) {
     screenRef.current?.insert(fragment)
@@ -115,6 +145,11 @@ export default function App() {
   }
 
   function handleAction(action) {
+    if (pendingReset && action !== 'clear') {
+      if (resetTimerRef.current) clearTimeout(resetTimerRef.current)
+      setPendingReset(false)
+      setResultDisplay(r => r === 'Press AC again to reset all' ? '0' : r)
+    }
     switch (action) {
       case 'toggleShift':
         setShiftActive(s => !s)
@@ -184,12 +219,37 @@ export default function App() {
         break
       }
       case 'clear':
+        if (pendingReset) {
+          resetAll()
+          break
+        }
+        if (latex === '') {
+          setPendingReset(true)
+          setError(null)
+          setResultDisplay('Press AC again to reset all')
+          if (resetTimerRef.current) clearTimeout(resetTimerRef.current)
+          resetTimerRef.current = setTimeout(() => {
+            setPendingReset(false)
+            setResultDisplay(r => r === 'Press AC again to reset all' ? '0' : r)
+          }, 3000)
+          break
+        }
         screenRef.current?.clear()
         setResultDisplay('0')
         setError(null)
         setIsLastComplex(false)
         setIsLastMatrix(false)
         setLastNumericValue(null)
+        break
+      case 'resetAll':
+        setPendingReset(true)
+        setError(null)
+        setResultDisplay('Press AC again to reset all')
+        if (resetTimerRef.current) clearTimeout(resetTimerRef.current)
+        resetTimerRef.current = setTimeout(() => {
+          setPendingReset(false)
+          setResultDisplay(r => r === 'Press AC again to reset all' ? '0' : r)
+        }, 3000)
         break
       case 'del':
         screenRef.current?.deleteBackward()
@@ -267,6 +327,7 @@ export default function App() {
               displayMode={displayMode}
               dmsMode={dmsMode}
               isLastNumeric={lastNumericValue !== null}
+              isPendingReset={pendingReset}
               onToggleDisplayMode={() => handleAction('toggleDisplayMode')}
               onToggleDms={() => handleAction('toggleDms')}
               onToggleComplex={() => {
