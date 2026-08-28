@@ -110,12 +110,16 @@ describe('evaluateExpression: powers and roots', () => {
   // Via the normalisation bridge (simulates MathLive ascii-math for \sqrt[3]{8})
   it('root(3)(8) → 2',         () => expect(ok('root(3)(8)')).toBeCloseTo(2, 10))
   it('root(4)(16) → 2',        () => expect(ok('root(4)(16)')).toBeCloseTo(2, 10))
-  // Real-negative odd root stays real, no multiRoots
-  it('nthRoot(-8, 3) = -2, no multiRoots', () => {
+  // Odd root of real negative: Ans stays real (-2), but panel shows all 3 roots
+  it('nthRoot(-8, 3) = -2 with 3-root panel', () => {
     const r = evaluateExpression('nthRoot(-8, 3)', DEG)
     expect(r.ok).toBe(true)
     expect(r.value).toBeCloseTo(-2, 10)
-    expect(r.multiRoots).toBeNull()
+    expect(r.multiRoots).toHaveLength(3)
+    // One of the roots should be the real root -2
+    const realRoot = r.multiRoots.find(root => Math.abs(root.im) < 1e-6)
+    expect(realRoot).toBeDefined()
+    expect(realRoot.re).toBeCloseTo(-2, 6)
   })
   // sqrt of positive real: no multiRoots
   it('sqrt(4) = 2, no multiRoots', () => {

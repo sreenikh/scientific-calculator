@@ -53,11 +53,13 @@ function buildScope(angleMode, vars, onMultiRoot = null) {
     logb: (x, b) => Math.log(x) / Math.log(b),
     nthRoot: (x, n) => {
       const isComplexArg = math.typeOf(x) === 'Complex'
-      const isEvenRootOfNegative = typeof x === 'number' && x < 0 && n % 2 === 0
-      if (isComplexArg || isEvenRootOfNegative) {
+      const isNegativeReal = typeof x === 'number' && x < 0
+      if (isComplexArg || isNegativeReal) {
         const z = isComplexArg ? x : math.complex(x, 0)
         const roots = allNthRoots(z, n)
         if (onMultiRoot) onMultiRoot(roots)
+        // Odd root of a real negative: keep -2 (not the principal complex root) as Ans
+        if (!isComplexArg && n % 2 !== 0) return math.nthRoot(x, n)
         return roots[0]
       }
       return math.nthRoot(x, n)
