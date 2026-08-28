@@ -236,6 +236,15 @@ Accessed via **MODE -> 5 TABLE**.
 - Scrollable table with sticky headers; x column left-aligned, f(x)/g(x) right-aligned
 - Hover highlight per row for readability
 
+### Master reset `[done]`
+
+Two entry points, same two-step confirmation flow:
+
+- **Double-AC**: press AC when the expression field is already empty; result line shows "Press AC again to reset all" with a dimmed hint "Or wait 3 seconds to cancel"
+- **MODE -> 6 RESET ALL**: menu closes and the same prompt appears
+
+Confirming (press AC within 3 seconds) wipes all state: expression, result, history, memory slots K-T, matrix variables A-J, angle mode (DEG), base mode (DEC), display mode (MATH), complex mode (rect), DMS toggle, SHIFT/ALPHA/STO/RCL modifiers, and any open panel.
+
 ---
 
 ## Notes

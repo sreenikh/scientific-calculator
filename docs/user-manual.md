@@ -53,7 +53,7 @@ The calculator is arranged top to bottom:
 
 ### Opening panels
 
-- **MODE**: opens the mode menu (Equation, Matrix, Statistics, Distribution, Table)
+- **MODE**: opens the mode menu (Equation, Matrix, Statistics, Distribution, Table, Reset All)
 - **CONST / CONV / SOLVE / OPS / BASE-N / GRAPH**: opens the corresponding overlay panel
 - **d/dx ∫**: opens the Calculus panel
 
@@ -86,6 +86,16 @@ Click anywhere in the math field to position the cursor. The keypad inserts math
 
 - **DEL**: deletes the character or structure to the left of the cursor
 - **AC**: clears the entire expression and resets the result to 0
+
+#### Master reset (double-AC)
+
+Pressing **AC** when the expression field is already empty starts a two-step master reset:
+
+1. The result line shows **Press AC again to reset all**, with a dimmed hint below: **Or wait 3 seconds to cancel**.
+2. Press **AC** a second time within 3 seconds to confirm. All state is wiped: expression, result, history, memory slots (K-T), matrix variables (A-J), angle mode (returns to DEG), base mode (returns to DEC), and display mode (returns to MATH).
+3. Pressing any other key, or waiting 3 seconds, cancels and restores the display.
+
+The same flow is triggered by MODE menu entry **6 RESET ALL**. The menu closes and the same two-step confirmation appears before anything is wiped.
 
 ### MATH / LINE display toggle
 

@@ -10,7 +10,8 @@ const Screen = forwardRef(function Screen(
   { onChange, resultDisplay, error, angleMode, shiftActive, alphaActive,
     stoActive, rclActive, memVars,
     isComplex, isMatrix, complexMode, onToggleComplex, baseMode,
-    displayMode, dmsMode, isLastNumeric, onToggleDisplayMode, onToggleDms },
+    displayMode, dmsMode, isLastNumeric, onToggleDisplayMode, onToggleDms,
+    isPendingReset },
   ref
 ) {
   const fieldRef = useRef(null)
@@ -111,9 +112,13 @@ const Screen = forwardRef(function Screen(
         <div className={
           'display-line' +
           (error ? ' has-error' : '') +
-          (multiLine ? ' is-matrix' : '')
+          (multiLine ? ' is-matrix' : '') +
+          (isPendingReset ? ' is-confirm' : '')
         }>
           {error ? error : resultDisplay}
+          {isPendingReset && (
+            <div className="confirm-hint">Or wait 3 seconds to cancel</div>
+          )}
         </div>
       </div>
     </div>

@@ -137,6 +137,8 @@ body {
 }
 .display-line.has-error { color: #A32D2D; font-size: 1.6dvh; white-space: nowrap; }
 .display-line.is-matrix { font-size: 1.5dvh; text-align: right; }
+.display-line.is-confirm { font-size: 1.8dvh; }
+.confirm-hint { font-size: 1.1dvh; color: var(--steel); margin-top: 0.3dvh; }
 
 .history-wrap { flex-shrink: 0; margin: 0.4dvh 0; }
 
@@ -254,6 +256,8 @@ table.iter th:first-child, table.iter td:first-child { text-align: left; color: 
 }
 .mode-item:hover:not(:disabled) { border-color: var(--teal); }
 .mode-item-disabled { opacity: 0.4; cursor: default; }
+.mode-item-danger:hover:not(:disabled) { border-color: #c0392b; }
+.mode-item-danger .mode-label { color: #e74c3c; }
 .mode-num { color: var(--amber); font-weight: 700; font-size: 1.6dvh; min-width: 1.5vw; }
 .mode-label { font-size: 1.3dvh; font-weight: 700; min-width: 8vw; }
 .mode-desc { font-size: 1.1dvh; color: var(--steel); }
