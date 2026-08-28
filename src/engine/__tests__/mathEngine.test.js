@@ -632,6 +632,28 @@ describe('polyRoots: degree 3', () => {
     expect(res[2]).toBeCloseTo(3, 6)
     roots.forEach(r => expect(Math.abs(r.im)).toBeCloseTo(0, 6))
   })
+
+  it('x^3 - 5 = 0 -> one real root cbrt(5), two complex (equal-magnitude case)', () => {
+    const roots = polyRoots([1, 0, 0, -5]).map(rootVal)
+    expect(roots).toHaveLength(3)
+    const real = roots.filter(r => Math.abs(r.im) < 1e-6)
+    expect(real).toHaveLength(1)
+    expect(real[0].re).toBeCloseTo(Math.cbrt(5), 6)
+    const complex = roots.filter(r => Math.abs(r.im) >= 1e-6)
+    expect(complex).toHaveLength(2)
+    complex.forEach(r => expect(Math.hypot(r.re, r.im)).toBeCloseTo(Math.cbrt(5), 6))
+  })
+
+  it('x^3 + x + 1 = 0 -> one real root, two complex conjugates', () => {
+    const roots = polyRoots([1, 0, 1, 1]).map(rootVal)
+    expect(roots).toHaveLength(3)
+    const real = roots.filter(r => Math.abs(r.im) < 1e-6)
+    expect(real).toHaveLength(1)
+    expect(real[0].re).toBeCloseTo(-0.6823278, 5)
+    const complex = roots.filter(r => Math.abs(r.im) >= 1e-6)
+    expect(complex).toHaveLength(2)
+    expect(complex[0].im).toBeCloseTo(-complex[1].im, 6)
+  })
 })
 
 describe('polyRoots: degree 4', () => {
