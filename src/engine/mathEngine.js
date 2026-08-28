@@ -41,6 +41,7 @@ function buildScope(angleMode, vars) {
     log:  (x) => Math.log10(x),
     ln:   (x) => Math.log(x),
     logb: (x, b) => Math.log(x) / Math.log(b),
+    nthRoot: (x, n) => math.typeOf(x) === 'Complex' ? math.pow(x, 1 / n) : math.nthRoot(x, n),
     nPr: (n, r) => math.permutations(n, r),
     nCr: (n, r) => math.combinations(n, r),
     fromDMS: (d, m = 0, s = 0) => {

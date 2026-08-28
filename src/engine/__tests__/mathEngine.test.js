@@ -110,6 +110,21 @@ describe('evaluateExpression: powers and roots', () => {
   // Via the normalisation bridge (simulates MathLive ascii-math for \sqrt[3]{8})
   it('root(3)(8) → 2',         () => expect(ok('root(3)(8)')).toBeCloseTo(2, 10))
   it('root(4)(16) → 2',        () => expect(ok('root(4)(16)')).toBeCloseTo(2, 10))
+  // Real-negative odd roots must stay real
+  it('nthRoot(-8, 3) = -2 (real, not complex)', () => {
+    const r = evaluateExpression('nthRoot(-8, 3)', { angleMode: 'deg', vars: {}, complexMode: 'rect' })
+    expect(r.ok).toBe(true)
+    expect(r.isComplex).toBe(false)
+    expect(r.value).toBeCloseTo(-2, 10)
+  })
+  // Complex argument: cbrt(i) principal value = sqrt(3)/2 + i/2
+  it('nthRoot(i, 3) returns principal complex value', () => {
+    const r = evaluateExpression('nthRoot(i, 3)', { angleMode: 'deg', vars: {}, complexMode: 'rect' })
+    expect(r.ok).toBe(true)
+    expect(r.isComplex).toBe(true)
+    expect(r.value.re).toBeCloseTo(Math.sqrt(3) / 2, 6)
+    expect(r.value.im).toBeCloseTo(0.5, 6)
+  })
 })
 
 describe('evaluateExpression: trig, degree mode', () => {
