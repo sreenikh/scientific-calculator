@@ -122,17 +122,39 @@ export function polyRoots(coeffs) {
     const r2 = math.divide(math.subtract(math.multiply(-1, b), sqrtDisc), 2 * a)
     return [r1, r2]
   }
-  // Cubic and higher: companion-matrix eigenvalues via math.js
+  // Cubic and higher: Durand-Kerner (Weierstrass) simultaneous root finder.
+  // More reliable than companion-matrix eigs when roots share equal magnitude
+  // (e.g. x^3 - 5), where QR iteration fails to converge.
   const n = degree
-  const companion = math.zeros(n, n)._data.map(() => Array(n).fill(0))
-  for (let i = 0; i < n; i++) {
-    companion[0][i] = -coeffs[i + 1] / coeffs[0]
+  const monic = coeffs.map(c => c / coeffs[0])
+
+  function evalPoly(z) {
+    let r = math.complex(0, 0)
+    for (const c of monic) r = math.add(math.multiply(r, z), math.complex(c, 0))
+    return r
   }
-  for (let i = 1; i < n; i++) {
-    companion[i][i - 1] = 1
+
+  // Initial points: (0.4+0.9i)^k scaled to the geometric-mean root magnitude
+  const scale = Math.max(1, Math.pow(Math.abs(monic[n]), 1 / n))
+  const base = math.complex(0.4, 0.9)
+  let roots = Array.from({ length: n }, (_, k) => math.multiply(math.pow(base, k), scale))
+
+  for (let iter = 0; iter < 300; iter++) {
+    const next = roots.map((zi, i) => {
+      const pz = evalPoly(zi)
+      let denom = math.complex(1, 0)
+      for (let j = 0; j < n; j++) {
+        if (j !== i) denom = math.multiply(denom, math.subtract(zi, roots[j]))
+      }
+      if (math.abs(denom) < 1e-30) return zi
+      return math.subtract(zi, math.divide(pz, denom))
+    })
+    const maxChange = roots.reduce((m, _, i) =>
+      Math.max(m, math.abs(math.subtract(next[i], roots[i]))), 0)
+    roots = next
+    if (maxChange < 1e-12) break
   }
-  const { values } = math.eigs(companion)
-  return values.toArray ? values.toArray() : values
+  return roots
 }
 
 // Gaussian elimination with partial pivoting for 2x2 / 3x3 (sys-solv).
