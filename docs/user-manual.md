@@ -299,6 +299,8 @@ Press `[SHIFT]` → `[Ans]` to insert **i** (the imaginary unit) into an express
 
 The principal value (smallest positive argument) is shown as the result and stored to Ans. All n roots appear in a panel below the result; click any root to make it Ans, then STO to store it to a memory slot. Repeat for other roots to store them individually.
 
+For odd roots of real negatives (e.g. `∛(-8)`), the familiar real result (-2) is shown as Ans, but the panel still lists all three roots including the two complex ones (`1 + √3i` and `1 - √3i`), which can be accessed the same way.
+
 ### Rectangular and polar display
 
 When the result is complex, a toggle button appears to the left of the result:
