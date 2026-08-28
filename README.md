@@ -4,6 +4,8 @@ A browser-based graphing scientific calculator with textbook-style math input.
 
 **Live:** https://graph.nsquaredcreative.ca
 
+[![GraphN² - calculator and 3D surface](https://graph.nsquaredcreative.ca/og-image.png)](https://graph.nsquaredcreative.ca)
+
 ---
 
 ## Features
