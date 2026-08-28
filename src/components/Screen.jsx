@@ -11,7 +11,7 @@ const Screen = forwardRef(function Screen(
     stoActive, rclActive, memVars,
     isComplex, isMatrix, complexMode, onToggleComplex, baseMode,
     displayMode, dmsMode, isLastNumeric, onToggleDisplayMode, onToggleDms,
-    isPendingReset },
+    isPendingReset, multiRoots, onSelectRoot },
   ref
 ) {
   const fieldRef = useRef(null)
@@ -121,6 +121,20 @@ const Screen = forwardRef(function Screen(
           )}
         </div>
       </div>
+
+      {multiRoots && (
+        <div className="multi-roots">
+          <span className="multi-roots-label">All roots (click to select as Ans)</span>
+          <div className="multi-roots-list">
+            {multiRoots.map((root, i) => (
+              <button key={i} className="root-row" onClick={() => onSelectRoot(i)}>
+                <span className="root-idx">Root {i + 1}</span>
+                <span className="root-val">{root.display}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 })

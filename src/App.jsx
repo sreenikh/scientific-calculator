@@ -59,6 +59,8 @@ export default function App() {
   const [dmsMode, setDmsMode] = useState(false)
   const [lastNumericValue, setLastNumericValue] = useState(null)
   const [pendingReset, setPendingReset] = useState(false)
+  const [multiRoots, setMultiRoots] = useState(null)
+  // multiRoots: null | Array<{ value: Complex, display: string, label: string }>
   const screenRef = useRef(null)
   const resetTimerRef = useRef(null)
 
@@ -94,6 +96,17 @@ export default function App() {
     setPanel(null)
     setPendingReset(false)
     trackEvent('master_reset')
+  }
+
+  function selectRoot(i) {
+    if (!multiRoots || i >= multiRoots.length) return
+    const root = multiRoots[i]
+    setAns(root.value)
+    setResultDisplay(complexMode === 'rect' ? root.display : formatValue(root.value, angleMode, complexMode))
+    setIsLastComplex(true)
+    setLastComplexValue(root.value)
+    setLastNumericValue(null)
+    setIsLastMatrix(false)
   }
 
   function insert(fragment) {
@@ -135,6 +148,15 @@ export default function App() {
         const next = [...h, entry]
         return next.length > 100 ? next.slice(-100) : next
       })
+      if (result.multiRoots) {
+        setMultiRoots(result.multiRoots.map((v, i) => ({
+          value: v,
+          display: formatValue(v, angleMode, 'rect'),
+          label: `Root ${i + 1}`,
+        })))
+      } else {
+        setMultiRoots(null)
+      }
     } else {
       setError(result.error)
       setIsLastComplex(false)
@@ -240,6 +262,7 @@ export default function App() {
         setIsLastComplex(false)
         setIsLastMatrix(false)
         setLastNumericValue(null)
+        setMultiRoots(null)
         break
       case 'resetAll':
         setPendingReset(true)
@@ -328,6 +351,8 @@ export default function App() {
               dmsMode={dmsMode}
               isLastNumeric={lastNumericValue !== null}
               isPendingReset={pendingReset}
+              multiRoots={multiRoots}
+              onSelectRoot={selectRoot}
               onToggleDisplayMode={() => handleAction('toggleDisplayMode')}
               onToggleDms={() => handleAction('toggleDms')}
               onToggleComplex={() => {
