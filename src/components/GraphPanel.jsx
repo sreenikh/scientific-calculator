@@ -1,7 +1,8 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect, useCallback, lazy, Suspense } from 'react'
 import { compileFn, compileImplicitFn } from '../engine/numeric'
 import { trackEvent } from '../analytics'
-import GraphPanel3D from './GraphPanel3D'
+
+const GraphPanel3D = lazy(() => import('./GraphPanel3D'))
 
 export const CURVE_COLORS = [
   '#2CC7A0', '#E06C75', '#E5C07B', '#61AFEF', '#C678DD',
@@ -613,7 +614,11 @@ export default function GraphPanel({ onClose, angleMode = 'deg' }) {
         <button className="ov-close" onClick={onClose}>close</button>
       </div>
 
-      {graphDim === '3d' ? <GraphPanel3D angleMode={angleMode} /> : (<>
+      {graphDim === '3d' ? (
+        <Suspense fallback={<div className="graph3d-computing">Loading 3D engine…</div>}>
+          <GraphPanel3D angleMode={angleMode} />
+        </Suspense>
+      ) : (<>
       <div className="graph-fns">
         {fns.map(({ expr, visible }, i) => {
           const { implicit } = parseExpr(expr.trim())
