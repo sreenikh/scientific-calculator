@@ -166,7 +166,7 @@ breaks."
 Shipped isn't the same as finished, though, and what's left isn't really
 about infrastructure anymore.
 
-![Lighthouse scores — Performance 54, Accessibility 90, Best Practices 96, SEO 100](../media/lighthouse.png)
+![Lighthouse scores — Performance 82, Accessibility 90, Best Practices 96, SEO 100](../media/lighthouse.png)
 
 ---
 
