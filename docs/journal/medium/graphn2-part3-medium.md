@@ -166,6 +166,16 @@ breaks."
 Shipped isn't the same as finished, though, and what's left isn't really
 about infrastructure anymore.
 
+Lighthouse gives it 90 for accessibility, 96 for best practices, and a
+perfect 100 for SEO. Performance sits at 82 now, up from an initial 54.
+The gap was Three.js and the marching-cubes engine loading on every
+visit, roughly 555 KB, even for someone who never opens 3D mode.
+Lazy-loading that engine so it only downloads once 3D mode is actually
+opened closed most of it. 82 isn't a perfect score, lazy-loading the
+core calc engine too would likely close more of the gap, but that's on
+the critical path for the calculator itself, so the honest stopping
+point for now is a real fix, not a number I'm still waiting to explain.
+
 ![Lighthouse scores — Performance 82, Accessibility 90, Best Practices 96, SEO 100](../media/lighthouse.png)
 
 ---
