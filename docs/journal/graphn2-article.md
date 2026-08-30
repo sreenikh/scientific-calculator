@@ -712,9 +712,7 @@ numeric methods, the tests, all of it, in case any of it saves someone
 else the same weeks I didn't have to spend. If you build something like
 this yourself, or you already have, I'd genuinely like to hear about it.
 
-<!-- PENDING MANUAL ASSET: docs/journal/media/fx991es-and-graphn2.jpg
-     Photo of physical fx-991ES next to GraphN² on screen.
-     See docs/journal/pending-manual-assets.md for instructions. -->
+![Casio fx-991ES PLUS beside GraphN² showing the same golden-ratio expression](media/fx991es-and-graphn2.jpg)
 
 ---
 
