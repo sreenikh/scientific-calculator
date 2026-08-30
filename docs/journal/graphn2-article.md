@@ -255,9 +255,7 @@ hand. Understanding a system well enough to ask the right questions and
 judge the answers is a different skill from writing every layer of it
 yourself, and it's the one I actually bring.
 
-<!-- PENDING MANUAL ASSET: docs/journal/media/mockup-vs-finished.png
-     Side-by-side of the earliest static HTML keypad mockup vs. the finished app.
-     See docs/journal/pending-manual-assets.md for instructions. -->
+![First mockup vs. finished app — plain grey prototype beside the full dark-themed GraphN²](media/mockup-vs-finished.png)
 
 ---
 

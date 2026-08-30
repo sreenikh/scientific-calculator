@@ -267,7 +267,7 @@ hand. Understanding a system well enough to ask the right questions and
 judge the answers is a different skill from writing every layer of it
 yourself, and it's the one I actually bring.
 
-<!-- PENDING MANUAL ASSET: ../media/mockup-vs-finished.png — see pending-manual-assets.md -->
+![First mockup vs. finished app — plain grey prototype beside the full dark-themed GraphN²](../media/mockup-vs-finished.png)
 
 ---
 
