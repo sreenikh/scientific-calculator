@@ -116,7 +116,7 @@ are. What's actually interesting is what it takes to make "type an
 equation, get an answer" work correctly across all of it at once, and
 that's where the real story starts.
 
-![Typing x²/(x-1) in textbook math mode — renders as a stacked fraction, then evaluates on =](media/textbook-input.gif)
+![Typing (1+√5)/2 in textbook math notation — renders as a stacked fraction, evaluates to the golden ratio 1.618](media/textbook-input.gif)
 
 ---
 
@@ -500,8 +500,6 @@ one.
 
 ![Rotating a 3D implicit surface — torus rendered via marching cubes in WebGL](media/3d-surface.gif)
 
-*Video version for social: [3d-surface.mp4](media/3d-surface.mp4)*
-
 What ties these three together isn't difficulty for its own sake. None of
 them showed up as a risk on paper, a cursor bug looks trivial until you hit
 it, a root-finder looks done once it works on the one example you tried,
@@ -712,18 +710,3 @@ this yourself, or you already have, I'd genuinely like to hear about it.
 
 ![Casio fx-991ES PLUS beside GraphN² showing the same golden-ratio expression](media/fx991es-and-graphn2.jpg)
 
----
-
-## Asset checklist
-
-- [x] Hero: `media/hero.png` (copied from og-image.png)
-- [x] GIF: `media/textbook-input.gif` (textbook input rendering + evaluation)
-- [x] Architecture diagram: `media/arch-diagram.png`
-- [ ] Side-by-side: `media/mockup-vs-finished.png` — **PENDING MANUAL** (see pending-manual-assets.md)
-- [x] Video: `media/3d-surface.mp4` (rotating torus surface, WebGL)
-- [x] GIF: `media/3d-surface.gif` (same, for markdown embeds)
-- [x] GIF: `media/cursor-editing.gif` (cursor-aware mid-expression editing)
-- [x] Screenshot: `media/solve-panel.png` (Newton-Raphson iteration table)
-- [x] Screenshot: `media/test-suite.png` (719 tests passing)
-- [x] Screenshot: `media/lighthouse.png` (Performance 54, Accessibility 90, Best Practices 96, SEO 100)
-- [ ] Photo: `media/fx991es-and-graphn2.jpg` — **PENDING MANUAL** (see pending-manual-assets.md)

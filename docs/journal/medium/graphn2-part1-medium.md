@@ -6,11 +6,9 @@ work before I knew what I'd need them for.*
 *This is Part 1 of a three-part series on building GraphN², a full-featured
 graphing scientific calculator in the browser, working with Claude. Part 1
 covers why it exists, what it actually does, and the architecture and
-collaboration model underneath it. [Part 2 →](LINK) covers the honest
-numbers on speed and cost, and the three hardest technical problems. [Part
-3 →](LINK) covers testing, shipping, and why this matters to me personally.
-Prefer to read the whole thing in one sitting? [The full version is on
-GitHub](LINK).*
+collaboration model underneath it. Part 2 covers the honest numbers on speed
+and cost, and the three hardest technical problems. Part 3 covers testing,
+shipping, and why this matters to me personally.*
 
 **Sum It Up** — GraphN² is a full-featured graphing scientific calculator in
 the browser, and this article is less about the feature list and more
@@ -128,7 +126,7 @@ are. What's actually interesting is what it takes to make "type an
 equation, get an answer" work correctly across all of it at once, and
 that's where the real story starts.
 
-![Typing x²/(x-1) in textbook math mode — renders as a stacked fraction, then evaluates on =](../media/textbook-input.gif)
+![Typing (1+√5)/2 in textbook math notation — renders as a stacked fraction, evaluates to the golden ratio 1.618](../media/textbook-input.gif)
 
 ---
 
@@ -271,11 +269,7 @@ yourself, and it's the one I actually bring.
 
 ---
 
-
----
-
-*That's Part 1. [Continue to Part 2 →](LINK), where the honest numbers on
-speed and cost show up, along with the three hardest technical problems in
-the whole build: a cursor that wouldn't stay put, a root-finder that
-needed a fallback chain, and a 3D surface that isn't a function. Or [read
-the whole thing on GitHub](LINK) if you'd rather not wait.*
+*That's Part 1. Part 2 covers the honest numbers on speed and cost, along
+with the three hardest technical problems in the whole build: a cursor that
+wouldn't stay put, a root-finder that needed a fallback chain, and a 3D
+surface that isn't a function.*

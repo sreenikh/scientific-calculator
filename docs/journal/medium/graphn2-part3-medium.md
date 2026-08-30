@@ -5,11 +5,10 @@ product actually took, and why I built this in the first place.*
 
 *This is Part 3, the finale, of a three-part series on building GraphN², a
 full-featured graphing scientific calculator in the browser, working with
-Claude. [Part 1 →](LINK) covered why it exists and how it's architected.
-[Part 2 →](LINK) covered the honest numbers on speed and cost, and the
-three hardest technical problems in the build. This part covers testing,
-shipping it like a real product, and why it matters to me. Prefer to read
-the whole thing in one sitting? [The full version is on GitHub](LINK).*
+Claude. Part 1 covered why it exists and how it's architected. Part 2
+covered the honest numbers on speed and cost, and the three hardest
+technical problems in the build. This part covers testing, shipping it like
+a real product, and why it matters to me.*
 
 ---
 
@@ -213,10 +212,5 @@ this yourself, or you already have, I'd genuinely like to hear about it.
 
 ---
 
-
----
-
-*That's the series. [Part 1](LINK) has the origin story and the
-architecture, [Part 2](LINK) has the honest numbers and the three hardest
-problems. Thanks for reading, and if you build something like this
+*That's the series. Thanks for reading, and if you build something like this
 yourself, I'd genuinely like to hear about it.*

@@ -4,14 +4,12 @@
 stubborn root-finder, an impossible surface, that taught me the most.*
 
 *This is Part 2 of a three-part series on building GraphN², a full-featured
-graphing scientific calculator in the browser, working with Claude. [Part 1
-→](LINK) covered why it exists, what it does, and the architecture and
-collaboration model underneath it. This part covers how the project
-actually got run day to day, the honest numbers on speed and resource
-cost, and the three hardest technical problems I hit along the way. [Part
-3 →](LINK) covers testing, shipping, and why this matters to me
-personally. Prefer to read the whole thing in one sitting? [The full
-version is on GitHub](LINK).*
+graphing scientific calculator in the browser, working with Claude. Part 1
+covered why it exists, what it does, and the architecture and collaboration
+model underneath it. This part covers how the project actually got run day
+to day, the honest numbers on speed and resource cost, and the three hardest
+technical problems I hit along the way. Part 3 covers testing, shipping, and
+why this matters to me personally.*
 
 ---
 
@@ -256,8 +254,6 @@ one.
 
 ![Rotating a 3D implicit surface — torus rendered via marching cubes in WebGL](../media/3d-surface.gif)
 
-*For Medium/LinkedIn upload directly: [3d-surface.mp4](../media/3d-surface.mp4)*
-
 What ties these three together isn't difficulty for its own sake. None of
 them showed up as a risk on paper, a cursor bug looks trivial until you hit
 it, a root-finder looks done once it works on the one example you tried,
@@ -270,10 +266,6 @@ this shape: quietly, at the edges, in the place the spec didn't cover.
 
 ---
 
-
----
-
-*That's Part 2. [Continue to Part 3 →](LINK) for how a calculator actually
-gets tested, what it took to ship this like a real product instead of a
-demo, and why I built this in the first place. Missed Part 1? [Start
-here](LINK). Or [read the whole thing on GitHub](LINK).*
+*That's Part 2. Part 3 covers how a calculator actually gets tested, what
+it took to ship this like a real product instead of a demo, and why I built
+this in the first place.*
